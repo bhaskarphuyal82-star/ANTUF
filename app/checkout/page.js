@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import CheckOut from "@/components/checkout/CheckOut";
 import Navbar from "@/components/navbar/Navbar";
 
 import Footer from "@/components/footer/Footer";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
+
+const CheckOutWithSuspense = () => {
+  return (
+    <Suspense fallback={<CircularProgress />}>
+      <CheckOut />
+    </Suspense>
+  );
+};
 
 const NavBar = () => {
   return (
@@ -75,7 +83,7 @@ const NavBar = () => {
         `}</style>
       </Box>
 
-      <CheckOut />
+      <CheckOutWithSuspense />
 
       <Box sx={{ mb: 20 }}></Box>
 

@@ -13,11 +13,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import hljs from "highlight.js";
 import MarkdownIt from "markdown-it";
-import MdEditor from "react-markdown-editor-lite";
+import MDEditor from "@uiw/react-md-editor";
 import React from "react";
 import ReactPlayer from "react-player";
 // import style manually
-import "react-markdown-editor-lite/lib/index.css";
+import "@uiw/react-md-editor/markdown-editor.css";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { imageUpload } from "@/components/functions/Upload";
@@ -1090,15 +1090,10 @@ const CurriculumEditor = () => {
                 Edit Lecture {currentLecture?.title}
               </Typography>
 
-              <MdEditor
+              <MDEditor
                 value={content}
-                style={{
-                  height: "80vh", // Set the editor height
-                }}
-                // renderHTML={(text) => new MarkdownIt().render(text)}
-                onChange={({ text }) => setContent(text)}
-                renderHTML={(text) => md.render(text)} // Use the initialized md
-                onImageUpload={(file) => imageUpload(file)}
+                height={600}
+                onChange={(val) => setContent(val || "")}
                 placeholder="Write your Content here..."
               />
 

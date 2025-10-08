@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Course from "@/components/coursedisplay/Course";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 
-const ContentViewPage = () => {
+const CourseDetailsContent = () => {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +45,14 @@ const ContentViewPage = () => {
     <>
       <Course course={content} loading={loading} />
     </>
+  );
+};
+
+const ContentViewPage = () => {
+  return (
+    <Suspense fallback={<CircularProgress />}>
+      <CourseDetailsContent />
+    </Suspense>
   );
 };
 
