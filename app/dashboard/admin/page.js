@@ -3,10 +3,13 @@
 import { Typography } from "@mui/material";
 import Profile from "@/components/admin/image/ImageComponent";
 import Sidebar from "@/components/sidebar/SideBar";
+import UserDebugInfo from "@/components/debug/UserDebugInfo";
+
 export default function Home() {
   return (
     <>
       <Profile />
+      <UserDebugInfo />
       <div style={{ textAlign: "center", margin: "30px" }}>
         <Typography
           variant="h3"

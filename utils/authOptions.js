@@ -69,10 +69,16 @@ export const authOptions = {
       let dbUser = await User.findOne({ email });
 
       if (!dbUser) {
+        // Check if this is the first user or admin email
+        const userCount = await User.countDocuments();
+        const isAdminEmail = process.env.ADMIN_EMAIL && email === process.env.ADMIN_EMAIL;
+        
         dbUser = await User.create({
           email,
           name: user?.name,
           image: user?.image,
+          // First user or admin email gets admin role
+          role: userCount === 0 || isAdminEmail ? "admin" : "user",
         });
       }
       return true;

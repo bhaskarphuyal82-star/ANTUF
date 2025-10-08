@@ -88,6 +88,11 @@ const Sidebar = () => {
       link: "/dashboard/admin/create/catewithsubcate",
     },
     {
+      text: "Manage Users",
+      icon: <ManageAccountsIcon sx={{ fontSize: "32px" }} />,
+      link: "/dashboard/admin/users",
+    },
+    {
       text: "All User",
       icon: <ManageAccountsIcon sx={{ fontSize: "32px" }} />,
       link: "/dashboard/admin/alluser",
