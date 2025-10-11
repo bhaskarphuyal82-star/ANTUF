@@ -6,7 +6,8 @@ import Curriculum from "@/models/Curriculum";
 export async function GET(req, context) {
   await dbConnect();
   try {
-    const curriculum = await Curriculum.findOne({ _id: context.params.id });
+    const params = await context.params;
+    const curriculum = await Curriculum.findOne({ _id: params.id });
     console.log("Object sent to GET-----", curriculum);
     return NextResponse.json(curriculum);
   } catch (error) {

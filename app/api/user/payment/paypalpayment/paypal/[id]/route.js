@@ -18,9 +18,10 @@ export async function GET(req, context) {
   await dbConnect();
 
   try {
-    // Fetch course data based on the slug parameter from the URL (context.params.id)
+    const params = await context.params;
+    // Fetch course data based on the slug parameter from the URL (params.id)
     const course = await CurriculumCourse.findOne({
-      slug: context.params.id,
+      slug: params.id,
     }).sort({ createdAt: -1 });
 
     // Set up the PayPal order creation request

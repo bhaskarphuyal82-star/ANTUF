@@ -16,10 +16,11 @@ export async function GET(req, context) {
   await dbConnect();
 
   const session = await getServerSession(authOptions);
-  console.log("session id being passed---", context?.params?.id);
+  const params = await context.params;
+  console.log("session id being passed---", params?.id);
   try {
     const stripesession = await stripeInstance.checkout.sessions.retrieve(
-      context.params.id
+      params.id
     );
     console.log("Stripe session------", stripesession);
     const value = stripesession.amount_total

@@ -177,7 +177,107 @@ const Footer = () => {
               </Grid>
             ))
           )}
+
+          {/* Legal Links Section */}
+          <Grid item xs={12} sm={4} md={2}>
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              gutterBottom
+              sx={{
+                color: "green",
+                fontSize: isSmallScreen ? "18px" : "20px",
+                mb: 1,
+              }}
+            >
+              Legal
+            </Typography>
+            <Typography
+              onClick={() => router.push("/terms")}
+              sx={{
+                cursor: "pointer",
+                display: "block",
+                color: "white",
+                textDecoration: "none",
+                fontSize: isSmallScreen ? "16px" : "18px",
+                "&:hover": { color: "green" },
+                mb: 0.5,
+              }}
+            >
+              Terms & Conditions
+            </Typography>
+            <Typography
+              onClick={() => router.push("/privacy")}
+              sx={{
+                cursor: "pointer",
+                display: "block",
+                color: "white",
+                textDecoration: "none",
+                fontSize: isSmallScreen ? "16px" : "18px",
+                "&:hover": { color: "green" },
+                mb: 0.5,
+              }}
+            >
+              Privacy Policy
+            </Typography>
+            <Typography
+              onClick={() => router.push("/refund")}
+              sx={{
+                cursor: "pointer",
+                display: "block",
+                color: "white",
+                textDecoration: "none",
+                fontSize: isSmallScreen ? "16px" : "18px",
+                "&:hover": { color: "green" },
+                mb: 0.5,
+              }}
+            >
+              Refund Policy
+            </Typography>
+            <Typography
+              onClick={() => router.push("/about")}
+              sx={{
+                cursor: "pointer",
+                display: "block",
+                color: "white",
+                textDecoration: "none",
+                fontSize: isSmallScreen ? "16px" : "18px",
+                "&:hover": { color: "green" },
+                mb: 0.5,
+              }}
+            >
+              About Us
+            </Typography>
+            <Typography
+              onClick={() => router.push("/contact")}
+              sx={{
+                cursor: "pointer",
+                display: "block",
+                color: "white",
+                textDecoration: "none",
+                fontSize: isSmallScreen ? "16px" : "18px",
+                "&:hover": { color: "green" },
+                mb: 0.5,
+              }}
+            >
+              Contact Us
+            </Typography>
+          </Grid>
         </Grid>
+
+        {/* Copyright Section */}
+        <Box
+          sx={{
+            mt: 4,
+            pt: 3,
+            borderTop: "1px solid #444",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="body2" sx={{ color: "#ccc" }}>
+            © {new Date().getFullYear()} Tutorials Material. All rights reserved.
+          </Typography>
+        </Box>
       </Box>
     </>
   );

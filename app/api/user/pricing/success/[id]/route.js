@@ -20,9 +20,10 @@ export async function GET(req, context) {
   const sessionuser = await getServerSession(authOptions);
 
   try {
+    const params = await context.params;
     // Retrieve the Stripe checkout session using the session ID from the request context
     const session = await stripeInstance.checkout.sessions.retrieve(
-      context.params.id
+      params.id
     );
 
     console.log("session****************", session); // Log the retrieved session for debugging

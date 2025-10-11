@@ -10,10 +10,11 @@ export async function PUT(req, context) {
   const body = await req.json();
   console.log("Body being sent to PUT------", body);
   try {
+    const params = await context.params;
     const slug = slugify(body.title);
     body.slug = slug;
     const curriculum = await Curriculum.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       body,
       { new: true }
     );
@@ -27,8 +28,9 @@ export async function PUT(req, context) {
 export async function DELETE(req, context) {
   await dbConnect();
   try {
+    const params = await context.params;
     const curriculum = await Curriculum.findByIdAndDelete({
-      _id: context.params.id,
+      _id: params.id,
     });
     return NextResponse.json(curriculum);
   } catch (error) {

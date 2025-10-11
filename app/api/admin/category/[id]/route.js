@@ -7,10 +7,11 @@ export async function PUT(req, context) {
 
   const body = await req.json();
   try {
+    const params = await context.params;
     const { _id, ...updatedBody } = body;
 
     const updatingCategory = await Category.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       updatedBody,
       { new: true }
     );
@@ -24,8 +25,9 @@ export async function DELETE(req, context) {
   await dbConnect();
 
   try {
+    const params = await context.params;
     const deletingCategory = await Category.findByIdAndDelete({
-      _id: context.params.id,
+      _id: params.id,
     });
     return NextResponse.json(deletingCategory);
   } catch (error) {

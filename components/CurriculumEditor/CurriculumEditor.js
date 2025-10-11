@@ -13,7 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import hljs from "highlight.js";
 import MarkdownIt from "markdown-it";
-import MDEditor from "@uiw/react-md-editor";
+import MDEditor, { commands } from "@uiw/react-md-editor";
 import React from "react";
 import ReactPlayer from "react-player";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
@@ -620,6 +620,32 @@ const CurriculumEditor = () => {
     handleCloseModal();
   };
 
+  // Custom image upload command for MDEditor
+  const imageUploadCommand = {
+    name: 'image-upload',
+    keyCommand: 'image-upload',
+    buttonProps: { 'aria-label': 'Upload image' },
+    icon: '📷',
+    execute: () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          try {
+            const imageUrl = await imageUpload(file);
+            const imageMarkdown = `![${file.name}](${imageUrl})\n`;
+            setContent(prev => prev + imageMarkdown);
+          } catch (error) {
+            console.error('Image upload failed:', error);
+          }
+        }
+      };
+      input.click();
+    },
+  };
+
   const handleOpenVideoModal = (Lecture, sectionIndex) => {
     setCurrentSectionIndex(sectionIndex);
     setCurrentLecture(Lecture);
@@ -714,13 +740,13 @@ const CurriculumEditor = () => {
           {curriculum &&
             curriculum?.map((section, sectionIndex) => (
               <DraggableSection
-                key={section?.idindex}
+                key={section?._id || section?.idindex || `section-${sectionIndex}`}
                 section={section}
                 index={sectionIndex}
                 moveSection={moveSection}
               >
                 <Box
-                  key={section?._id}
+                  key={`section-box-${section?._id || section?.idindex || sectionIndex}`}
                   sx={{
                     backgroundColor:
                       deletingSection === section?._id ? "red" : "#212121",
@@ -851,14 +877,14 @@ const CurriculumEditor = () => {
                   >
                     {section?.lectures?.map((Lecture, LectureIndex) => (
                       <DraggableLecture
-                        key={Lecture?.idindex}
+                        key={Lecture?._id || Lecture?.idindex || `lecture-${sectionIndex}-${LectureIndex}`}
                         sectionIndex={sectionIndex}
                         lectureIndex={LectureIndex}
                         lecture={Lecture}
                         moveLecture={moveLecture}
                       >
                         <Box
-                          key={Lecture?._id || Lecture?.idindex}
+                          key={`lecture-box-${Lecture?._id || Lecture?.idindex || `${sectionIndex}-${LectureIndex}`}`}
                           sx={{
                             backgroundColor:
                               deletingLecture?.sectionIndex === sectionIndex &&
@@ -1094,6 +1120,44 @@ const CurriculumEditor = () => {
                 onChange={(val) => setContent(val || "")}
                 preview="edit"
                 data-color-mode="dark"
+                commands={[
+                  ...commands.getCommands(),
+                  commands.divider,
+                  imageUploadCommand
+                ]}
+                onDrop={async (event) => {
+                  event.preventDefault();
+                  const files = Array.from(event.dataTransfer.files);
+                  const imageFiles = files.filter(file => file.type.startsWith('image/'));
+                  
+                  for (const file of imageFiles) {
+                    try {
+                      const imageUrl = await imageUpload(file);
+                      const imageMarkdown = `![${file.name}](${imageUrl})\n`;
+                      setContent(prev => prev + imageMarkdown);
+                    } catch (error) {
+                      console.error('Image upload failed:', error);
+                    }
+                  }
+                }}
+                onPaste={async (event) => {
+                  const items = Array.from(event.clipboardData.items);
+                  const imageItems = items.filter(item => item.type.startsWith('image/'));
+                  
+                  for (const item of imageItems) {
+                    const file = item.getAsFile();
+                    if (file) {
+                      try {
+                        event.preventDefault();
+                        const imageUrl = await imageUpload(file);
+                        const imageMarkdown = `![Pasted Image](${imageUrl})\n`;
+                        setContent(prev => prev + imageMarkdown);
+                      } catch (error) {
+                        console.error('Image upload failed:', error);
+                      }
+                    }
+                  }
+                }}
               />
 
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>

@@ -7,10 +7,11 @@ export async function PUT(req, context) {
   const body = await req.json();
 
   try {
+    const params = await context.params;
     // Finding the document by its ID (from the URL parameter) and updating it with the new data from the request body
     // The "new: true" option ensures that the returned document is the updated one
     const updatingCategory = await CateWithSubCate.findByIdAndUpdate(
-      context.params.id, // The ID of the document to update, extracted from the URL params
+      params.id, // The ID of the document to update, extracted from the URL params
       body, // The new data to update the document with
       { new: true } // Return the updated document instead of the original one
     );
@@ -23,9 +24,10 @@ export async function PUT(req, context) {
 export async function DELETE(req, context) {
   await dbConnect();
   try {
+    const params = await context.params;
     // Finding the document by its ID (from the URL parameter) and deleting it
     const deletingCategory = await CateWithSubCate.findByIdAndDelete({
-      _id: context.params.id, // The ID of the document to delete, extracted from the URL params
+      _id: params.id, // The ID of the document to delete, extracted from the URL params
     });
     return NextResponse.json(deletingCategory);
   } catch (err) {
