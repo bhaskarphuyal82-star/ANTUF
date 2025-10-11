@@ -3,6 +3,19 @@
 import { useState, useEffect } from "react";
 import ContentDisplay from "@/components/contentdisplay/ContentDisplay";
 
+// Helper function to extract specific lecture from curriculum data
+const extractLectureFromCurriculum = (curriculumData, lectureSlug) => {
+  if (!curriculumData?.sections) return null;
+  
+  for (const section of curriculumData.sections) {
+    const lecture = section.lectures?.find(lecture => lecture.slug === lectureSlug);
+    if (lecture) {
+      return lecture;
+    }
+  }
+  return null;
+};
+
 const ContentViewPage = ({ params: promiseParams }) => {
   const [params, setParams] = useState(null);
   const [content, setContent] = useState(null);
@@ -28,26 +41,16 @@ const ContentViewPage = ({ params: promiseParams }) => {
         // Debug logging
         console.log("Course slug:", params.slug);
         console.log("Lecture slug:", params.lectureSlug);
-        console.log("Lecture slug length:", params.lectureSlug.length);
-        console.log("Lecture slug characters:", params.lectureSlug.split('').map(c => `'${c}' (${c.charCodeAt(0)})`));
         console.log("NEXT_PUBLIC_API:", process.env.NEXT_PUBLIC_API);
         
-        // Check if the lecture slug ends with colon
-        const hasColon = params.lectureSlug.endsWith(':');
-        console.log("Lecture slug ends with colon:", hasColon);
-        
-        // If it doesn't have a colon, try adding one
-        const lectureSlugToTry = hasColon ? params.lectureSlug : `${params.lectureSlug}:`;
-        console.log("Lecture slug to try:", lectureSlugToTry);
-        
-        // Try to encode the lecture slug to handle special characters like ":"
-        const encodedLectureSlug = encodeURIComponent(lectureSlugToTry);
+        // Try to encode the lecture slug to handle special characters
+        const encodedLectureSlug = encodeURIComponent(params.lectureSlug);
         console.log("Encoded lecture slug:", encodedLectureSlug);
-        console.log("API URL:", `${process.env.NEXT_PUBLIC_API}/content/${encodedLectureSlug}`);
+        console.log("API URL:", `${process.env.NEXT_PUBLIC_API}/accordion/${encodedLectureSlug}`);
         
-        // Fetch the specific lecture using the corrected lectures parameter
+        // Fetch the curriculum data using the accordion API
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API}/content/${encodedLectureSlug}`,
+          `${process.env.NEXT_PUBLIC_API}/accordion/${encodedLectureSlug}`,
           {
             method: "GET",
           }
@@ -64,15 +67,20 @@ const ContentViewPage = ({ params: promiseParams }) => {
           if (response.status === 404 && encodedLectureSlug !== params.lectureSlug) {
             console.log("Trying unencoded slug as fallback...");
             const fallbackResponse = await fetch(
-              `${process.env.NEXT_PUBLIC_API}/content/${params.lectureSlug}`,
+              `${process.env.NEXT_PUBLIC_API}/accordion/${params.lectureSlug}`,
               { method: "GET" }
             );
             
             if (fallbackResponse.ok) {
               const data = await fallbackResponse.json();
-              console.log("Lecture data received (fallback):", data);
-              setContent(data);
-              return;
+              console.log("Curriculum data received (fallback):", data);
+              
+              // Extract the specific lecture from the curriculum data
+              const extractedLecture = extractLectureFromCurriculum(data, params.lectureSlug);
+              if (extractedLecture) {
+                setContent(extractedLecture);
+                return;
+              }
             }
           }
           
@@ -80,8 +88,15 @@ const ContentViewPage = ({ params: promiseParams }) => {
         }
 
         const data = await response.json();
-        console.log("Lecture data received:", data);
-        setContent(data);
+        console.log("Curriculum data received:", data);
+        
+        // Extract the specific lecture from the curriculum data
+        const extractedLecture = extractLectureFromCurriculum(data, params.lectureSlug);
+        if (extractedLecture) {
+          setContent(extractedLecture);
+        } else {
+          throw new Error("Lecture not found in curriculum sections");
+        }
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message || "An error occurred");

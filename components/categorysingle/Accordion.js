@@ -24,6 +24,7 @@ export default function LodashAccordion() {
   const [showAccordion, setShowAccordion] = useState(true); // Toggle visibility for smaller devices
   const router = useRouter();
   const [curriculum, setCurriculum] = useState([]); // Holds fetched data
+  const [courseSlug, setCourseSlug] = useState(''); // Store course slug for navigation
   const [loading, setLoading] = useState(false); // State to handle loading indicator
 
   useEffect(() => {
@@ -41,6 +42,11 @@ export default function LodashAccordion() {
 
       console.log("fetching curriculum sections:", sections);
       setCurriculum(sections);
+      
+      // Store the course slug for proper navigation
+      if (data?.slug) {
+        setCourseSlug(data.slug);
+      }
     } catch (error) {
       console.log("Error fetching curriculum:", error);
     }
@@ -48,7 +54,13 @@ export default function LodashAccordion() {
   };
 
   const handleContentSelection = (lecture) => {
-    router.push(`/${lecture.slug}`);
+    // Navigate using the proper course/lecture URL structure
+    if (courseSlug) {
+      router.push(`/${courseSlug}/${lecture.slug}`);
+    } else {
+      // Fallback to just lecture slug if course slug is not available
+      router.push(`/${lecture.slug}`);
+    }
   };
 
   return (
@@ -114,6 +126,7 @@ export default function LodashAccordion() {
             />
 
             <Button
+              onClick={() => router.push("/")}
               variant="contained"
               sx={{
                 bgcolor: "#FFD700", // Golden button
@@ -132,7 +145,7 @@ export default function LodashAccordion() {
                 },
               }}
             >
-              Go Courses
+              Go Home
             </Button>
 
             {curriculum?.map((item, index) => (
