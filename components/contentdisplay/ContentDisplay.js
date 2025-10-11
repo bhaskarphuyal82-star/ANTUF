@@ -10,14 +10,33 @@ import Title from "@/components/categorysingle/Title";
 import SimilarReads from "@/components/categorysingle/SimilarReads";
 import Advertisement from "@/components/categorysingle/Advertisement";
 import Advertisementtop from "@/components/categorysingle/Advertisementtop";
-
-// import { useSession } from "next-auth/react";
 import Advertisementbottom from "@/components/categorysingle/Advertisementbottom";
-
-// import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar/Navbar";
 
 export default function ContentLayout({ content, loading }) {
+  const [displayContent, setDisplayContent] = useState(null);
+
+  useEffect(() => {
+    if (!content || loading) return;
+
+    // Check if content is a full curriculum or a single lecture
+    if (content.sections && Array.isArray(content.sections)) {
+      // It's a full curriculum, get the first lecture from the first section
+      const firstSection = content.sections[0];
+      if (firstSection && firstSection.lectures && firstSection.lectures.length > 0) {
+        const firstLecture = firstSection.lectures[0];
+        setDisplayContent({
+          ...firstLecture,
+          curriculumTitle: content.title,
+          curriculumSlug: content.slug,
+          sectionTitle: firstSection.title
+        });
+      }
+    } else {
+      // It's already a single lecture
+      setDisplayContent(content);
+    }
+  }, [content, loading]);
   return (
     <>
       <Navbar />
@@ -28,15 +47,15 @@ export default function ContentLayout({ content, loading }) {
   <Grid size="auto">
     <Grid item xs={12} md={2.5}>
             <Box sx={{ position: "sticky", top: "20px", height: "fit-content" }}>
-              <Accordionleft />
+              <Accordionleft curriculum={content} />
             </Box>
           </Grid>
   </Grid>
   <Grid size={7}>
      <Box sx={{ p: 2 }}>
               <Centerads />
-              <Title content={content} loading={loading} />
-              <Content content={content} loading={loading} />
+              <Title content={displayContent} loading={loading || !displayContent} />
+              <Content content={displayContent} loading={loading || !displayContent} />
               <SimilarReads />
             </Box>
   </Grid>

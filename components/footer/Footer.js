@@ -84,10 +84,11 @@ const Footer = () => {
           <Grid item sx={12} sm={4}>
             <Typography variant="h6" fontWeight="bold" sx={{ color: "green" }}>
               Tutorialsmaterial
+
             </Typography>
 
             <Typography sx={{ mt: 2 }}>
-              Corporate & Communications Address B-123 localhost
+              Corporate & Communications Address B-123 
             </Typography>
 
             <Box
@@ -151,14 +152,14 @@ const Footer = () => {
                   variant="subtitle1"
                   fontWeight="bold"
                   gutterBottom
-                  onClick={() => router.push(`/content/${section?.slug}`)}
+                  onClick={() => router.push(`/${section?.slug}`)}
                 >
                   {section?.name}
                 </Typography>
                 {section.subcategories.map((link, linkIndex) => (
                   <Typography
                     key={linkIndex}
-                    onClick={() => router.push(`/content/${link?.slug}`)}
+                    onClick={() => router.push(`/${link?.slug}`)}
                     sx={{
                       cursor: "pointer",
                       display: "block",

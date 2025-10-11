@@ -16,8 +16,6 @@ import MarkdownIt from "markdown-it";
 import MDEditor from "@uiw/react-md-editor";
 import React from "react";
 import ReactPlayer from "react-player";
-// import style manually
-import "@uiw/react-md-editor/markdown-editor.css";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { imageUpload } from "@/components/functions/Upload";
@@ -1153,9 +1151,10 @@ const CurriculumEditor = () => {
 
               <MDEditor
                 value={content}
-                height={600}
+                height={400}
                 onChange={(val) => setContent(val || "")}
-                placeholder="Write your Content here..."
+                preview="edit"
+                data-color-mode="dark"
               />
 
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>

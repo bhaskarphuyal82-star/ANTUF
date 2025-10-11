@@ -5,19 +5,8 @@ import User from "@/models/user"; // User model to interact with the MongoDB use
 import { getServerSession } from "next-auth/next"; // NextAuth function to get the session of the current user
 import { authOptions } from "@/utils/authOptions";
 
-const stripeApiKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeApiKey) {
-  console.warn("STRIPE_SECRET_KEY environment variable is not set");
-}
-const stripeInstance = stripeApiKey ? new Stripe(stripeApiKey) : null;
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req, context) {
-  if (!stripeInstance) {
-    return NextResponse.json(
-      { err: "Stripe is not configured properly" },
-      { status: 500 }
-    );
-  }
-
   await dbConnect();
   const body = await req.json();
   const { billingPeriod, price, title } = body;

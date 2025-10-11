@@ -19,7 +19,7 @@ const ScrollableTabs = () => {
 
     const selectedSlug = subcategories[newValue]?.slug;
     if (selectedSlug) {
-      router.push(`/content/${selectedSlug.toLowerCase()}`);
+      router.push(`/${selectedSlug.toLowerCase()}`);
     }
   };
 

@@ -14,7 +14,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import "highlight.js/styles/monokai.css";
-import "@uiw/react-md-editor/markdown-editor.css";
 import dynamic from "next/dynamic";
 
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
@@ -116,8 +115,7 @@ const Content = ({ content, loading }) => {
                       lineHeight: "1.6", // Line height
                       wordSpacing: "1px", // Optional word spacing for better readability
                     }}
-                 dangerouslySetInnerHTML={{ __html: renderedContent }} 
-                  />
+            dangerouslySetInnerHTML={{ __html: renderedContent }} />
                 </div>
               </Box>
 

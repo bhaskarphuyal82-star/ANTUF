@@ -275,7 +275,7 @@ const CoursesGrid = () => {
                   }}
                 >
                   <Typography variant="body2">
-                    {course.description?.substring(0, 100) || "No description available"}
+                     {course.description ? course.description.substring(0, 100) : 'No description available'}
                   </Typography>
                   <Typography
                     variant="caption"

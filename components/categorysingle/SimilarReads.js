@@ -53,7 +53,7 @@ const SimilarReads = () => {
   const router = useRouter(); // Initialize useRouter
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // For responsiveness
   const handleTagNavigation = (tag) => {
-    router.push(`/content/${tag}`); // Navigate to the tag's page
+    router.push(`/${tag}`); // Navigate to the tag's page
   };
 
   const [curriculum, setCurriculum] = useState([]); // Holds fetched data
@@ -92,7 +92,7 @@ const SimilarReads = () => {
   );
 
   // Shuffle the lectures and select the first 5
-  const shuffledLectures = lectures.sort(() => Math.random() - 0.5).slice(0, 3);
+  const shuffledLectures = lectures.sort(() => Math.random() - 0.5).slice(0,2);
 
   const randomtag = tags.sort(() => 0.5 - Math.random()).slice(0, 9);
 
@@ -137,7 +137,7 @@ const SimilarReads = () => {
               transform: "scale(1.01)",
             },
           }}
-          onClick={() => router.push(`/content/${article?.slug}`)} // Make it clickable
+          onClick={() => router.push(`/${article?.slug}`)} // Make it clickable
         >
           <CardContent sx={{ flex: 1, padding: "0px" }}>
             {/* Article Title */}

@@ -2,17 +2,16 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Curriculum from "@/models/Curriculum";
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   await dbConnect();
 
-  // Await params to handle potential Promise in Next.js App Router
-  const resolvedParams = await params;
-  
-  const slug = resolvedParams?.slug;
+  // Await params to handle the Promise in Next.js 15+
+  const params = await context.params;
+  const slug = params?.slug;
   if (!slug || typeof slug !== "string") {
     return NextResponse.json(
       { err: "Invalid or missing slug parameter" },
-      { status: 400 }
+      { status: 500 }
     );
   }
   console.log("path sent to route---", slug);

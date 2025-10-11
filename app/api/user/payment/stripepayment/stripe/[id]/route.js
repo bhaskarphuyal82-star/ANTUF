@@ -6,20 +6,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
 import CurriculumCourse from "@/models/CurriculumCourse";
 
-const stripeApiKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeApiKey) {
-  console.warn("STRIPE_SECRET_KEY environment variable is not set");
-}
-const stripeInstance = stripeApiKey ? new Stripe(stripeApiKey) : null;
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req, context) {
-  if (!stripeInstance) {
-    return NextResponse.json(
-      { err: "Stripe is not configured properly" },
-      { status: 500 }
-    );
-  }
-
   await dbConnect();
   const session = await getServerSession(authOptions);
 

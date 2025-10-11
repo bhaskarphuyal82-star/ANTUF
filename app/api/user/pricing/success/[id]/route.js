@@ -6,11 +6,7 @@ import { getServerSession } from "next-auth/next"; // NextAuth function to get t
 import { authOptions } from "@/utils/authOptions"; // Authentication options for NextAuth
 
 // Initialize the Stripe instance with the secret API key
-const stripeApiKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeApiKey) {
-  console.warn("STRIPE_SECRET_KEY environment variable is not set");
-}
-const stripeInstance = stripeApiKey ? new Stripe(stripeApiKey) : null;
+const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Import additional models (Subscription and Order) for handling subscriptions and orders
 import Subscription from "@/models/subscription"; // Subscription model for tracking subscription data
@@ -18,12 +14,6 @@ import Order from "@/models/order"; // Order model for tracking orders placed by
 
 // The GET function handles verifying the payment and processing the subscription
 export async function GET(req, context) {
-  if (!stripeInstance) {
-    return NextResponse.json(
-      { err: "Stripe is not configured properly" },
-      { status: 500 }
-    );
-  }
   await dbConnect(); // Establish a connection to the database
 
   // Get the current session (to get the user who made the request)

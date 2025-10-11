@@ -1,15 +1,14 @@
 "use client";
 
-import { Suspense } from "react";
-import { CircularProgress } from "@mui/material";
 import CurriculumCourseEditor from "@/components/CurriculumCourseEditor/CurriculumCourseEditor";
 import Sidebar from "@/components/sidebar/SideBar";
+import { Suspense } from "react";
 
 const CourseCreate = () => {
   return (
     <>
       <Sidebar />
-      <Suspense fallback={<CircularProgress />}>
+      <Suspense fallback={<div>Loading editor...</div>}>
         <CurriculumCourseEditor />
       </Suspense>
     </>

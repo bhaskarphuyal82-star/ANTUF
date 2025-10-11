@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import CourseEdit from "@/components/CurriculumCourseEditor/courseEdit/CourseEdit";
 import Sidebar from "@/components/sidebar/SideBar";
 import { useSearchParams } from "next/navigation";
 
-const CurriculumCourseEditorContent = () => {
+const ContentComponent = () => {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,8 +54,8 @@ const CurriculumCourseEditorContent = () => {
 
 const ContentViewPage = () => {
   return (
-    <Suspense fallback={<CircularProgress />}>
-      <CurriculumCourseEditorContent />
+    <Suspense fallback={<div>Loading...</div>}>
+      <ContentComponent />
     </Suspense>
   );
 };

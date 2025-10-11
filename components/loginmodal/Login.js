@@ -115,11 +115,8 @@ const LoginModal = ({ open, handleClose }) => {
       // Regular expression to check if email format is valid
       errors.email = "Invalid email format";
 
-    // Check if 'password' field is not empty and has at least 6 characters
+    // Check if 'password' field is not empty
     if (!form.password) errors.password = "Password is required";
-    else if (form.password.length < 6)
-      // Minimum password length validation
-      errors.password = "Password must be at least 6 characters";
 
     return errors; // Return the errors object, which contains any validation errors
   };
@@ -176,8 +173,6 @@ const LoginModal = ({ open, handleClose }) => {
       const email = form.email;
       const password = form.password;
 
-      console.log("Attempting login with email:", email);
-
       // Use the 'signIn' function (likely from NextAuth) to attempt logging in
       const result = await signIn("credentials", {
         redirect: false, // Prevent automatic redirect after login
@@ -185,29 +180,15 @@ const LoginModal = ({ open, handleClose }) => {
         password, // Pass the email and password for authentication
       });
 
-      console.log("Login result:", result);
-
       // If the login is unsuccessful, display the error message from the result
-      if (!result?.ok) {
-        toast.error(result?.error || "Login failed");
-        console.error("Login error:", result?.error);
+      if (!result.ok) {
+        toast.error(result?.error);
       } else {
-        toast.success("Login successful!"); // Show a success message if login is successful
+        toast.success("Login successfully"); // Show a success message if login is successful
         setRecaptchaToken(null); // Reset the reCAPTCHA token after successful login
-        
-        // Reset form
-        setForm({
-          name: "",
-          email: "",
-          password: "",
-          organization: "",
-        });
-        setErrors({});
-        
         handleClose(); // Close the login modal or form
       }
     } catch (error) {
-      console.error("Login error:", error);
       toast.error("Error connecting to the server!"); // If there was an error with the login request, show an error message
     } finally {
       setLoading(false); // Set loading state to false when the login process is complete
@@ -273,8 +254,8 @@ const LoginModal = ({ open, handleClose }) => {
           <TextField
             fullWidth
             label="Password"
-            name="password"
             type="password"
+            name="password"
             value={form.password}
             onChange={handleChange}
             error={!!errors.password}
@@ -296,7 +277,7 @@ const LoginModal = ({ open, handleClose }) => {
 
           {activeTab === 1 && (
             <ReCAPTCHA
-              sitekey="6LeAzV0rAAAAAJi_AW5SW_ngRD4CXUyJiow0Avbk"
+              sitekey="6Le2GMArAAAAAIYYshY6XN5SaALlJOWVgS_W-zs6"
               onChange={setRecaptchaToken}
             />
           )}

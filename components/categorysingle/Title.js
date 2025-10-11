@@ -20,7 +20,6 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { runAi } from "@/ai/ai";
 
 import MDEditor from "@uiw/react-md-editor";
-import "@uiw/react-md-editor/markdown-editor.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/monokai.css";
 import MarkdownIt from "markdown-it";

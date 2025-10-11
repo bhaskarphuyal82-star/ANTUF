@@ -5,15 +5,7 @@ import CheckOut from "@/components/checkout/CheckOut";
 import Navbar from "@/components/navbar/Navbar";
 
 import Footer from "@/components/footer/Footer";
-import { Box, Typography, CircularProgress } from "@mui/material";
-
-const CheckOutWithSuspense = () => {
-  return (
-    <Suspense fallback={<CircularProgress />}>
-      <CheckOut />
-    </Suspense>
-  );
-};
+import { Box, Typography } from "@mui/material";
 
 const NavBar = () => {
   return (
@@ -41,7 +33,8 @@ const NavBar = () => {
           <Typography variant="h6">Home &gt; Checkout</Typography>
         </Box>
 
-        {/* Center Animated Tutorialsmaterial Text */}
+        {/* Center Animated Tutorialsmaterial
+ Text */}
         <Typography
           variant="h1"
           sx={{
@@ -57,6 +50,7 @@ const NavBar = () => {
           }}
         >
           Tutorialsmaterial
+
         </Typography>
 
         {/* Keyframes for Animation */}
@@ -83,7 +77,9 @@ const NavBar = () => {
         `}</style>
       </Box>
 
-      <CheckOutWithSuspense />
+      <Suspense fallback={<div>Loading checkout...</div>}>
+        <CheckOut />
+      </Suspense>
 
       <Box sx={{ mb: 20 }}></Box>
 

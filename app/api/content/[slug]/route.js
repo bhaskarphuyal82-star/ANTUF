@@ -4,14 +4,14 @@ import dbConnect from "@/utils/dbConnect"; // Utility function to establish a da
 import Curriculum from "@/models/Curriculum"; // Curriculum model to interact with the 'Curriculum' collection in the database
 
 // Define the GET function to retrieve a specific curriculum or lecture by slug
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   await dbConnect(); // Establish a database connection before querying
 
-  // Await params to handle potential Promise in Next.js App Router
-  const resolvedParams = await params;
+  // Await params to handle the Promise in Next.js 15+
+  const params = await context.params;
   
   // Validate slug parameter - ensuring it's present and is a string
-  const slug = resolvedParams?.slug; // Extract the 'slug' parameter from the URL context
+  const slug = params?.slug; // Extract the 'slug' parameter from the URL context
 
   // Check if the slug is missing or invalid (not a string)
   if (!slug || typeof slug !== "string") {
@@ -23,49 +23,27 @@ export async function GET(req, { params }) {
   }
 
   try {
-    // Attempt to find a curriculum with a section containing a lecture that has the specified slug
-    let curriculum = await Curriculum.findOne({
+    // First, try to find a curriculum by the course slug (like "c-programming")
+    let curriculum = await Curriculum.findOne({ slug });
+
+    if (curriculum) {
+      // Found a curriculum by course slug, return the full curriculum
+      return NextResponse.json(curriculum);
+    }
+
+    // If no curriculum found by course slug, try to find a curriculum containing a lecture with this slug
+    curriculum = await Curriculum.findOne({
       "sections.lectures.slug": slug, // Search for a lecture within sections that matches the slug
     });
 
-    // If no curriculum is found with that slug in the sections
     if (!curriculum) {
-      // If no curriculum is found, attempt to find a curriculum by the general slug (not specific to sections)
-      const curriculum = await Curriculum.findOne({ slug });
-
-      // If still no curriculum found, return a 404 Not Found error
-      if (!curriculum) {
-        return NextResponse.json(
-          { error: "Curriculum not found" },
-          { status: 404 }
-        );
-      }
-
-      // If a curriculum is found but no specific lecture matches the slug, extract the first section
-      const firstSection = curriculum.sections[0]; // Get the first section from the curriculum
-      if (!firstSection) {
-        // If no sections are found in the curriculum, return a 404 error
-        return NextResponse.json(
-          { message: "No sections found in the curriculum." },
-          { status: 404 }
-        );
-      }
-
-      // Extract the first lecture from the first section
-      const firstLecture = firstSection.lectures[0]; // Get the first lecture from the section
-      if (!firstLecture) {
-        // If no lectures are found in the first section, return a 404 error
-        return NextResponse.json(
-          { message: "No lectures found in the first section." },
-          { status: 404 }
-        );
-      }
-
-      // Return the first lecture from the first section if no specific lecture is found
-      return NextResponse.json(firstLecture);
+      return NextResponse.json(
+        { error: "Curriculum or lecture not found" },
+        { status: 404 }
+      );
     }
 
-    // If a curriculum is found with the matching slug in the sections, search for the exact lecture
+    // If a curriculum is found with the matching lecture slug, search for the exact lecture
     let matchingLecture = null;
 
     // Loop through each section of the found curriculum

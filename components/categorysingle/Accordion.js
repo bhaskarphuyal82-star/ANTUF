@@ -48,7 +48,7 @@ export default function LodashAccordion() {
   };
 
   const handleContentSelection = (lecture) => {
-    router.push(`/content/${lecture.slug}`);
+    router.push(`/${lecture.slug}`);
   };
 
   return (
