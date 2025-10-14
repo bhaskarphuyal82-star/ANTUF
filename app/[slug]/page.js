@@ -1,62 +1,73 @@
-"use client";
+import CoursePageClient from "./CoursePageClient";
 
-import { useState, useEffect } from "react";
-import ContentDisplay from "@/components/contentdisplay/ContentDisplay";
-
-const ContentPage = ({ params: promiseParams }) => {
-  const [params, setParams] = useState(null);
-  const [content, setContent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchParams = async () => {
-      const resolvedParams = await promiseParams;
-      setParams(resolvedParams);
-    };
-
-    fetchParams();
-  }, [promiseParams]);
-
-  useEffect(() => {
-    if (!params?.slug) return;
-
-    const fetchContent = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API}/content/${params?.slug}`,
-          {
-            method: "GET",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch content");
-        }
-
-        const data = await response.json();
-        setContent(data);
-      } catch (err) {
-        setError(err.message || "An error occurred");
-      } finally {
-        setLoading(false);
+// Generate metadata for this page
+export async function generateMetadata({ params }) {
+  try {
+    const { slug } = await params;
+    
+    // Fetch course data for metadata
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/content/${slug}`,
+      {
+        method: "GET",
+        cache: 'no-store'
       }
+    );
+
+    if (!response.ok) {
+      return {
+        title: "Course Not Found",
+        description: "The requested course could not be found."
+      };
+    }
+
+    const data = await response.json();
+    
+    // Extract course information
+    const courseTitle = data.title || data.name || `Course: ${slug}`;
+    const courseDescription = data.description || data.content?.substring(0, 160) || 
+      `Learn ${courseTitle} with comprehensive tutorials and hands-on exercises.`;
+    
+    const cleanDescription = courseDescription.replace(/<[^>]*>/g, '').substring(0, 160);
+    
+    return {
+      title: courseTitle,
+      description: cleanDescription,
+      openGraph: {
+        title: courseTitle,
+        description: cleanDescription,
+        type: "article",
+        url: `https://tutorialsmaterial.com/${slug}`,
+        images: [
+          {
+            url: data.image || "/images/course-default.jpg",
+            width: 1200,
+            height: 630,
+            alt: courseTitle,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: courseTitle,
+        description: cleanDescription,
+        images: [data.image || "/images/course-default.jpg"],
+      },
+      alternates: {
+        canonical: `https://tutorialsmaterial.com/${slug}`,
+      },
     };
-
-    fetchContent();
-  }, [params]);
-
-  if (error) {
-    return <p>Error: {error}</p>;
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Course",
+      description: "Learn programming with comprehensive tutorials and exercises."
+    };
   }
+}
 
-  return (
-    <>
-      <ContentDisplay content={content} loading={loading} />
-      <h1>hello</h1>
-    </>
-  );
+const ContentPage = ({ params }) => {
+  return <CoursePageClient params={params} />;
 };
 
 export default ContentPage;

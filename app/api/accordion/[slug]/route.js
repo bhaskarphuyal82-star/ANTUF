@@ -8,10 +8,22 @@ export async function GET(req, context) {
   // Await params to handle the Promise in Next.js 15+
   const params = await context.params;
   const slug = params?.slug;
+  
   if (!slug || typeof slug !== "string") {
     return NextResponse.json(
       { err: "Invalid or missing slug parameter" },
-      { status: 500 }
+      { status: 400 }
+    );
+  }
+
+  // Check if the slug is an image file or other non-curriculum resource
+  const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'];
+  const isImageFile = imageExtensions.some(ext => slug.toLowerCase().endsWith(ext));
+  
+  if (isImageFile) {
+    return NextResponse.json(
+      { err: "This endpoint is for curriculum data, not image files" },
+      { status: 404 }
     );
   }
   console.log("path sent to route---", slug);
@@ -23,8 +35,8 @@ export async function GET(req, context) {
       curriculum = await Curriculum.findOne({ slug });
       if (!curriculum) {
         return NextResponse.json(
-          { err: "Curriculum not found on second try" },
-          { status: 500 }
+          { err: "Curriculum not found" },
+          { status: 404 }
         );
       }
     }

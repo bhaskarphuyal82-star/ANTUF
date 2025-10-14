@@ -13,7 +13,11 @@ import {
   CardContent,
   Divider,
   Alert,
-  Snackbar
+  Snackbar,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
@@ -25,9 +29,9 @@ import SendIcon from "@mui/icons-material/Send";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    selectReason: "",
     email: "",
-    subject: "",
+    contactNumber: "",
     message: ""
   });
   const [showSuccess, setShowSuccess] = useState(false);
@@ -73,18 +77,14 @@ const ContactUs = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+    if (!formData.selectReason.trim()) {
+      newErrors.selectReason = "Please select a reason";
     }
     
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
-    }
-    
-    if (!formData.subject.trim()) {
-      newErrors.subject = "Subject is required";
     }
     
     if (!formData.message.trim()) {
@@ -109,9 +109,9 @@ const ContactUs = () => {
       
       // Reset form
       setFormData({
-        name: "",
+        selectReason: "",
         email: "",
-        subject: "",
+        contactNumber: "",
         message: ""
       });
     }
@@ -249,94 +249,102 @@ const ContactUs = () => {
         {/* Contact Form and Map Section */}
         <Grid container spacing={6}>
           {/* Contact Form */}
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12}>
             <Paper elevation={0} sx={{ p: 6, border: "1px solid #e0e0e0", borderRadius: 3 }}>
-              <Typography variant="h4" sx={{ color: "#333", fontWeight: "700", mb: 4 }}>
-                Send us a Message
+              <Typography variant="h4" sx={{ color: "#333", fontWeight: "700", mb: 4, textAlign: "left" }}>
+                Feedback and Queries
               </Typography>
               
               <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Your Name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      error={!!errors.name}
-                      helperText={errors.name}
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover fieldset": {
-                            borderColor: "#2f7d32",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#2f7d32",
-                          },
-                        },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#2f7d32",
-                        },
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Your Email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      error={!!errors.email}
-                      helperText={errors.email}
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover fieldset": {
-                            borderColor: "#2f7d32",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#2f7d32",
-                          },
-                        },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#2f7d32",
-                        },
-                      }}
-                    />
-                  </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      error={!!errors.subject}
-                      helperText={errors.subject}
+                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
+                      Select Reason<span style={{ color: "#d32f2f" }}>*</span>
+                    </Typography>
+                    <FormControl fullWidth error={!!errors.selectReason}>
+                      <Select
+                        name="selectReason"
+                        value={formData.selectReason}
+                        onChange={handleInputChange}
+                        displayEmpty
+                        sx={{
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#e0e0e0",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#999",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#1976d2",
+                          },
+                          "& .MuiSelect-select": {
+                            color: formData.selectReason ? "#333" : "#999",
+                          }
+                        }}
+                      >
+                        <MenuItem value="" sx={{ color: "#999" }}>Select an Option</MenuItem>
+                        <MenuItem value="course-inquiry">Course Inquiry</MenuItem>
+                        <MenuItem value="technical-support">Technical Support</MenuItem>
+                        <MenuItem value="billing">Billing & Payment</MenuItem>
+                        <MenuItem value="partnership">Partnership</MenuItem>
+                        <MenuItem value="feedback">Feedback</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                      </Select>
+                      {errors.selectReason && <Typography variant="caption" sx={{ color: "#d32f2f", mt: 1 }}>{errors.selectReason}</Typography>}
+                    </FormControl>
+                  </Grid>
+                  
+                  <Grid item xs={12}>
+                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
+                      Email Address<span style={{ color: "#d32f2f" }}>*</span>
+                    </Typography>
+                    <TextField 
+                      fullWidth 
+                      name="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={handleInputChange} 
+                      error={!!errors.email} 
+                      helperText={errors.email} 
+                      variant="outlined" 
+                      sx={{"& .MuiOutlinedInput-root": {"&:hover fieldset": {borderColor: "#999"},"&.Mui-focused fieldset": {borderColor: "#1976d2"}}}} 
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
+                      Contact Number
+                    </Typography>
+                    <TextField 
+                      fullWidth 
+                      name="contactNumber" 
+                      value={formData.contactNumber} 
+                      onChange={handleInputChange} 
                       variant="outlined"
+                      placeholder="Contact Number with Country Code (e.g., +91 or 9198...)"
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "&:hover fieldset": {
-                            borderColor: "#2f7d32",
+                            borderColor: "#999",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "#2f7d32",
+                            borderColor: "#1976d2",
                           },
                         },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#2f7d32",
-                        },
-                      }}
+                        "& .MuiOutlinedInput-input::placeholder": {
+                          color: "#999",
+                          opacity: 1,
+                        }
+                      }} 
                     />
                   </Grid>
+
                   <Grid item xs={12}>
+                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
+                      Drop your feedback/query<span style={{ color: "#d32f2f" }}>*</span>
+                    </Typography>
                     <TextField
                       fullWidth
-                      label="Your Message"
                       name="message"
                       multiline
                       rows={6}
@@ -345,44 +353,46 @@ const ContactUs = () => {
                       error={!!errors.message}
                       helperText={errors.message}
                       variant="outlined"
+                      placeholder="Max Allowed Characters: 300"
+                      inputProps={{ maxLength: 300 }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "&:hover fieldset": {
-                            borderColor: "#2f7d32",
+                            borderColor: "#999",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "#2f7d32",
+                            borderColor: "#1976d2",
                           },
                         },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#2f7d32",
-                        },
+                        "& .MuiOutlinedInput-input::placeholder": {
+                          color: "#999",
+                          opacity: 1,
+                        }
                       }}
                     />
                   </Grid>
+                  
                   <Grid item xs={12}>
                     <Button
                       type="submit"
                       variant="contained"
+                      fullWidth
                       size="large"
-                      endIcon={<SendIcon />}
                       sx={{
-                        backgroundColor: "#2f7d32",
+                        backgroundColor: "#455a64",
                         color: "#fff",
-                        px: 4,
-                        py: 1.5,
+                        py: 2,
                         fontSize: "1.1rem",
                         fontWeight: "600",
-                        borderRadius: 2,
+                        borderRadius: 1,
+                        textTransform: "none",
                         "&:hover": {
-                          backgroundColor: "#1b5e20",
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 8px 24px rgba(47, 125, 50, 0.3)",
+                          backgroundColor: "#37474f",
                         },
                         transition: "all 0.3s ease",
                       }}
                     >
-                      Send Message
+                      Submit
                     </Button>
                   </Grid>
                 </Grid>
@@ -390,68 +400,72 @@ const ContactUs = () => {
             </Paper>
           </Grid>
 
-          {/* Contact Information Sidebar */}
-          <Grid item xs={12} md={4}>
-            <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0", borderRadius: 3, height: "fit-content" }}>
-              <Typography variant="h5" sx={{ color: "#333", fontWeight: "700", mb: 3 }}>
-                Quick Contact
-              </Typography>
-              
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
-                  General Inquiries
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                  📧 info@tutorialsmaterial.com
-                </Typography>
-               
-              </Box>
+          {/* Contact Information Sidebar - moved below */}
+          <Grid item xs={12} sx={{ mt: 4 }}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={4}>
+                <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0", borderRadius: 3, height: "fit-content" }}>
+                  <Typography variant="h5" sx={{ color: "#333", fontWeight: "700", mb: 3 }}>
+                    Quick Contact
+                  </Typography>
+                  
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
+                      General Inquiries
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
+                      📧 info@tutorialsmaterial.com
+                    </Typography>
+                   
+                  </Box>
 
-              <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 3 }} />
 
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
-                  Support Team
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                  📧 support@tutorialsmaterial.com
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
-                  Available 24/7 for technical assistance
-                </Typography>
-              </Box>
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
+                      Support Team
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
+                      📧 support@tutorialsmaterial.com
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666" }}>
+                      Available 24/7 for technical assistance
+                    </Typography>
+                  </Box>
 
-              <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 3 }} />
 
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
-                  Business Partnerships
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                  📧 partnerships@tutorialsmaterial.com
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666" }}>
-                  For corporate training and collaborations
-                </Typography>
-              </Box>
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h6" sx={{ color: "#2f7d32", fontWeight: "600", mb: 2 }}>
+                      Business Partnerships
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
+                      📧 partnerships@tutorialsmaterial.com
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666" }}>
+                      For corporate training and collaborations
+                    </Typography>
+                  </Box>
 
-              <Box 
-                sx={{ 
-                  p: 3, 
-                  backgroundColor: "#f8f9fa", 
-                  borderRadius: 2,
-                  border: "1px solid #e9ecef"
-                }}
-              >
-                <Typography variant="h6" sx={{ color: "#333", fontWeight: "600", mb: 2 }}>
-                  Response Time
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
-                  We typically respond to all inquiries within 24 hours during business days. 
-                  For urgent matters, please call our support line.
-                </Typography>
-              </Box>
-            </Paper>
+                  <Box 
+                    sx={{ 
+                      p: 3, 
+                      backgroundColor: "#f8f9fa", 
+                      borderRadius: 2,
+                      border: "1px solid #e9ecef"
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ color: "#333", fontWeight: "600", mb: 2 }}>
+                      Response Time
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                      We typically respond to all inquiries within 24 hours during business days. 
+                      For urgent matters, please call our support line.
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
 
