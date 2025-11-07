@@ -27,10 +27,9 @@ import {
   IconButton,
   TextField,
   Modal,
-  useScrollTrigger,
 } from "@mui/material";
 
-import Sidebar from "../sidebar/SideBar";
+import Sidebar from "@/components/sidebar/SideBar";
 import { useSearchParams } from "next/navigation";
 import { Height, Note } from "@mui/icons-material";
 
@@ -126,44 +125,33 @@ const CurriculumEditor = () => {
   const [videourl, setVideourl] = useState("");
   const [openVideoModal, setOpenVideoModal] = useState(false);
 
-  const [sections, setSections] = useState([
-    {
-      _id: uuidv4(),
-      title: "Introduction",
-      lectures: [
-        {
-          _id: uuidv4(),
-          title: "Topic A",
-          content: "",
-          videourl: "",
-        },
-      ],
-    },
-    {
-      _id: uuidv4(),
-      title: "Basic",
-      lectures: [
-        {
-          _id: uuidv4(),
-          title: "Topic B",
-          content: "Topic B content",
-          videourl: "https",
-        },
-        {
-          _id: uuidv4(),
-          title: "Topic B",
-          content: "Topic B content",
-          videourl: "https",
-        },
-        {
-          _id: uuidv4(),
-          title: "Topic B",
-          content: "Topic B content",
-          videourl: "https",
-        },
-      ],
-    },
-  ]);
+  // const [sections, setSections] = useState([
+   
+  //   {
+  //     _id: uuidv4(),
+  //     title: "Basic",
+  //     lectures: [
+  //       {
+  //         _id: uuidv4(),
+  //         title: "Topic B",
+  //         content: "Topic B content",
+  //         videourl: "https",
+  //       },
+  //       {
+  //         _id: uuidv4(),
+  //         title: "Topic B",
+  //         content: "Topic B content",
+  //         videourl: "https",
+  //       },
+  //       {
+  //         _id: uuidv4(),
+  //         title: "Topic B",
+  //         content: "Topic B content",
+  //         videourl: "https",
+  //       },
+  //     ],
+  //   },
+  // ]);
 
   const fetchCurriculum = async (searchId) => {
     setLoading(true);

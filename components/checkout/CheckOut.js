@@ -372,9 +372,8 @@ export default function CheckoutPage() {
                         <Box
                           sx={{
                             width: { xs: "100%", sm: "40%" },
-                            backgroundImage: `url(${
-                              courseItem.imageUrl || "/images/pic3.png"
-                            })`,
+                            backgroundImage: `url(${courseItem.imageUrl || "/images/pic3.png"
+                              })`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             height: { xs: "400px", sm: "auto" },
@@ -418,7 +417,7 @@ export default function CheckoutPage() {
                             color="primary"
                             sx={{ mt: 2 }}
                           >
-                            $99
+                            $ {courseItem?.price}
                           </Typography>
                         </Box>
                       </Card>

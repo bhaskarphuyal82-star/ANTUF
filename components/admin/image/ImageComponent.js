@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Avatar from '@mui/material/Avatar';
 
 const Profile = () => {
   const router = useRouter();
@@ -49,7 +50,7 @@ const Profile = () => {
                 backgroundColor: "white",
               }}
             >
-              <img
+              {/* <img
                 src={session?.user?.image || "/images/logo2.png"}
                 alt="Admin Avatar"
                 style={{
@@ -60,7 +61,18 @@ const Profile = () => {
                   position: "relative",
                   zIndex: "2",
                 }}
-              />
+              /> */}
+              <Avatar alt="admin" 
+                    src={session?.user?.image || "/images/logo2.png"}
+                  style={{
+                  width: "65px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  position: "relative",
+                  zIndex: "1",
+                }}
+                   />
             </div>
           </div>
         </div>

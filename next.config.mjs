@@ -1,6 +1,15 @@
+import bundleAnalyzer from '@next/bundle-analyzer';
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false, // Disable strict mode to reduce hydration warnings during development
+  reactStrictMode: true,
+  images: {
+    domains: ['placehold.co', 'res.cloudinary.com'],
+  },
   env: {
     DB_URL: process.env.DB_URL || process.env.MONGODB_URI,
     API: process.env.API,
@@ -21,7 +30,8 @@ const nextConfig = {
     RAZORPAY_CLIENT_SECRET: process.env.RAZORPAY_CLIENT_SECRET,
     PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
     PAYPAL_CLIENT_SECRET: process.env.PAYPAL_CLIENT_SECRET,
+    SITE_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

@@ -189,7 +189,7 @@ const ItemManager = () => {
       </Box>
       <List>
         {loading ? (
-          <Typography>Loading..,</Typography>
+          <Typography>Loading@,</Typography>
         ) : (
           items &&
           filteredItems.map((item) => (

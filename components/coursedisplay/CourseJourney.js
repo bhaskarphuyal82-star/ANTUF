@@ -111,6 +111,8 @@ const CourseJourney = ({ course }) => {
         padding: "32px",
         backgroundColor: "#212121",
         color: "#FFFFFF",
+          width: "100%",
+          maxWidth: "100%",
       }}
     >
       {/* Header */}

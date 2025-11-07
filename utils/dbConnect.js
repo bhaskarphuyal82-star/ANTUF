@@ -13,7 +13,7 @@ const dbConnect = async () => {
     }
     
     console.log("Connecting to database...");
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(dbUrl, { dbName: "antuf" });
     console.log("Database connected successfully");
   } catch (error) {
     console.error("Database connection error:", error);

@@ -15,6 +15,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import ChatIcon from "@mui/icons-material/Chat";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import BuildIcon from "@mui/icons-material/Build";
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import HelpIcon from "@mui/icons-material/Help";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -28,6 +29,12 @@ import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MoneyIcon from "@mui/icons-material/Money";
+import PostAddSharpIcon from '@mui/icons-material/PostAddSharp';
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
+import Link from '@mui/material/Link'; // Import Link component
+
+
 
 import {
   drawerStyles,
@@ -53,19 +60,35 @@ const Sidebar = () => {
       link: "/dashboard/admin",
     },
     {
-      text: "Create Content & Courses",
+      text: "Chat",
       icon: <ChatIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/content/create",
+       link: "/dashboard/admin/create/chat",
     },
-    {
-      text: "Courses",
+   
+    // {
+    //   text: "Create Content & Courses",
+    //   icon: <ChatIcon sx={{ fontSize: "32px" }} />,
+    //   link: "/dashboard/admin/content/create",
+    // },
+     {
+      text: "Articles",
+      icon: <PostAddSharpIcon sx={{ fontSize: "32px" }} />,
+      link: "/dashboard/admin/create/post",
+    },
+     {
+      text: "Slider",
       icon: <BarChartIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/course",
+      link: "/dashboard/admin/slider/list",
     },
     {
-      text: "Tutorial",
+      text: "Video",
+      icon: <YouTubeIcon sx={{ fontSize: "32px" }} />,
+      link: "/dashboard/admin/create/video",
+    },
+    {
+      text: "Card Order",
       icon: <BuildIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/content",
+      link: "/dashboard/admin/orders",
     },
     {
       text: "Home",
@@ -87,10 +110,11 @@ const Sidebar = () => {
       icon: <AlignVerticalCenterIcon sx={{ fontSize: "32px" }} />,
       link: "/dashboard/admin/create/catewithsubcate",
     },
+    
     {
       text: "All User",
       icon: <ManageAccountsIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/alluser",
+      link: "/dashboard/admin/member",
     },
     {
       text: "Pricing",
@@ -141,6 +165,34 @@ const Sidebar = () => {
                 )}
               </ListItem>
             ))}
+            {/* <SimpleTreeView>
+        <TreeItem itemId="grid" label="Data Grid">
+          <TreeItem itemId="grid-community" label= <Link href="/dashboard/admin/create/post"  rel="noopener">
+                Articles
+              </Link>
+           />
+          <TreeItem itemId="grid-pro"   label={
+              <Link href="/dashboard/admin/create/content"  rel="noopener">
+                Tutorial
+              </Link>
+            }/>
+          <TreeItem itemId="grid-pr"   label={
+              <Link href="/dashboard/admin/create/course"  rel="noopener">
+              Courses
+              </Link>
+            }/>
+        </TreeItem>
+        <TreeItem itemId="pickers" label="Date and Time Pickers">
+          <TreeItem itemId="pickers-community" label="@mui/x-date-pickers" />
+          <TreeItem itemId="pickers-pro" label="@mui/x-date-pickers-pro" />
+        </TreeItem>
+        <TreeItem itemId="charts" label="Charts">
+          <TreeItem itemId="charts-community" label="@mui/x-charts" />
+        </TreeItem>
+        <TreeItem itemId="tree-view" label="Tree View">
+          <TreeItem itemId="tree-view-community" label="@mui/x-tree-view" />
+        </TreeItem>
+      </SimpleTreeView> */}
 
             {/* Logout Item */}
             <ListItem
@@ -235,6 +287,7 @@ const Sidebar = () => {
         <Toolbar />
       </Box>
     </Box>
+   
   );
 };
 

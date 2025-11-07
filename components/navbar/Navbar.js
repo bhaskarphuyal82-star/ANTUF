@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
+import TapNav from "@/components/navbar/topnav/topnav"
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -22,11 +23,11 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import Page from "@/components/loginmodal/Page";
 import { useSession } from "next-auth/react";
-
+import Tabs from "@/components/tab/Tab";
 const Navbar = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const menuItems = ["Courses", "Jobs", "Practice", "Contests"];
+  const menuItems = ["Courses", "Jobs", "Practice",];
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -42,154 +43,211 @@ const Navbar = () => {
 
   return (
     <>
+      <TapNav />
       <AppBar
         position="static"
-        sx={{ backgroundColor: "#1A1A1A", color: "#fff", height: 80 }}
+        sx={{
+          backgroundColor: "white",
+          color: "#fff",
+          height: 150,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center"
+        }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            px: { xs: 2, sm: 4, md: 6 }, // Add horizontal padding that increases with screen size
+            gap: 2 // Add gap between elements
+          }}
+        >
           {/* Left Side (Menu Items for larger screens) */}
           <Box
-            display={{ xs: "none", md: "flex" }}
-            flexGrow={1}
-            alignItems="center"
+            sx={{
+              // display: { xs: "none", md: "flex" },
+              flex: 1,
+              alignItems: "center",
+              gap: 3
+            }}
           >
-            {menuItems.slice(0, 1).map((item, index) => (
-              <Box
-                key={index}
-                display="flex"
-                alignItems="center"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                sx={{
-                  marginRight: 2,
-                  cursor: "pointer",
-                  "&:hover .arrowIcon": {
-                    transform: "rotate(180deg)",
+
+            <Box
+
+              display="flex"
+              alignItems="center"
+
+
+              sx={{
+                position: 'relative',
+                cursor: "pointer",
+                display: { xs: "none", md: "flex" },
+                "&:hover": {
+                  "& .menu-text": {
+                    color: "rgba(255, 255, 255, 0.85)"
                   },
-                }}
-              >
-                <Typography variant="h6" sx={{ marginRight: 1 }}>
-                  {item}
-                </Typography>
-                <KeyboardArrowDownIcon
-                  className="arrowIcon"
-                  sx={{
-                    transition: "transform 0.3s",
-                    transform:
-                      hoveredIndex === index ? "rotate(180deg)" : "rotate(0)",
-                  }}
-                />
-              </Box>
-            ))}
-            tutorials
-            {menuItems.slice(1).map((item, index) => (
-              <Box
-                key={index}
-                display="flex"
-                alignItems="center"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                sx={{
-                  marginRight: 2,
-                  cursor: "pointer",
-                  "&:hover .arrowIcon": {
+                  "& .arrowIcon": {
                     transform: "rotate(180deg)",
-                  },
+                    color: "rgba(255, 255, 255, 0.85)"
+                  }
+                }
+              }}
+            >
+              <img
+                onClick={() => router.push("/")}
+                src="/antuf-final-logo-5.png"
+                alt="Logo"
+                style={{
+                  height: "100px",
+                  maxWidth: "100%",
+                  width: "auto",
+                  cursor: "pointer",
+                  objectFit: "contain",
+
                 }}
-              >
-                <Typography variant="h6" sx={{ marginRight: 1 }}>
-                  {item}
-                </Typography>
-                <KeyboardArrowDownIcon
-                  className="arrowIcon"
-                  sx={{
-                    transition: "transform 0.3s",
-                    transform:
-                      hoveredIndex === index ? "rotate(180deg)" : "rotate(0)",
-                  }}
-                />
-              </Box>
-            ))}
+              />
+
+
+            </Box>
+            <Box
+              sx={{
+                position: 'relative',
+                cursor: "pointer",
+                display: { xs: "flex", md: "none" },
+              }}
+
+            >
+              <img
+                onClick={() => router.push("/")}
+                src="/mobile.jpg"
+                alt="Logo"
+                style={{
+                  height: "90px",
+                  maxWidth: "90%",
+                  width: "auto",
+                  cursor: "pointer",
+                  objectFit: "contain",
+
+                }}
+              />
+            </Box>
+
           </Box>
 
           {/* {centered logo} */}
-          <Box
-            onClick={() => router.push("/")}
-            sx={{
-              flexGrow: 9000008,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 28,
-            }}
-          >
-            <img
-              src="/images/logo2.png" // Replace with your logo's path
-              alt="Logo"
-              style={{
-                height: 60,
-                cursor: "pointer",
-                borderRadius: "50%", // This makes it circular
-                width: 60, // Ensure the width and height are equal to maintain the circular shape
-              }}
-            />
-          </Box>
+
 
           {/* {display right side menu item on larger device} */}
 
-          <Box display="flex" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 1, md: 2 },
+              ml: 10
+            }}
+          >
             <IconButton
-              sx={{ color: "#fff", display: { xs: "none", md: "block" } }}
+              sx={{
+                color: "#00796B",
+                display: { xs: "none", md: "flex" },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
             >
               <SearchIcon />
             </IconButton>
             <IconButton
-              sx={{ color: "#fff", display: { xs: "none", md: "block" } }}
+              sx={{
+                color: "00796B",
+                display: { xs: "none", md: "flex" },
+                '&:hover': {
+                  backgroundColor: 'rgba(231, 9, 9, 0.1)'
+                }
+              }}
             >
               <NotificationsActiveIcon />
             </IconButton>
             <IconButton
-              sx={{ color: "#fff", display: { xs: "none", md: "block" } }}
+              sx={{
+                color: "00796B",
+                display: { xs: "none", md: "flex" },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
             >
               <TranslateIcon />
             </IconButton>
-
-            {status === "authenticated" ? (
-              session?.user?.image && (
-                <img
-                  src={session?.user?.image || "/images/pic1.png"} // Fallback for default avatar
-                  alt="User Avatar"
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                  onClick={() =>
-                    router.push(
-                      session?.user?.role === "admin"
-                        ? "/dashboard/admin"
-                        : "/dashboard/user"
-                    )
-                  }
-                />
-              )
-            ) : (
-              <Page />
-            )}
-
-            {/* Hamburger Icon for Small Devices */}
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ display: { xs: "block", md: "none" } }}
-              onClick={toggleDrawer(true)}
+            <Box
+              sx={{
+                display: { xs: "flex", sm: "flex", md: "flex" },
+                width: "100%",
+                justifyContent: { xs: "flex-start", sm: "space-between", md: "flex-start" },
+                alignItems: "center",
+                gap: { xs: 2, sm: 4 }
+              }}
             >
-              <MenuIcon />
-            </IconButton>
+
+              {status === "authenticated" ? (
+                session?.user?.image && (
+                  <img
+                    src={session?.user?.image || "https://res.cloudinary.com/dfu758f7t/image/upload/v1761664833/logo_mklloi.jpg"} // Fallback for default avatar
+                    alt="User Avatar"
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+
+                    }}
+                    onClick={() =>
+                      router.push(
+                        session?.user?.role === "admin"
+                          ? "/dashboard/admin"
+                          : "/dashboard/user"
+                      )
+                    }
+                  />
+                )
+              ) : (
+                <Page />
+              )}
+
+              {/* Hamburger Icon for Small Devices */}
+              <Box
+                sx={{
+                  justifyContent: "end"
+                }}
+              >
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{
+                    display: {
+                      xs: "block", md: "none",
+                      color: "black",
+                      padding: 3,
+                      alignItems: "center"
+
+
+                    }
+                  }}
+                  onClick={toggleDrawer(true)}
+                >
+
+                  <MenuIcon />
+                </IconButton>
+              </Box>
+            </Box>
           </Box>
         </Toolbar>
+
 
         {/* drawer for small device */}
 
@@ -199,27 +257,13 @@ const Navbar = () => {
               width: 250,
               backgroundColor: "#1A1A1A",
               height: "100%",
-              color: "#fff",
+              color: "red",
             }}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
-            <Box
-              sx={{ padding: 2, borderTop: "1px solid #333" }}
-              role="presentation"
-            >
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "#00796B",
-                  "&:hover": { backgroundColor: "#005A4F" },
-                }}
-              >
-                Sign in
-              </Button>
-            </Box>
+           
 
             <List>
               {menuItems.map((text, index) => (
@@ -239,7 +283,11 @@ const Navbar = () => {
             </List>
           </Box>
         </Drawer>
+
       </AppBar>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <Tabs />
+      </Box>
     </>
   );
 };

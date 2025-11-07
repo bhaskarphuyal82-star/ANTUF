@@ -11,7 +11,7 @@ import {
 
 import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-
+import CardContent from '@mui/material/CardContent';
 import { useRouter } from "next/navigation";
 
 const Footer = () => {
@@ -78,76 +78,82 @@ const Footer = () => {
           color: "white",
           py: 4,
           px: isSmallScreen ? 2 : 8,
+          backgroundColor: "#212121",
         }}
       >
-        <Grid container spacing={4}>
-          <Grid item sx={12} sm={4}>
-            <Typography variant="h6" fontWeight="bold" sx={{ color: "green" }}>
-              Tutorialsmaterial
-
+        <Grid container spacing={isSmallScreen ? 3 : 4}>
+          <Grid item xs={12} sm={4}>
+            <Typography variant={isSmallScreen ? "body1" : "h6"} fontWeight="bold" sx={{ color: "green" }}>
+              Short Description of ANTUF
             </Typography>
 
-            <Typography sx={{ mt: 2 }}>
-              Corporate & Communications Address B-123 
-            </Typography>
+            <Typography sx={{ mt: 2, fontSize: isSmallScreen ? "14px" : "16px" }}>
+              All Nepal Federation of Trade Unions(ANTUF)</Typography>
+            <Typography sx={{ fontSize: isSmallScreen ? "14px" : "16px" }}> is the largest trade union in Nepal with more</Typography>
+            <Typography sx={{ fontSize: isSmallScreen ? "14px" : "16px" }}>than 4, 15,000 members. This umbrella for industry-wise</Typography>
+            <Typography sx={{ fontSize: isSmallScreen ? "14px" : "16px" }}>  national trade union federations was established in 2007</Typography>
+            <Typography sx={{ fontSize: isSmallScreen ? "14px" : "16px" }}> with the motto of promoting and protecting the rights of</Typography>
+            <Typography sx={{ fontSize: isSmallScreen ? "14px" : "16px" }}> workers within and beyond the nation.</Typography>
+
 
             <Box
               sx={{
-                mt: 4,
+                mt: 3,
                 display: "flex",
                 flexDirection: isSmallScreen ? "column" : "row",
                 gap: 2,
                 justifyContent: "start",
+                alignItems: isSmallScreen ? "flex-start" : "center",
               }}
             >
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
                 alt="Google Play"
-                style={{ maxWidth: "150px", height: "auto" }}
+                style={{ maxWidth: isSmallScreen ? "120px" : "150px", height: "auto" }}
               />
               <img
                 src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                 alt="App Store"
-                style={{ maxWidth: "150px", height: "auto" }}
+                style={{ maxWidth: isSmallScreen ? "120px" : "150px", height: "auto" }}
               />
             </Box>
             <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
-              <IconButton sx={{ color: "white" }}>
-                <Facebook />
+              <IconButton sx={{ color: "white", padding: isSmallScreen ? "8px" : "12px" }}>
+                <Facebook fontSize={isSmallScreen ? "small" : "medium"} />
               </IconButton>
-              <IconButton sx={{ color: "white" }}>
-                <Instagram />
+              <IconButton sx={{ color: "white", padding: isSmallScreen ? "8px" : "12px" }}>
+                <Instagram fontSize={isSmallScreen ? "small" : "medium"} />
               </IconButton>
-              <IconButton sx={{ color: "white" }}>
-                <LinkedIn />
+              <IconButton sx={{ color: "white", padding: isSmallScreen ? "8px" : "12px" }}>
+                <LinkedIn fontSize={isSmallScreen ? "small" : "medium"} />
               </IconButton>
-              <IconButton sx={{ color: "white" }}>
-                <YouTubeIcon />
+              <IconButton sx={{ color: "white", padding: isSmallScreen ? "8px" : "12px" }}>
+                <YouTubeIcon fontSize={isSmallScreen ? "small" : "medium"} />
               </IconButton>
             </Box>
           </Grid>
 
           {loading ? (
-            <Grid item sx={{ textAlign: "center", mt: 4 }}>
+            <Grid item xs={12} sx={{ textAlign: "center", mt: 4 }}>
               <CircularProgress sx={{ color: "green" }} />
             </Grid>
           ) : (
             formatteddata.map((section, index) => (
-              <Grid item xs={12} sm={4} md={2} key={index}>
+              <Grid item xs={12} sm={6} md={2} key={index}>
                 <Typography
                   sx={{
                     fontWeight: "bold",
                     display: "block",
                     color: "green",
                     textDecoration: "none",
-                    fontSize: isSmallScreen ? "18px" : "20px",
+                    fontSize: isSmallScreen ? "16px" : "18px",
                     fontStyle: "normal",
                     letterSpacing: "0.5px",
                     lineHeight: "1.6",
                     wordSpacing: "1px",
                     cursor: "pointer",
-                    "&:hover": { color: "green" },
-                    mb: 0.5,
+                    "&:hover": { color: "#7CFC00" },
+                    mb: 1,
                   }}
                   variant="subtitle1"
                   fontWeight="bold"
@@ -165,7 +171,7 @@ const Footer = () => {
                       display: "block",
                       color: "white",
                       textDecoration: "none",
-                      fontSize: isSmallScreen ? "16px" : "18px",
+                      fontSize: isSmallScreen ? "14px" : "16px",
                       fontStyle: "normal",
                       "&:hover": { color: "green" },
                       mb: 0.5,
@@ -179,14 +185,14 @@ const Footer = () => {
           )}
 
           {/* Legal Links Section */}
-          <Grid item xs={12} sm={4} md={2}>
+          <Grid item xs={12} sm={6} md={2}>
             <Typography
               variant="subtitle1"
               fontWeight="bold"
               gutterBottom
               sx={{
                 color: "green",
-                fontSize: isSmallScreen ? "18px" : "20px",
+                fontSize: isSmallScreen ? "16px" : "18px",
                 mb: 1,
               }}
             >
@@ -199,7 +205,7 @@ const Footer = () => {
                 display: "block",
                 color: "white",
                 textDecoration: "none",
-                fontSize: isSmallScreen ? "16px" : "18px",
+                fontSize: isSmallScreen ? "14px" : "16px",
                 "&:hover": { color: "green" },
                 mb: 0.5,
               }}
@@ -213,7 +219,7 @@ const Footer = () => {
                 display: "block",
                 color: "white",
                 textDecoration: "none",
-                fontSize: isSmallScreen ? "16px" : "18px",
+                fontSize: isSmallScreen ? "14px" : "16px",
                 "&:hover": { color: "green" },
                 mb: 0.5,
               }}
@@ -227,7 +233,7 @@ const Footer = () => {
                 display: "block",
                 color: "white",
                 textDecoration: "none",
-                fontSize: isSmallScreen ? "16px" : "18px",
+                fontSize: isSmallScreen ? "14px" : "16px",
                 "&:hover": { color: "green" },
                 mb: 0.5,
               }}
@@ -241,7 +247,7 @@ const Footer = () => {
                 display: "block",
                 color: "white",
                 textDecoration: "none",
-                fontSize: isSmallScreen ? "16px" : "18px",
+                fontSize: isSmallScreen ? "14px" : "16px",
                 "&:hover": { color: "green" },
                 mb: 0.5,
               }}
@@ -255,7 +261,7 @@ const Footer = () => {
                 display: "block",
                 color: "white",
                 textDecoration: "none",
-                fontSize: isSmallScreen ? "16px" : "18px",
+                fontSize: isSmallScreen ? "14px" : "16px",
                 "&:hover": { color: "green" },
                 mb: 0.5,
               }}
@@ -274,7 +280,7 @@ const Footer = () => {
             textAlign: "center",
           }}
         >
-          <Typography variant="body2" sx={{ color: "#ccc" }}>
+          <Typography variant="body2" sx={{ color: "#ccc", fontSize: isSmallScreen ? "12px" : "14px" }}>
             © {new Date().getFullYear()} Tutorials Material. All rights reserved.
           </Typography>
         </Box>

@@ -29,7 +29,7 @@ export async function PUT(req, context) {
     section.lectures[lectureIndex] = lecturebody;
     await curriculum.save();
     console.log("Lecture content saved successfully");
-    return NextResponse.json(curriculum);
+    return NextResponse.json(section.lectures[lectureIndex]);
   } catch (error) {
     console.log("Error from PUT for content-----", error);
     return NextResponse.json({ err: error.message }, { status: 500 });

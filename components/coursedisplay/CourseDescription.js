@@ -55,6 +55,7 @@ export default function CourseDescription({ course }) {
           px: { xs: 3, md: 8 },
           py: { xs: 6, md: 12 },
           color: "#fff",
+          
         }}
       >
         {/* Announcement Banner */}

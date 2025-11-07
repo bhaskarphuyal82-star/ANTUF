@@ -93,9 +93,12 @@ const CurriculumCourseSchema = new mongoose.Schema(
       type: String, // The field type is a String
     },
 
-    // 'price' field to store the course price (optional)
+    // 'price' field to store the course price
     price: {
       type: Number, // The field type is a Number
+      required: true, // The field is required
+      default: 0, // Default price is 0
+      min: 0, // Price cannot be negative
     },
 
     // 'sections' field to store an array of sections (each section is a SectionSchema)

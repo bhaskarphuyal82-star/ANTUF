@@ -12,8 +12,8 @@ const Home = () => {
         onClick={() => setIsModalOpen(true)}
         variant="contained"
         sx={{
-          display: { xs: "none", md: "block" },
-          backgroundColor: "#00796B",
+         
+          backgroundColor: "red",
           "&:hover": {
             backgroundColor: "#005A4F",
           },

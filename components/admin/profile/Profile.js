@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import Avatar from '@mui/material/Avatar';
 
 const Profile = () => {
   const [name, setName] = useState("");
@@ -166,11 +167,16 @@ const Profile = () => {
             {profileImagePreview && (
               <Box mt={2} textAlign="center">
                 <div className="image-container">
-                  <img
+                  {/* <img
                     src={profileImagePreview}
                     alt="profile"
-                    className="profile-image"
-                  />
+                  
+                    sx={{ borderRadius: "50%", width: 150, height: 150 }}
+                  /> */}
+                  <Avatar alt="admin" 
+                   src={profileImagePreview} 
+                   sx={{ width: 250, height: 250 }}
+                   />
                 </div>
               </Box>
             )}

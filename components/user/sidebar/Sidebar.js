@@ -58,9 +58,9 @@ const Sidebar = () => {
       link: "/dashboard/user/profile",
     },
     {
-      text: "Courses",
+      text: "card",
       icon: <BarChartIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/user/course",
+      link: "/dashboard/user/card",
     },
     {
       text: "Subscriptions",

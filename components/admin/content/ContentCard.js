@@ -179,9 +179,13 @@ const ContentCard = () => {
           key={content?._id}
           sx={{
             padding: 2,
-            mt: 2,
+            mt: 1,
+            paddingLeft: 2,
+            mx: 5,
+            marginLeft: 2,
+            justifyContent: "center",
             bgcolor: "#212121",
-            boxShadow: "0px 1px 4px rgba(0,0,0,0.2)",
+            boxShadow: "0px 1px 4px rgba(195, 14, 14, 0.2)",
             transition: "all 0.3 ease",
             "&:hover": {
               boxShadow: "0px 1px 4px rgba(0,0,0,0.3)",
@@ -223,7 +227,7 @@ const ContentCard = () => {
                 </Box>
 
                 <Typography
-                  variant="h4"
+                  variant="h6"
                   sx={{
                     fontWeight: "bold",
                     color: "#FFF",
@@ -236,11 +240,11 @@ const ContentCard = () => {
 
             <Grid
               item
-              xs={6}
+              xs={8}
               sx={{ display: "flex", justifyContent: "center" }}
             >
               {hoverIndex === index ? (
-                <Box sx={{ display: "flex", gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 1,  alignItems:"flex-end" }}>
                   <Tooltip title="Source">
                     <IconButton
                       size="large"
