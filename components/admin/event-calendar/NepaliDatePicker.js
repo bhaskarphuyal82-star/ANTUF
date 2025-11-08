@@ -298,7 +298,8 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
         readOnly
         disabled={disabled}
         sx={{
-          "& .MuiOutlinedInput-root": { color: "white" },
+          "& .MuiOutlinedInput-root": { color: "black" },
+          "& .MuiInputBase-input": { color: "black", fontWeight: "bold" },
           cursor: "pointer",
         }}
         InputProps={{

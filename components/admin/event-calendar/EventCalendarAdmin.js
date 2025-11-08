@@ -515,6 +515,10 @@ const EventCalendarAdmin = () => {
                 label="शुरुआत मिति (नेपाली मिति)"
                 value={selectedEvent?.startDate || ""}
                 onChange={(newDate) => setSelectedEvent({ ...selectedEvent, startDate: newDate })}
+                sx={{
+                  "& .MuiOutlinedInput-root": { color: "black" },
+                  "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
+                }}
               />
 
               {/* End Date - Nepali Calendar */}
@@ -522,6 +526,10 @@ const EventCalendarAdmin = () => {
                 label="अन्त्य मिति (नेपाली मिति)"
                 value={selectedEvent?.endDate || ""}
                 onChange={(newDate) => setSelectedEvent({ ...selectedEvent, endDate: newDate })}
+                sx={{
+                  "& .MuiOutlinedInput-root": { color: "black" },
+                  "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
+                }}
               />
 
               {/* Location */}
@@ -602,7 +610,7 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.capacity || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, capacity: parseInt(e.target.value) || "" })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
