@@ -202,7 +202,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
       </DialogTitle>
       <DialogContent sx={{ p: 2, mt: 1 }}>
         {/* Image Edit Panel */}
-        {editingImage && (
+        {/* {editingImage && (
           <Box sx={{ mb: 2, p: 2, bgcolor: "#FFF3E0", borderRadius: 1, border: "1px solid #FFB74D" }}>
             <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: "bold" }}>
               Edit Member Photo
@@ -247,7 +247,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
               </Alert>
             </Stack>
           </Box>
-        )}
+        )} */}
 
         {/* Official Nepali Membership Card */}
         <Box

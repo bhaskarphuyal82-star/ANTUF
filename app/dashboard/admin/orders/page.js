@@ -28,6 +28,7 @@ import {
   Card,
   CardContent,
   Grid,
+  Avatar,
 } from "@mui/material";
 import Sidebar from "@/components/sidebar/SideBar";
 import { useSession } from "next-auth/react";
@@ -58,6 +59,7 @@ const AdminOrdersPage = () => {
   const [cardViewOpen, setCardViewOpen] = useState(false);
   const [selectedCardOrder, setSelectedCardOrder] = useState(null);
   const [userDetailsForCard, setUserDetailsForCard] = useState(null);
+  const [userImages, setUserImages] = useState({}); // Store user images
 
   useEffect(() => {
     fetchOrders();
@@ -82,6 +84,22 @@ const AdminOrdersPage = () => {
         processing: allOrders.filter((o) => o.status === "processing").length,
         completed: allOrders.filter((o) => o.status === "printed" || o.status === "shipped" || o.status === "delivered").length,
       });
+
+      // Fetch user details for each order to get images
+      const imageMap = {};
+      for (const order of data.queues) {
+        try {
+          const userResponse = await fetch(`/api/user/profile?userId=${order.userId}`);
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+            imageMap[order.userId] = userData.image || null;
+          }
+        } catch (err) {
+          console.warn(`Could not fetch image for user ${order.userId}:`, err);
+          imageMap[order.userId] = null;
+        }
+      }
+      setUserImages(imageMap);
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError(err.message);
@@ -415,6 +433,9 @@ const AdminOrdersPage = () => {
               <TableHead>
                 <TableRow sx={{ bgcolor: "#252525" }}>
                   <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                    Image
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                     User
                   </TableCell>
                   <TableCell sx={{ color: "white", fontWeight: "bold" }}>
@@ -437,7 +458,7 @@ const AdminOrdersPage = () => {
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: "center", color: "white", py: 4 }}>
+                    <TableCell colSpan={7} sx={{ textAlign: "center", color: "white", py: 4 }}>
                       No orders found
                     </TableCell>
                   </TableRow>
@@ -449,6 +470,23 @@ const AdminOrdersPage = () => {
                         "&:hover": { bgcolor: "rgba(255,255,255,0.05)" },
                       }}
                     >
+                      <TableCell sx={{ color: "white", textAlign: "center" }}>
+                        <Avatar
+                          src={userImages[order.userId] || ""}
+                          alt={order.userName}
+                          sx={{
+                            width: 50,
+                            height: 50,
+                            bgcolor: "#3f51b5",
+                            margin: "0 auto",
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
+                        >
+                          {order.userName?.charAt(0).toUpperCase() || "U"}
+                        </Avatar>
+                      </TableCell>
                       <TableCell sx={{ color: "white" }}>
                         <Box>
                           <Typography variant="body2" sx={{ fontWeight: "bold" }}>
