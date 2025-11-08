@@ -96,13 +96,14 @@ const EventCalendarAdmin = () => {
   };
 
   const handleOpenDialog = (event = null) => {
+    const today = new Date().toISOString();
     setSelectedEvent(
       event || {
         title: "",
         titleNepali: "",
         description: "",
         descriptionNepali: "",
-        startDate: "",
+        startDate: today,
         endDate: "",
         time: "",
         location: "",
