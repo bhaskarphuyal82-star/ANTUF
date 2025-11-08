@@ -55,13 +55,14 @@ class NepaliDateConverter {
 
   // Nepali calendar to AD (Gregorian)
   static nepaliToAD(year, month, day) {
-    // Simplified conversion (accurate for years 1976-2100)
-    const adYear = year + 57;
+    // Nepali calendar is offset by 56 years and ~8-9 months
+    // Months 1-9 (Baishakh to Phalgun): AD year = Nepali year + 56
+    // Months 10-12 (Chaitra): AD year = Nepali year + 57
+    const adYear = month <= 9 ? year + 56 : year + 57;
     const adMonth = month <= 9 ? month + 3 : month - 9;
-    const adjustedYear = month <= 9 ? adYear : adYear + 1;
 
     // Create date in AD
-    const date = new Date(adjustedYear, adMonth - 1, day);
+    const date = new Date(adYear, adMonth - 1, day);
     return date;
   }
 
@@ -69,11 +70,12 @@ class NepaliDateConverter {
   static adToNepali(date) {
     const d = new Date(date);
     const year = d.getFullYear();
-    const month = d.getMonth();
+    const month = d.getMonth() + 1; // Convert to 1-12
     const day = d.getDate();
 
-    let nepaliYear = year - 57;
-    let nepaliMonth = month + 1 - 3;
+    // Nepali year calculation: months 1-9 use year-56, months 10-12 use year-57
+    let nepaliYear = year - 56;
+    let nepaliMonth = month - 3;
     let nepaliDay = day;
 
     if (nepaliMonth <= 0) {
