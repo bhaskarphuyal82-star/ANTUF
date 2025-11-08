@@ -184,8 +184,8 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
       <Box>
         {/* Weekday headers */}
         <Grid container spacing={0.5} sx={{ mb: 1 }}>
-          {["आ", "स", "म", "ब", "ब", "श", "र"].map((day) => (
-            <Grid item xs={12 / 7} key={day} sx={{ textAlign: "center" }}>
+          {["आ", "स", "म", "ब", "ब", "श", "र"].map((day, idx) => (
+            <Grid item xs={12 / 7} key={`weekday-${idx}`} sx={{ textAlign: "center" }}>
               <Typography variant="caption" sx={{ fontWeight: "bold", color: "#FF6B6B" }}>
                 {day}
               </Typography>

@@ -224,13 +224,13 @@ const EventCalendarAdmin = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "#121212", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", bgcolor: "green", minHeight: "100vh" }}>
       <Sidebar />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {/* Header */}
         <Box
           sx={{
-            background: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)",
+            background: "linear-gradient(45deg, #FF6B6B 30%,rgb(203, 170, 9) 90%)",
             p: 3,
             borderRadius: 2,
             mb: 3,
@@ -240,7 +240,7 @@ const EventCalendarAdmin = () => {
           }}
         >
           <Box>
-            <Typography variant="h4" sx={{ color: "white", fontWeight: "bold", display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="h4" sx={{ color: "black", fontWeight: "bold", display: "flex", alignItems: "center", gap: 1 }}>
               <EventNoteIcon /> कार्यक्रम क्यालेन्डर
             </Typography>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
@@ -252,8 +252,8 @@ const EventCalendarAdmin = () => {
             startIcon={<AddIcon />}
             onClick={() => handleOpenDialog()}
             sx={{
-              backgroundColor: "#FFFFFF",
-              color: "#FF6B6B",
+              backgroundColor: "red",
+              color: "black",
               fontWeight: "bold",
               "&:hover": { backgroundColor: "#f0f0f0" },
             }}
@@ -368,7 +368,7 @@ const EventCalendarAdmin = () => {
             <CircularProgress />
           </Box>
         ) : (
-          <TableContainer component={Paper} sx={{ bgcolor: "#1E1E1E" }}>
+          <TableContainer component={Paper} sx={{ bgcolor: "red" }}>
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: "#252525" }}>
@@ -453,10 +453,10 @@ const EventCalendarAdmin = () => {
 
         {/* Event Dialog */}
         <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-          <DialogTitle sx={{ bgcolor: "#1E1E1E", color: "white" }}>
+          <DialogTitle sx={{ bgcolor: "red", color: "white" }}>
             {selectedEvent?._id ? "कार्यक्रम सम्पादन गर्नुहोस्" : "नयाँ कार्यक्रम सिर्जना गर्नुहोस्"}
           </DialogTitle>
-          <DialogContent sx={{ bgcolor: "#1E1E1E", color: "white", mt: 2 }}>
+          <DialogContent sx={{ bgcolor: "white", color: "white", mt: 2 }}>
             <Stack spacing={2}>
               {/* English Title */}
               <TextField
@@ -465,7 +465,7 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.title || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
@@ -477,7 +477,7 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.titleNepali || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, titleNepali: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
@@ -491,7 +491,7 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.description || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
@@ -530,8 +530,8 @@ const EventCalendarAdmin = () => {
                 }
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, startDate: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
-                  "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
+                  "& .MuiOutlinedInput-root": { color: "red" },
+                  "& .MuiInputBase-input::placeholder": { color: "rgba(0, 0, 0, 0.5)", opacity: 1 },
                 }}
               />
 
@@ -555,7 +555,7 @@ const EventCalendarAdmin = () => {
                 }
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, endDate: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
@@ -567,7 +567,7 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.location || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, location: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
@@ -579,20 +579,20 @@ const EventCalendarAdmin = () => {
                 value={selectedEvent?.locationNepali || ""}
                 onChange={(e) => setSelectedEvent({ ...selectedEvent, locationNepali: e.target.value })}
                 sx={{
-                  "& .MuiOutlinedInput-root": { color: "white" },
+                  "& .MuiOutlinedInput-root": { color: "black" },
                   "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
                 }}
               />
 
               {/* Category */}
               <FormControl fullWidth>
-                <InputLabel sx={{ color: "white" }}>श्रेणी</InputLabel>
+                <InputLabel sx={{ color: "black" }}>श्रेणी</InputLabel>
                 <Select
                   value={selectedEvent?.category || "other"}
                   onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
                   label="श्रेणी"
                   sx={{
-                    color: "white",
+                    color: "black",
                     "& .MuiOutlinedInput-notchedOutline": {
                       borderColor: "rgba(255, 255, 255, 0.23)",
                     },
@@ -611,7 +611,7 @@ const EventCalendarAdmin = () => {
 
               {/* Status */}
               <FormControl fullWidth>
-                <InputLabel sx={{ color: "white" }}>स्थिति</InputLabel>
+                <InputLabel sx={{ color: "black" }}>स्थिति</InputLabel>
                 <Select
                   value={selectedEvent?.status || "upcoming"}
                   onChange={(e) => setSelectedEvent({ ...selectedEvent, status: e.target.value })}
