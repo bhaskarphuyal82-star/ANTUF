@@ -158,6 +158,15 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
     }
   };
 
+  const handleSelectToday = () => {
+    const today = new Date();
+    const nepali = NepaliDateConverter.adToNepali(today);
+    setNepaliYear(nepali.year);
+    setNepaliMonth(nepali.month);
+    setNepaliDay(nepali.day);
+    setViewMode("day");
+  };
+
   const formatDisplayDate = () => {
     if (!value) return "कार्यक्रमको मिति चयन गर्नुहोस्";
     const date = new Date(value);
@@ -461,7 +470,15 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
           )}
         </DialogContent>
 
-        <DialogActions sx={{ bgcolor: "#F5F5F5", p: 2 }}>
+        <DialogActions sx={{ bgcolor: "#F5F5F5", p: 2, gap: 1 }}>
+          <Button
+            onClick={handleSelectToday}
+            variant="outlined"
+            sx={{ color: "#FF6B6B", borderColor: "#FF6B6B", fontWeight: "bold" }}
+          >
+            आज
+          </Button>
+          <Box sx={{ flex: 1 }} />
           <Button onClick={handleCancel} sx={{ color: "black" }}>
             रद्द गर्नुहोस्
           </Button>
