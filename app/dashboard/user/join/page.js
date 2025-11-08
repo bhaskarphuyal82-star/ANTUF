@@ -1,9 +1,10 @@
 import JoinForm from '@/components/user/JoinForm';
+import { Box } from '@mui/material';
 
 export default function JoinPage() {
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', py: 4 }}>
       <JoinForm />
-    </div>
+    </Box>
   );
 }
