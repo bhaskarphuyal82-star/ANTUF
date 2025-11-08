@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { NepaliDatePicker } from '../admin/event-calendar/NepaliDatePicker';
+import NepaliDatePicker from '../admin/event-calendar/NepaliDatePicker';
 
 const JoinForm = () => {
   const router = useRouter();
