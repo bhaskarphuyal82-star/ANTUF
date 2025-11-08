@@ -193,10 +193,17 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
     return (
       <Box>
         {/* Weekday headers */}
-        <Grid container spacing={0.5} sx={{ mb: 1 }}>
+        <Grid container spacing={0.5} sx={{ mb: 2 }}>
           {["आ", "स", "म", "ब", "ब", "श", "र"].map((day, idx) => (
             <Grid item xs={12 / 7} key={`weekday-${idx}`} sx={{ textAlign: "center" }}>
-              <Typography variant="caption" sx={{ fontWeight: "bold", color: "#FF6B6B" }}>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  fontWeight: "bold", 
+                  color: "#FF6B6B",
+                  fontSize: "0.85rem"
+                }}
+              >
                 {day}
               </Typography>
             </Grid>
@@ -213,15 +220,18 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                   onClick={() => handleDateSelect(day)}
                   sx={{
                     p: 1,
-                    minHeight: "40px",
+                    minHeight: "45px",
                     backgroundColor: nepaliDay === day ? "#FF6B6B" : "transparent",
-                    color: nepaliDay === day ? "white" : "white",
-                    border: nepaliDay === day ? "2px solid #FF6B6B" : "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: 1,
+                    color: nepaliDay === day ? "white" : "#333",
+                    border: nepaliDay === day ? "2px solid #FF6B6B" : "1px solid #E0E0E0",
+                    borderRadius: "8px",
+                    fontWeight: nepaliDay === day ? "bold" : "normal",
+                    fontSize: "0.95rem",
+                    transition: "all 0.2s ease",
                     "&:hover": {
-                      backgroundColor: "rgba(255,107,107,0.3)",
+                      backgroundColor: nepaliDay === day ? "#FF6B6B" : "rgba(255,107,107,0.1)",
+                      borderColor: "#FF6B6B",
                     },
-                    fontSize: "12px",
                   }}
                 >
                   {NepaliDateConverter.englishToNepaliNumber(day)}
@@ -238,22 +248,25 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
 
   const renderMonthPicker = () => {
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={1.5}>
         {NepaliDateConverter.nepaliMonths.map((month, index) => (
           <Grid item xs={6} key={index}>
             <Button
               fullWidth
               onClick={() => handleMonthSelect(index + 1)}
               sx={{
-                p: 2,
-                backgroundColor: nepaliMonth === index + 1 ? "#FF6B6B" : "transparent",
-                color: "white",
-                border: nepaliMonth === index + 1 ? "2px solid #FF6B6B" : "1px solid rgba(255,255,255,0.2)",
-                borderRadius: 1,
+                p: 2.5,
+                backgroundColor: nepaliMonth === index + 1 ? "#FF6B6B" : "#F5F5F5",
+                color: nepaliMonth === index + 1 ? "white" : "#333",
+                border: nepaliMonth === index + 1 ? "2px solid #FF6B6B" : "1px solid #E0E0E0",
+                borderRadius: "8px",
+                fontWeight: nepaliMonth === index + 1 ? "bold" : "normal",
+                fontSize: "0.9rem",
+                transition: "all 0.2s ease",
                 "&:hover": {
-                  backgroundColor: "rgba(255,107,107,0.3)",
+                  backgroundColor: nepaliMonth === index + 1 ? "#FF6B6B" : "rgba(255,107,107,0.1)",
+                  borderColor: "#FF6B6B",
                 },
-                fontSize: "12px",
               }}
             >
               {month}
@@ -272,22 +285,25 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
     }
 
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={1.5}>
         {years.map((year) => (
           <Grid item xs={4} key={year}>
             <Button
               fullWidth
               onClick={() => handleYearSelect(year)}
               sx={{
-                p: 2,
-                backgroundColor: nepaliYear === year ? "#FF6B6B" : "transparent",
-                color: "white",
-                border: nepaliYear === year ? "2px solid #FF6B6B" : "1px solid rgba(255,255,255,0.2)",
-                borderRadius: 1,
+                p: 2.5,
+                backgroundColor: nepaliYear === year ? "#FF6B6B" : "#F5F5F5",
+                color: nepaliYear === year ? "white" : "#333",
+                border: nepaliYear === year ? "2px solid #FF6B6B" : "1px solid #E0E0E0",
+                borderRadius: "8px",
+                fontWeight: nepaliYear === year ? "bold" : "normal",
+                fontSize: "0.9rem",
+                transition: "all 0.2s ease",
                 "&:hover": {
-                  backgroundColor: "rgba(255,107,107,0.3)",
+                  backgroundColor: nepaliYear === year ? "#FF6B6B" : "rgba(255,107,107,0.1)",
+                  borderColor: "#FF6B6B",
                 },
-                fontSize: "12px",
               }}
             >
               {NepaliDateConverter.englishToNepaliNumber(year)}
@@ -318,7 +334,13 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
       />
 
       <Dialog open={openDialog} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ bgcolor: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)", color: "black" }}>
+        <DialogTitle sx={{ 
+          background: "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)",
+          color: "black",
+          fontWeight: "bold",
+          fontSize: "1.3rem",
+          py: 2
+        }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography variant="h6" sx={{ color: "black", fontWeight: "bold" }}>
               {viewMode === "day"
@@ -332,7 +354,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                 <Button
                   size="small"
                   onClick={() => setViewMode(viewMode === "day" ? "month" : "year")}
-                  sx={{ color: "black", fontWeight: "bold" }}
+                  sx={{ color: "black", fontWeight: "bold", textTransform: "none" }}
                 >
                   {viewMode === "day" ? "महिना" : "वर्ष"}
                 </Button>
@@ -341,11 +363,11 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
           </Box>
         </DialogTitle>
 
-        <DialogContent sx={{ bgcolor: "#F5F5F5", color: "black", pt: 2 }}>
+        <DialogContent sx={{ bgcolor: "#FAFAFA", color: "black", pt: 3, pb: 2 }}>
           {viewMode === "day" && (
             <>
               {/* Month/Year navigation */}
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                 <IconButton
                   size="small"
                   onClick={() => {
@@ -356,7 +378,11 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                       setNepaliMonth(nepaliMonth - 1);
                     }
                   }}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronLeftIcon />
                 </IconButton>
@@ -369,6 +395,12 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                     color: "black",
                     flex: 1,
                     textAlign: "center",
+                    fontSize: "1.1rem",
+                    padding: "8px 12px",
+                    borderRadius: 1,
+                    "&:hover": {
+                      backgroundColor: "rgba(255,107,107,0.1)"
+                    }
                   }}
                 >
                   {NepaliDateConverter.nepaliMonths[nepaliMonth - 1]} {NepaliDateConverter.englishToNepaliNumber(nepaliYear)}
@@ -384,7 +416,11 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                       setNepaliMonth(nepaliMonth + 1);
                     }
                   }}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronRightIcon />
                 </IconButton>
@@ -397,11 +433,15 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
 
           {viewMode === "month" && (
             <>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                 <IconButton
                   size="small"
                   onClick={() => setNepaliYear(nepaliYear - 1)}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronLeftIcon />
                 </IconButton>
@@ -414,6 +454,12 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                     color: "black",
                     flex: 1,
                     textAlign: "center",
+                    fontSize: "1.1rem",
+                    padding: "8px 12px",
+                    borderRadius: 1,
+                    "&:hover": {
+                      backgroundColor: "rgba(255,107,107,0.1)"
+                    }
                   }}
                 >
                   {NepaliDateConverter.englishToNepaliNumber(nepaliYear)}
@@ -422,7 +468,11 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                 <IconButton
                   size="small"
                   onClick={() => setNepaliYear(nepaliYear + 1)}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronRightIcon />
                 </IconButton>
@@ -435,11 +485,15 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
 
           {viewMode === "year" && (
             <>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
                 <IconButton
                   size="small"
                   onClick={() => setNepaliYear(Math.floor(nepaliYear / 10) * 10 - 10)}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronLeftIcon />
                 </IconButton>
@@ -450,6 +504,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                     color: "black",
                     flex: 1,
                     textAlign: "center",
+                    fontSize: "1.1rem"
                   }}
                 >
                   {NepaliDateConverter.englishToNepaliNumber(Math.floor(nepaliYear / 10) * 10)} -{" "}
@@ -459,7 +514,11 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                 <IconButton
                   size="small"
                   onClick={() => setNepaliYear(Math.floor(nepaliYear / 10) * 10 + 10)}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ 
+                    color: "#FF6B6B",
+                    backgroundColor: "rgba(255,107,107,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,107,107,0.2)" }
+                  }}
                 >
                   <ChevronRightIcon />
                 </IconButton>
@@ -471,22 +530,44 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
           )}
         </DialogContent>
 
-        <DialogActions sx={{ bgcolor: "#F5F5F5", p: 2, gap: 1 }}>
+        <DialogActions sx={{ bgcolor: "#FAFAFA", p: 2, gap: 1, borderTop: "1px solid #E0E0E0" }}>
           <Button
             onClick={handleSelectToday}
             variant="outlined"
-            sx={{ color: "#FF6B6B", borderColor: "#FF6B6B", fontWeight: "bold" }}
+            sx={{ 
+              color: "#FF6B6B", 
+              borderColor: "#FF6B6B", 
+              fontWeight: "bold",
+              textTransform: "none",
+              fontSize: "0.95rem"
+            }}
           >
             आज
           </Button>
           <Box sx={{ flex: 1 }} />
-          <Button onClick={handleCancel} sx={{ color: "black" }}>
+          <Button 
+            onClick={handleCancel} 
+            sx={{ 
+              color: "#666",
+              textTransform: "none",
+              fontSize: "0.95rem"
+            }}
+          >
             रद्द गर्नुहोस्
           </Button>
           <Button
             onClick={handleConfirm}
             variant="contained"
-            sx={{ background: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)", color: "black", fontWeight: "bold" }}
+            sx={{ 
+              background: "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)", 
+              color: "black", 
+              fontWeight: "bold",
+              textTransform: "none",
+              fontSize: "0.95rem",
+              "&:hover": {
+                background: "linear-gradient(135deg, #FF5252 0%, #FFD54F 100%)"
+              }
+            }}
           >
             चयन गर्नुहोस्
           </Button>
