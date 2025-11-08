@@ -6,6 +6,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import CloseIcon from "@mui/icons-material/Close";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useSession } from "next-auth/react";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 let html2pdf = null;
 
@@ -106,7 +107,7 @@ const UserInfoPrintCard = () => {
     <>
       <Button
         variant="contained"
-        startIcon={<PrintIcon />}
+        startIcon={<VisibilityIcon />}
         onClick={handlePrint}
         sx={{
           backgroundColor: "#8A12FC",
@@ -114,11 +115,11 @@ const UserInfoPrintCard = () => {
           mb: 2,
         }}
       >
-        Print User Card
+        View User Card
       </Button>
 
       <Dialog open={openDialog} onClose={handleClosePrint} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 0 }}>
+        {/* <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 0 }}>
           <Box />
           <Stack direction="row" spacing={1}>
             <Button
@@ -150,7 +151,7 @@ const UserInfoPrintCard = () => {
               Close
             </Button>
           </Stack>
-        </DialogTitle>
+        </DialogTitle> */}
         <DialogContent sx={{ p: 0, mt: 1 }}>
           {/* Official Nepali Membership Card */}
           <Box
