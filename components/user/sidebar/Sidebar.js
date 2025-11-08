@@ -67,6 +67,11 @@ const Sidebar = () => {
       icon: <BuildIcon sx={{ fontSize: "32px" }} />,
       link: "/dashboard/user/subscriptions",
     },
+     {
+      text: "Chat",
+      icon: <BuildIcon sx={{ fontSize: "32px" }} />,
+      link: "/dashboard/user/chat",
+    },
     {
       text: "Pricing",
       icon: <ShoppingCartIcon sx={{ fontSize: "32px" }} />,

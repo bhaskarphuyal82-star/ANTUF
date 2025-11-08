@@ -72,7 +72,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
       img.onload = async () => {
         try {
           // Update user profile with new image
-          const response = await fetch("/api/user/profile", {
+          const response = await fetch(`${process.env.API}/user/profile`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -158,13 +158,13 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
           <Tooltip title={editingImage ? "Cancel image edit" : "Edit member image"}>
             <IconButton
               size="small"
-              onClick={() => setEditingImage(!editingImage)}
+              // onClick={() => setEditingImage(!editingImage)}
               sx={{
                 color: editingImage ? "#FF6B6B" : "#FFA500",
                 "&:hover": { bgcolor: "rgba(255, 165, 0, 0.1)" },
               }}
             >
-              {editingImage ? <CancelIcon /> : <EditIcon />}
+         
             </IconButton>
           </Tooltip>
           <Button
