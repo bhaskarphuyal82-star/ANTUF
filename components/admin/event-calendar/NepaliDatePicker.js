@@ -87,10 +87,9 @@ class NepaliDateConverter {
   static formatNepaliDate(year, month, day) {
     const monthName = this.nepaliMonths[month - 1] || "";
     const yearStr = this.englishToNepaliNumber(year);
-    const monthStr = this.englishToNepaliNumber(month);
     const dayStr = this.englishToNepaliNumber(day);
 
-    return `${yearStr}/${monthStr}/${dayStr} ${monthName}`;
+    return `${dayStr} ${monthName} ${yearStr}`;
   }
 
   static getDaysInNepaliMonth(year, month) {
