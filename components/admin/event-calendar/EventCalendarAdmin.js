@@ -104,7 +104,7 @@ const EventCalendarAdmin = () => {
         description: "",
         descriptionNepali: "",
         startDate: today,
-        endDate: "",
+        endDate: today,
         time: "",
         location: "",
         locationNepali: "",
