@@ -517,47 +517,11 @@ const EventCalendarAdmin = () => {
                 onChange={(newDate) => setSelectedEvent({ ...selectedEvent, startDate: newDate })}
               />
 
-              {/* Start Date - AD Display */}
-              <TextField
-                fullWidth
-                type="datetime-local"
-                label="शुरुआत मिति (AD)"
-                InputLabelProps={{ shrink: true }}
-                value={
-                  selectedEvent?.startDate
-                    ? new Date(selectedEvent.startDate).toISOString().slice(0, 16)
-                    : ""
-                }
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, startDate: e.target.value })}
-                sx={{
-                  "& .MuiOutlinedInput-root": { color: "red" },
-                  "& .MuiInputBase-input::placeholder": { color: "rgba(0, 0, 0, 0.5)", opacity: 1 },
-                }}
-              />
-
               {/* End Date - Nepali Calendar */}
               <NepaliDatePicker
                 label="अन्त्य मिति (नेपाली मिति)"
                 value={selectedEvent?.endDate || ""}
                 onChange={(newDate) => setSelectedEvent({ ...selectedEvent, endDate: newDate })}
-              />
-
-              {/* End Date - AD Display */}
-              <TextField
-                fullWidth
-                type="datetime-local"
-                label="अन्त्य मिति (AD)"
-                InputLabelProps={{ shrink: true }}
-                value={
-                  selectedEvent?.endDate
-                    ? new Date(selectedEvent.endDate).toISOString().slice(0, 16)
-                    : ""
-                }
-                onChange={(e) => setSelectedEvent({ ...selectedEvent, endDate: e.target.value })}
-                sx={{
-                  "& .MuiOutlinedInput-root": { color: "black" },
-                  "& .MuiInputBase-input::placeholder": { color: "rgba(255,255,255,0.5)", opacity: 1 },
-                }}
               />
 
               {/* Location */}
