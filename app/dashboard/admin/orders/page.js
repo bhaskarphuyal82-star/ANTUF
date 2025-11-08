@@ -472,16 +472,15 @@ const AdminOrdersPage = () => {
                     >
                       <TableCell sx={{ color: "white", textAlign: "center" }}>
                         <Avatar
-                          src={userImages[order.userId] || ""}
+                          src={userImages[order.userId] || undefined}
                           alt={order.userName}
                           sx={{
                             width: 50,
                             height: 50,
                             bgcolor: "#3f51b5",
                             margin: "0 auto",
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = "none";
+                            fontSize: "1.25rem",
+                            fontWeight: "bold",
                           }}
                         >
                           {order.userName?.charAt(0).toUpperCase() || "U"}
