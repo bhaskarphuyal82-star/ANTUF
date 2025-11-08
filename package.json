@@ -35,6 +35,7 @@
     "markdown-it": "^14.1.0",
     "md-block": "^0.0.1",
     "mongoose": "^8.19.1",
+    "nepali-datetime": "^1.5.0",
     "next": "^15.5.4",
     "next-auth": "^4.24.11",
     "node-fetch": "^3.3.2",

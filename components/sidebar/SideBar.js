@@ -117,9 +117,9 @@ const Sidebar = () => {
       link: "/dashboard/admin/member",
     },
     {
-      text: "Pricing",
+      text: "Event",
       icon: <MoneyIcon sx={{ fontSize: "32px" }} />,
-      link: "/pricing",
+        link: "/dashboard/admin/events",
     },
   ];
 

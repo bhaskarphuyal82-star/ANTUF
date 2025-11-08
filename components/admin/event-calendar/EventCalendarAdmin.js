@@ -32,6 +32,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import Sidebar from "@/components/sidebar/SideBar";
+import NepaliDatePicker from "@/components/admin/event-calendar/NepaliDatePicker";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
@@ -509,11 +510,18 @@ const EventCalendarAdmin = () => {
                 }}
               />
 
-              {/* Start Date */}
+              {/* Start Date - Nepali Calendar */}
+              <NepaliDatePicker
+                label="शुरुआत मिति (नेपाली मिति)"
+                value={selectedEvent?.startDate || ""}
+                onChange={(newDate) => setSelectedEvent({ ...selectedEvent, startDate: newDate })}
+              />
+
+              {/* Start Date - AD Display */}
               <TextField
                 fullWidth
                 type="datetime-local"
-                label="शुरुआत मिति"
+                label="शुरुआत मिति (AD)"
                 InputLabelProps={{ shrink: true }}
                 value={
                   selectedEvent?.startDate
@@ -527,11 +535,18 @@ const EventCalendarAdmin = () => {
                 }}
               />
 
-              {/* End Date */}
+              {/* End Date - Nepali Calendar */}
+              <NepaliDatePicker
+                label="अन्त्य मिति (नेपाली मिति)"
+                value={selectedEvent?.endDate || ""}
+                onChange={(newDate) => setSelectedEvent({ ...selectedEvent, endDate: newDate })}
+              />
+
+              {/* End Date - AD Display */}
               <TextField
                 fullWidth
                 type="datetime-local"
-                label="अन्त्य मिति"
+                label="अन्त्य मिति (AD)"
                 InputLabelProps={{ shrink: true }}
                 value={
                   selectedEvent?.endDate
