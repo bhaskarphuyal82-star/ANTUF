@@ -125,6 +125,78 @@ const UserSchema = new mongoose.Schema(
     citizenshipBack: {
       type: String,
     },
+    // Join Form Fields
+    nameEnglish: {
+      type: String,
+      trim: true,
+    },
+    nameNepali: {
+      type: String,
+      trim: true,
+    },
+    dobNepali: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
+    },
+    province: {
+      type: String,
+      trim: true,
+    },
+    municipality: {
+      type: String,
+      trim: true,
+    },
+    wardNo: {
+      type: String,
+      trim: true,
+    },
+    occupation: {
+      type: String,
+      trim: true,
+    },
+    workplace: {
+      type: String,
+      trim: true,
+    },
+    position: {
+      type: String,
+      trim: true,
+    },
+    unionName: {
+      type: String,
+      trim: true,
+    },
+    membershipNumber: {
+      type: String,
+      trim: true,
+    },
+    joinDate: {
+      type: Date,
+    },
+    recommendations: {
+      type: String,
+      trim: true,
+    },
+    interests: {
+      type: String,
+      trim: true,
+    },
+    skills: {
+      type: String,
+      trim: true,
+    },
+    emergencyContact: {
+      type: String,
+      trim: true,
+    },
+    emergencyPhone: {
+      type: String,
+      trim: true,
+    },
     role: {
       type: String,
       enum: ["user", "admin"],
