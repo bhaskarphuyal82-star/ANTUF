@@ -307,9 +307,9 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
       />
 
       <Dialog open={openDialog} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ bgcolor: "#1E1E1E", color: "white" }}>
+        <DialogTitle sx={{ bgcolor: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)", color: "black" }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h6">
+            <Typography variant="h6" sx={{ color: "black", fontWeight: "bold" }}>
               {viewMode === "day"
                 ? `${NepaliDateConverter.nepaliMonths[nepaliMonth - 1]} ${NepaliDateConverter.englishToNepaliNumber(nepaliYear)}`
                 : viewMode === "month"
@@ -321,7 +321,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                 <Button
                   size="small"
                   onClick={() => setViewMode(viewMode === "day" ? "month" : "year")}
-                  sx={{ color: "#FF6B6B" }}
+                  sx={{ color: "black", fontWeight: "bold" }}
                 >
                   {viewMode === "day" ? "महिना" : "वर्ष"}
                 </Button>
@@ -330,7 +330,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
           </Box>
         </DialogTitle>
 
-        <DialogContent sx={{ bgcolor: "#1E1E1E", color: "white", pt: 2 }}>
+        <DialogContent sx={{ bgcolor: "#F5F5F5", color: "black", pt: 2 }}>
           {viewMode === "day" && (
             <>
               {/* Month/Year navigation */}
@@ -355,7 +355,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                   sx={{
                     cursor: "pointer",
                     fontWeight: "bold",
-                    color: "#FFE66D",
+                    color: "black",
                     flex: 1,
                     textAlign: "center",
                   }}
@@ -400,7 +400,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                   sx={{
                     cursor: "pointer",
                     fontWeight: "bold",
-                    color: "#FFE66D",
+                    color: "black",
                     flex: 1,
                     textAlign: "center",
                   }}
@@ -436,7 +436,7 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
                 <Typography
                   sx={{
                     fontWeight: "bold",
-                    color: "#FFE66D",
+                    color: "black",
                     flex: 1,
                     textAlign: "center",
                   }}
@@ -460,14 +460,14 @@ const NepaliDatePicker = ({ value, onChange, label, disabled = false }) => {
           )}
         </DialogContent>
 
-        <DialogActions sx={{ bgcolor: "#1E1E1E", p: 2 }}>
-          <Button onClick={handleCancel} sx={{ color: "white" }}>
+        <DialogActions sx={{ bgcolor: "#F5F5F5", p: 2 }}>
+          <Button onClick={handleCancel} sx={{ color: "black" }}>
             रद्द गर्नुहोस्
           </Button>
           <Button
             onClick={handleConfirm}
             variant="contained"
-            sx={{ background: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)", color: "black" }}
+            sx={{ background: "linear-gradient(45deg, #FF6B6B 30%, #FFE66D 90%)", color: "black", fontWeight: "bold" }}
           >
             चयन गर्नुहोस्
           </Button>
