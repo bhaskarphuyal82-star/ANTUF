@@ -59,11 +59,81 @@ const AdminOrdersPage = () => {
   const [cardViewOpen, setCardViewOpen] = useState(false);
   const [selectedCardOrder, setSelectedCardOrder] = useState(null);
   const [userDetailsForCard, setUserDetailsForCard] = useState(null);
-  const [userImages, setUserImages] = useState({}); // Store user images
+  const [orderDetails, setOrderDetails] = useState({}); // Store full order details with user info
 
   useEffect(() => {
     fetchOrders();
   }, [filterStatus]);
+
+  // Fetch full user details for all orders when they load
+  useEffect(() => {
+    const enrichOrdersWithUserDetails = async () => {
+      if (orders.length === 0) return;
+      
+      console.log(`📥 Processing ${orders.length} orders for user details...`);
+      const enrichedOrders = {};
+      let successCount = 0;
+      let alreadyPopulated = 0;
+      
+      for (const order of orders) {
+        try {
+          // Check if userId is already a populated user object (from the API)
+          let user = null;
+          
+          if (typeof order.userId === 'object' && order.userId !== null && order.userId._id) {
+            // userId is already populated with user details
+            user = order.userId;
+            console.log(`✓ User already populated for ${order._id}: ${user?.name}`);
+            console.log(`  - Image: ${user?.image ? user.image.substring(0, 50) + '...' : 'null'}`);
+            alreadyPopulated++;
+          } else {
+            // userId is just an ID string, need to fetch user details
+            console.log(`🔄 Fetching user details for ${order._id} (userId: ${order.userId})`);
+            const userIdString = String(order.userId);
+            const params = new URLSearchParams();
+            params.append('userId', userIdString);
+            const url = `/api/admin/users/profile?${params.toString()}`;
+            
+            const response = await fetch(url, {
+              credentials: 'include',
+            });
+            
+            if (response.ok) {
+              const userData = await response.json();
+              
+              // Extract user from response
+              if (userData.success && userData.data && Array.isArray(userData.data)) {
+                user = userData.data[0];
+              } else if (userData.data && !Array.isArray(userData.data)) {
+                user = userData.data;
+              } else if (userData.user) {
+                user = userData.user;
+              } else {
+                user = userData;
+              }
+              
+              console.log(`✓ User fetched for ${order._id}: ${user?.name}`);
+              console.log(`  - Image: ${user?.image ? user.image.substring(0, 50) + '...' : 'null'}`);
+            } else {
+              console.warn(`✗ Failed to fetch user for ${order._id}: ${response.status}`);
+              user = null;
+            }
+          }
+          
+          enrichedOrders[order._id] = user;
+          if (user) successCount++;
+        } catch (err) {
+          console.error(`❌ Error processing order ${order._id}:`, err.message);
+          enrichedOrders[order._id] = null;
+        }
+      }
+      
+      console.log(`✅ Processing complete: ${successCount}/${orders.length} have user details (${alreadyPopulated} already populated)`);
+      setOrderDetails(enrichedOrders);
+    };
+    
+    enrichOrdersWithUserDetails();
+  }, [orders]);
 
   const fetchOrders = async () => {
     try {
@@ -85,21 +155,8 @@ const AdminOrdersPage = () => {
         completed: allOrders.filter((o) => o.status === "printed" || o.status === "shipped" || o.status === "delivered").length,
       });
 
-      // Fetch user details for each order to get images
-      const imageMap = {};
-      for (const order of data.queues) {
-        try {
-          const userResponse = await fetch(`/api/user/profile?userId=${order.userId}`);
-          if (userResponse.ok) {
-            const userData = await userResponse.json();
-            imageMap[order.userId] = userData.image || null;
-          }
-        } catch (err) {
-          console.warn(`Could not fetch image for user ${order.userId}:`, err);
-          imageMap[order.userId] = null;
-        }
-      }
-      setUserImages(imageMap);
+      // Initialize empty order details - will be fetched in useEffect
+      setOrderDetails({});
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError(err.message);
@@ -121,14 +178,36 @@ const AdminOrdersPage = () => {
   const handleViewCard = async (order) => {
     try {
       setSelectedCardOrder(order);
-      // Fetch user details to display on card
-      const response = await fetch(`/api/user/profile?userId=${order.userId}`);
-      if (response.ok) {
-        const userData = await response.json();
-        setUserDetailsForCard(userData);
+      // Check if userId is already populated with user details
+      let user = null;
+      
+      if (typeof order.userId === 'object' && order.userId !== null && order.userId._id) {
+        // userId is already populated
+        user = order.userId;
+        console.log(`✓ Using already populated user for card: ${user?.name}`);
       } else {
-        setUserDetailsForCard({ name: order.userName, email: order.userEmail });
+        // Need to fetch user details
+        const userIdString = String(order.userId);
+        const response = await fetch(`/api/admin/users/profile?userId=${userIdString}`, {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          
+          // Extract user from response
+          if (userData.success && userData.data && Array.isArray(userData.data)) {
+            user = userData.data[0];
+          } else if (userData.data && !Array.isArray(userData.data)) {
+            user = userData.data;
+          } else if (userData.user) {
+            user = userData.user;
+          } else {
+            user = userData;
+          }
+        }
       }
+      
+      setUserDetailsForCard(user || { name: order.userName, email: order.userEmail });
       setCardViewOpen(true);
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -471,19 +550,24 @@ const AdminOrdersPage = () => {
                       }}
                     >
                       <TableCell sx={{ color: "white", textAlign: "center" }}>
+                        {console.log(`Avatar for ${order._id}:`, {
+                          userName: order.userName,
+                          image: orderDetails[order._id]?.image,
+                          hasUser: !!orderDetails[order._id],
+                        })}
                         <Avatar
-                          src={userImages[order.userId] || undefined}
                           alt={order.userName}
+                          src={orderDetails[order._id]?.image || ''}
                           sx={{
-                            width: 50,
-                            height: 50,
-                            bgcolor: "#3f51b5",
-                            margin: "0 auto",
-                            fontSize: "1.25rem",
+                            width: 60,
+                            height: 60,
+                            bgcolor: "#4A90E2",
                             fontWeight: "bold",
+                            fontSize: "18px",
+                            color: "white",
                           }}
                         >
-                          {order.userName?.charAt(0).toUpperCase() || "U"}
+                          {`${order.userName?.charAt(0)?.toUpperCase() || "U"}${order.userName?.split(" ")[1]?.charAt(0)?.toUpperCase() || ""}`}
                         </Avatar>
                       </TableCell>
                       <TableCell sx={{ color: "white" }}>

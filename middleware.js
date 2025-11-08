@@ -17,6 +17,11 @@ export default withAuth(
     const token = req.nextauth?.token;
     const userRole = token?.user?.role;
 
+    // Don't redirect API routes - let them handle auth
+    if (url?.startsWith("/api/")) {
+      return;
+    }
+
     if (url?.includes("/admin") && userRole !== "admin") {
       return NextResponse.redirect(new URL("/", req.url));
     }

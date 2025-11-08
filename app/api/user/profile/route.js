@@ -134,11 +134,19 @@ export async function GET(req) {
       return NextResponse.json({ err: "User not found" }, { status: 404 });
     }
 
+    // Prepare response with validated image URL
+    const userResponse = user.toObject();
+    
+    // If image is not set or is the default placeholder, set it to undefined so client can use fallback
+    if (!userResponse.image || userResponse.image === "https://placehold.co/600x400") {
+      userResponse.image = undefined;
+    }
+
     // Log the user object (for debugging purposes)
-    console.log(user);
+    console.log("User profile retrieved:", userResponse);
 
     // Return the user data as the response
-    return NextResponse.json(user);
+    return NextResponse.json(userResponse);
   } catch (err) {
     // Log any errors for debugging purposes
     console.log(err);

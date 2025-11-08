@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Sidebar from "@/components/sidebar/SideBar";
 import AdminCardManagement from "@/components/admin/CardManagement/AdminCardManagement";
+import UserManagement from "@/components/admin/user/UserManagement";
 import {
   Box,
   Typography,
@@ -40,9 +41,26 @@ const Alluser = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch("/api/members");
+        const response = await fetch("/api/members", {
+          credentials: "include",
+        });
         if (!response.ok) {
-          throw new Error("Failed to fetch members");
+          const contentType = response.headers.get("content-type");
+          let errorMessage = `Failed to fetch members: ${response.status}`;
+          
+          if (contentType?.includes("application/json")) {
+            try {
+              const errorData = await response.json();
+              errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+              console.error("Could not parse error response:", e);
+            }
+          } else {
+            const text = await response.text();
+            console.error("Non-JSON response:", text.substring(0, 200));
+          }
+          
+          throw new Error(errorMessage);
         }
         const data = await response.json();
         setMembers(data);
@@ -190,6 +208,7 @@ const Alluser = () => {
           >
             <Tab label="Members" />
             <Tab label="Card Printing" />
+            <Tab label="All Users" />
           </Tabs>
         </Box>
 
@@ -346,6 +365,13 @@ const Alluser = () => {
         {/* Card Printing Tab */}
         {tabValue === 1 && (
           <AdminCardManagement members={members} />
+        )}
+
+        {/* All Users Tab */}
+        {tabValue === 2 && (
+          <Box sx={{ bgcolor: "#1E1E1E", borderRadius: 1, p: 2 }}>
+            <UserManagement />
+          </Box>
         )}
       </Box>
     </Box>

@@ -47,7 +47,10 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
 
   useEffect(() => {
     setCurrentUserDetails(userDetails);
-    setImageUrl(userDetails?.image || "");
+    // Only set image URL if it's a valid image, not a placeholder
+    const validImage = userDetails?.image && userDetails.image !== "https://placehold.co/600x400" ? userDetails.image : "";
+    setImageUrl(validImage);
+    console.log("Card viewer updated with user details:", { userDetails, imageUrl: validImage });
   }, [userDetails]);
 
   const handlePrint = () => {
@@ -72,7 +75,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
       img.onload = async () => {
         try {
           // Update user profile with new image
-          const response = await fetch(`${process.env.API}/user/profile`, {
+          const response = await fetch(`/api/user/profile`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -89,12 +92,16 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
           }
 
           const data = await response.json();
-          setCurrentUserDetails(data.user || { ...currentUserDetails, image: imageUrl });
+          // Update current user details with the new image
+          const updatedDetails = data.user ? { ...data.user } : { ...currentUserDetails, image: imageUrl };
+          setCurrentUserDetails(updatedDetails);
+          setImageUrl(updatedDetails.image || imageUrl);
           setEditingImage(false);
           toast.success("User image updated successfully!");
+          console.log("✓ User image updated:", updatedDetails);
         } catch (error) {
           console.error("Error updating image:", error);
-          toast.error(error.message);
+          toast.error(error.message || "Failed to update image");
         } finally {
           setUpdatingImage(false);
         }
@@ -115,7 +122,9 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
 
   const handleCancelEdit = () => {
     setEditingImage(false);
-    setImageUrl(currentUserDetails?.image || "");
+    // Reset to original image URL from user details
+    const validImage = currentUserDetails?.image && currentUserDetails.image !== "https://placehold.co/600x400" ? currentUserDetails.image : "";
+    setImageUrl(validImage);
   };
 
   const handleDownloadPDF = async () => {
@@ -158,13 +167,13 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
           <Tooltip title={editingImage ? "Cancel image edit" : "Edit member image"}>
             <IconButton
               size="small"
-              // onClick={() => setEditingImage(!editingImage)}
+              onClick={() => setEditingImage(!editingImage)}
               sx={{
                 color: editingImage ? "#FF6B6B" : "#FFA500",
                 "&:hover": { bgcolor: "rgba(255, 165, 0, 0.1)" },
               }}
             >
-         
+              <EditIcon />
             </IconButton>
           </Tooltip>
           <Button
@@ -202,7 +211,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
       </DialogTitle>
       <DialogContent sx={{ p: 2, mt: 1 }}>
         {/* Image Edit Panel */}
-        {/* {editingImage && (
+        {editingImage && (
           <Box sx={{ mb: 2, p: 2, bgcolor: "#FFF3E0", borderRadius: 1, border: "1px solid #FFB74D" }}>
             <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: "bold" }}>
               Edit Member Photo
@@ -247,7 +256,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
               </Alert>
             </Stack>
           </Box>
-        )} */}
+        )}
 
         {/* Official Nepali Membership Card */}
         <Box
@@ -374,7 +383,7 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
                     position: "relative",
                   }}
                 >
-                  {currentUserDetails?.image ? (
+                  {currentUserDetails?.image && currentUserDetails.image !== "https://placehold.co/600x400" ? (
                     <img
                       src={currentUserDetails.image}
                       alt="Member"
@@ -384,15 +393,16 @@ const AdminCardPrintViewer = ({ open, onClose, order, userDetails }) => {
                         objectFit: "cover",
                       }}
                       onError={(e) => {
+                        // If image fails to load, hide it
                         e.target.style.display = "none";
                       }}
                     />
                   ) : null}
-                  {!currentUserDetails?.image && (
+                  {!currentUserDetails?.image || currentUserDetails.image === "https://placehold.co/600x400" || document.querySelector('img[alt="Member"]')?.style.display === "none" ? (
                     <svg style={{ width: "60px", height: "60px", color: "#ccc" }} viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                     </svg>
-                  )}
+                  ) : null}
                 </Box>
 
                 {/* Personal Details */}

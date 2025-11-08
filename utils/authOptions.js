@@ -62,7 +62,9 @@ export const authOptions = {
         userByEmail.password = undefined;
         token.user = {
           ...userByEmail.toObject(),
+          _id: userByEmail._id.toString(),
           role: userByEmail.role || "user",
+          isAdmin: userByEmail.role === "admin" || userByEmail.isAdmin,
         };
       }
 
@@ -72,7 +74,9 @@ export const authOptions = {
     session: async ({ session, token }) => {
       session.user = {
         ...token.user,
+        _id: token.user._id,
         role: token.user.role || "user",
+        isAdmin: token.user.isAdmin || false,
       };
 
       return session;

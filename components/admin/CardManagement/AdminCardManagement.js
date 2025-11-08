@@ -32,6 +32,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import SendIcon from "@mui/icons-material/Send";
 import { toast } from "react-toastify";
+import AdminCardPrintViewer from "@/components/admin/CardPrint/AdminCardPrintViewer";
 
 const AdminCardManagement = ({ members = [] }) => {
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -45,6 +46,10 @@ const AdminCardManagement = ({ members = [] }) => {
   const [loading, setLoading] = useState(false);
   const [selectedIndividualId, setSelectedIndividualId] = useState(null);
   const [quantity, setQuantity] = useState("1");
+  const [cardViewOpen, setCardViewOpen] = useState(false);
+  const [selectedCardOrder, setSelectedCardOrder] = useState(null);
+  const [userDetailsForCard, setUserDetailsForCard] = useState(null);
+  const [fetchingCardDetails, setFetchingCardDetails] = useState(false);
 
   const handleSelectMember = (memberId) => {
     setSelectedMembers((prev) =>

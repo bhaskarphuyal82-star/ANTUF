@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import dbConnect from "@/utils/dbConnect";
 import User from "@/models/user";
+import { authOptions } from "@/utils/authOptions";
 
 export async function GET(request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session) {
       return NextResponse.json(
@@ -32,7 +33,7 @@ export async function GET(request) {
 
 export async function PATCH(request, { params }) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.isAdmin) {
       return NextResponse.json(
