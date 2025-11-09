@@ -65,12 +65,12 @@ export default function DownloadsPage() {
       const mockDocuments = [
         {
           id: 1,
-          title: 'श्रमिक अधिकार सम्बन्धी दस्तावेज',
+          title: 'बार्षिक आय व्यय विवरण ',
           category: 'कानून',
           size: '2.5 MB',
           pages: 45,
           date: '2024-01-15',
-          url: '/pdfs/sample1.pdf',
+          url: '/pdfs/Audit_Ripotr_of_079-080.pdf',
           description: 'नेपालमा श्रमिक अधिकार सम्बन्धी पूर्ण जानकारी',
         },
         {
@@ -80,7 +80,7 @@ export default function DownloadsPage() {
           size: '1.8 MB',
           pages: 32,
           date: '2024-02-10',
-          url: '/pdfs/sample2.pdf',
+          url: 'https://cpnmc.org/media/Audit_Ripotr_of_079-080.pdf',
           description: 'ANTUF को संगठन संरचना र नियमहरू',
         },
         {
@@ -90,7 +90,7 @@ export default function DownloadsPage() {
           size: '3.2 MB',
           pages: 68,
           date: '2024-03-05',
-          url: '/pdfs/sample3.pdf',
+          url: '/pdfs/Audit_Ripotr_of_079-080.pdf',
           description: '२०८० सालको वार्षिक कार्यक्रम र उपलब्धि',
         },
         {
@@ -140,11 +140,11 @@ export default function DownloadsPage() {
     setSelectedPdf(null);
   };
 
-  const handleDownload = (document) => {
+  const handleDownload = (doc) => {
     // In production, this would trigger actual file download
     const link = document.createElement('a');
-    link.href = document.url;
-    link.download = document.title;
+    link.href = doc.url;
+    link.download = doc.title;
     link.click();
   };
 
