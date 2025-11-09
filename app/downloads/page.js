@@ -70,7 +70,7 @@ export default function DownloadsPage() {
           size: '2.5 MB',
           pages: 45,
           date: '2024-01-15',
-          url: '/pdfs/Audit_Ripotr_of_079-080.pdf',
+         url: '/pdfs/sample6.pdf',
           description: 'नेपालमा श्रमिक अधिकार सम्बन्धी पूर्ण जानकारी',
         },
         {
@@ -397,11 +397,13 @@ export default function DownloadsPage() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            fontWeight: 600,
+            fontSize: '1.25rem',
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          <Box component="span" sx={{ flex: 1 }}>
             {selectedPdf?.title}
-          </Typography>
+          </Box>
           <IconButton onClick={handleClosePdfViewer} sx={{ color: 'white' }}>
             <CloseIcon />
           </IconButton>
