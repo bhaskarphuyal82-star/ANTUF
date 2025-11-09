@@ -269,10 +269,7 @@ const Footer = () => {
               Contact Us
             </Typography>
           </Grid>
-        </Grid>
-
-        {/* Google Maps Location Section */}
-        <Box sx={{ mt: 4, pt: 3, borderTop: "1px solid #444" }}>
+             <Box sx={{ mt: 4, pt: 3, borderTop: "1px solid #444" }}>
           <Typography
             variant={isSmallScreen ? "h6" : "h5"}
             fontWeight="bold"
@@ -288,19 +285,18 @@ const Footer = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "flex-start",
               alignItems: "center",
-              width: "100%",
+          
             }}
           >
             <Box
               sx={{
                 width: "100%",
                 maxWidth: isSmallScreen ? "100%" : "800px",
-                height: isSmallScreen ? "300px" : "450px",
+                height: isSmallScreen ? "300px" : "350px",
                 borderRadius: 2,
-                overflow: "hidden",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                
               }}
             >
               <iframe
@@ -316,6 +312,10 @@ const Footer = () => {
             </Box>
           </Box>
         </Box>
+        </Grid>
+
+        {/* Google Maps Location Section */}
+     
 
         {/* Copyright Section */}
         <Box
