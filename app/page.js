@@ -8,6 +8,7 @@ import TapNav from "@/components/navbar/topnav/topnav"
 import ArticlesGrid from "@/components/Article/Article"
 import Home from "@/components/home/Home"
 import VideoContent from "@/components/home/video";
+import PresidentMessage from "@/components/home/PresidentMessage";
 
 export default function HomePage() {
 	return (
@@ -23,6 +24,9 @@ export default function HomePage() {
 	
 			
 			<Footer />
+			
+			{/* President Message Popup */}
+			<PresidentMessage />
 		</div>
 	);
 }
