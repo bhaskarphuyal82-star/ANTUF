@@ -4,13 +4,13 @@ const MessageSchema = new mongoose.Schema({
   senderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: false, // Allow guest messages without senderId
   },
   senderName: String,
   senderImage: String,
   senderRole: {
     type: String,
-    enum: ["user", "admin"],
+    enum: ["user", "admin", "guest"],
     default: "user",
   },
   content: {
@@ -31,7 +31,7 @@ const ChatRoomSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: false, // Allow guest chats without userId
   },
   userName: String,
   userEmail: String,
@@ -45,13 +45,13 @@ const ChatRoomSchema = new mongoose.Schema({
   messages: [MessageSchema],
   status: {
     type: String,
-    enum: ["active", "closed", "archived"],
+    enum: ["active", "closed", "archived", "pending"],
     default: "active",
   },
   subject: String,
   category: {
     type: String,
-    enum: ["general", "support", "billing", "technical", "other"],
+    enum: ["general", "support", "billing", "technical", "other", "password", "router", "connection", "check", "account", "extend", "nettv", "offer"],
     default: "general",
   },
   priority: {

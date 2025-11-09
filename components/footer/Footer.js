@@ -242,7 +242,7 @@ const Footer = () => {
               Refund Policy
             </Typography>
             <Typography
-              onClick={() => router.push("/about")}
+              onClick={() => router.push("/pages/about")}
               sx={{
                 cursor: "pointer",
                 display: "block",

@@ -506,7 +506,7 @@ const ScrollableTabs = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                router.push('/about');
+                router.push('/pages/about');
               }}
               sx={{
                 color: 'inherit',

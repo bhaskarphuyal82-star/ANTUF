@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar"
 import TapNav from "@/components/navbar/topnav/topnav"
+import SupportChatWidget from "@/components/support/SupportChatWidget";
 
 import ArticlesGrid from "@/components/Article/Article"
 import Home from "@/components/home/Home"
@@ -74,6 +75,9 @@ export default function HomePage() {
 	
 			
 			<Footer />
+			
+			{/* Support Chat Widget for Guests and Users */}
+			<SupportChatWidget />
 			
 			{/* President Message Popup */}
 			<PresidentMessage 

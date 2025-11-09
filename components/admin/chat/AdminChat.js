@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import {
   Box,
   TextField,
@@ -49,8 +50,17 @@ import VideocamOffIcon from "@mui/icons-material/VideocamOff";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BlockIcon from "@mui/icons-material/Block";
+import LockIcon from "@mui/icons-material/Lock";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+
+// Dynamic import for VideoCall component to avoid SSR issues
+const VideoCallComponent = dynamic(
+  () => import('../../VideoCall/VideoCallComponent'),
+  { ssr: false }
+);
 
 const AdminChat = () => {
   const { data: session } = useSession();
@@ -78,6 +88,13 @@ const AdminChat = () => {
     "Your request has been forwarded to the appropriate team.",
   ]);
   const messagesEndRef = useRef(null);
+  const audioRef = useRef(null);
+  const [previousMessageCount, setPreviousMessageCount] = useState({});
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+  const [messageMenuAnchor, setMessageMenuAnchor] = useState(null);
+  const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -86,6 +103,17 @@ const AdminChat = () => {
       return () => clearInterval(interval);
     }
   }, [session?.user?.id]);
+
+  useEffect(() => {
+    // Create audio element for Facebook Messenger notification sound
+    audioRef.current = new Audio();
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,6 +134,33 @@ const AdminChat = () => {
       const response = await fetch("/api/chat");
       if (response.ok) {
         const data = await response.json();
+        
+        // Check for new messages from users and play sound
+        data.forEach(chat => {
+          const chatId = chat._id;
+          const currentMessageCount = chat.messages.length;
+          const previousCount = previousMessageCount[chatId];
+          
+          // Only notify if we have a previous count (not first load) and there are new messages
+          if (previousCount !== undefined && currentMessageCount > previousCount) {
+            // Check if the new message is from a user (not admin)
+            const latestMessage = chat.messages[chat.messages.length - 1];
+            if (latestMessage && latestMessage.senderRole !== "admin") {
+              playFacebookMessengerSound();
+              toast.info(`New message from ${chat.userName || 'Guest'}`, {
+                position: "top-right",
+                autoClose: 3000,
+              });
+            }
+          }
+          
+          // Update the message count
+          setPreviousMessageCount(prev => ({
+            ...prev,
+            [chatId]: currentMessageCount
+          }));
+        });
+        
         setChatRooms(data);
         
         // Calculate unread messages
@@ -252,10 +307,14 @@ const AdminChat = () => {
   };
 
   const handleStartVideoCall = () => {
+    if (!selectedChat) {
+      toast.error('Please select a chat first');
+      return;
+    }
     setOpenVideoCall(true);
     setIsCallActive(true);
     setCallDuration(0);
-    toast.success("Video call started");
+    toast.success("Initiating video call...");
   };
 
   const handleEndVideoCall = () => {
@@ -286,6 +345,73 @@ const AdminChat = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const playFacebookMessengerSound = () => {
+    if (!audioRef.current) return;
+    
+    // Facebook Messenger "pop" sound (base64 encoded WAV)
+    try {
+      // This is a simple notification sound encoded as base64 WAV
+      const messengerSound = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+      
+      audioRef.current.src = messengerSound;
+      audioRef.current.volume = 0.5; // 50% volume
+      audioRef.current.play().catch(err => console.log('Sound play failed:', err));
+    } catch (error) {
+      console.log('Error playing sound:', error);
+    }
+  };
+
+  const handleOpenMessageMenu = (event, messageIndex) => {
+    setMessageMenuAnchor(event.currentTarget);
+    setSelectedMessageIndex(messageIndex);
+  };
+
+  const handleCloseMessageMenu = () => {
+    setMessageMenuAnchor(null);
+    setSelectedMessageIndex(null);
+  };
+
+  const handleOpenDeleteDialog = (messageIndex) => {
+    setMessageToDelete(messageIndex);
+    setDeleteDialogOpen(true);
+    handleCloseMessageMenu();
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setMessageToDelete(null);
+  };
+
+  const handleDeleteMessage = async () => {
+    if (!selectedChat || messageToDelete === null) return;
+
+    try {
+      const response = await fetch(`/api/chat/${selectedChat._id}/message/${messageToDelete}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const updatedChat = await response.json();
+        setSelectedChat(updatedChat);
+        setMessages(updatedChat.messages);
+        setChatRooms(
+          chatRooms.map((c) => (c._id === updatedChat._id ? updatedChat : c))
+        );
+        toast.success("Message deleted successfully");
+      } else {
+        toast.error("Failed to delete message");
+      }
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      toast.error("Failed to delete message");
+    } finally {
+      handleCloseDeleteDialog();
+    }
   };
 
   return (
@@ -461,23 +587,45 @@ const AdminChat = () => {
                 <CardContent sx={{ p: 2 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
                     <Badge badgeContent={unreadMessages} color="error">
-                      <Avatar src={chat.userImage} sx={{ width: 45, height: 45 }}>
-                        {chat.userName?.[0]}
+                      <Avatar 
+                        src={chat.userImage} 
+                        sx={{ 
+                          width: 45, 
+                          height: 45,
+                          bgcolor: chat.userId ? "#2196F3" : "#ff9800" // Blue for users, Orange for guests
+                        }}
+                      >
+                        {chat.userId ? chat.userName?.[0] : "G"} {/* G for Guest */}
                       </Avatar>
                     </Badge>
                     <Box sx={{ flex: 1, overflow: "hidden" }}>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: "#1a1a2e",
-                          fontWeight: 600,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {chat.userName}
-                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            color: "#1a1a2e",
+                            fontWeight: 600,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {chat.userId ? chat.userName : `Guest: ${chat.userName}`}
+                        </Typography>
+                        {!chat.userId && (
+                          <Chip 
+                            label="GUEST" 
+                            size="small" 
+                            sx={{ 
+                              height: 18, 
+                              fontSize: "0.65rem",
+                              bgcolor: "#ff9800",
+                              color: "white",
+                              fontWeight: 600
+                            }} 
+                          />
+                        )}
+                      </Box>
                       <Typography
                         variant="caption"
                         sx={{ 
@@ -488,7 +636,7 @@ const AdminChat = () => {
                           whiteSpace: "nowrap",
                         }}
                       >
-                        {chat.subject}
+                        {chat.userId ? chat.subject : `${chat.userEmail} • ${chat.subject}`}
                       </Typography>
                     </Box>
                   </Box>
@@ -536,16 +684,46 @@ const AdminChat = () => {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Avatar src={selectedChat.userImage} sx={{ width: 48, height: 48 }}>
-                {selectedChat.userName?.[0]}
+              <Avatar 
+                src={selectedChat.userImage} 
+                sx={{ 
+                  width: 48, 
+                  height: 48,
+                  bgcolor: selectedChat.userId ? "#2196F3" : "#ff9800"
+                }}
+              >
+                {selectedChat.userId ? selectedChat.userName?.[0] : "G"}
               </Avatar>
               <Box>
-                <Typography variant="h6" sx={{ color: "#1a1a2e", fontWeight: 700 }}>
-                  {selectedChat.userName}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography variant="h6" sx={{ color: "#1a1a2e", fontWeight: 700 }}>
+                    {selectedChat.userId ? selectedChat.userName : `Guest: ${selectedChat.userName}`}
+                  </Typography>
+                  {!selectedChat.userId && (
+                    <Chip 
+                      label="GUEST USER" 
+                      size="small" 
+                      sx={{ 
+                        height: 20, 
+                        fontSize: "0.7rem",
+                        bgcolor: "#ff9800",
+                        color: "white",
+                        fontWeight: 600
+                      }} 
+                    />
+                  )}
+                </Box>
+                <Typography variant="caption" sx={{ color: "#666", display: "block" }}>
+                  {selectedChat.userId ? 
+                    `${selectedChat.subject} • ${selectedChat.category}` : 
+                    `📧 ${selectedChat.userEmail}`
+                  }
                 </Typography>
-                <Typography variant="caption" sx={{ color: "#666" }}>
-                  {selectedChat.subject} • {selectedChat.category}
-                </Typography>
+                {!selectedChat.userId && (
+                  <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.65rem" }}>
+                    {selectedChat.subject} • {selectedChat.category}
+                  </Typography>
+                )}
               </Box>
             </Box>
             <Stack direction="row" spacing={1} alignItems="center">
@@ -615,6 +793,10 @@ const AdminChat = () => {
                   display: "flex",
                   justifyContent: msg.senderRole === "admin" ? "flex-end" : "flex-start",
                   animation: "fadeIn 0.3s ease-in",
+                  position: "relative",
+                  "&:hover .message-options": {
+                    opacity: 1,
+                  },
                 }}
               >
                 <Box
@@ -625,33 +807,53 @@ const AdminChat = () => {
                     p: 2,
                     borderRadius: 3,
                     boxShadow: 1,
+                    position: "relative",
                   }}
                 >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: msg.senderRole === "admin" ? "rgba(255,255,255,0.9)" : "#666",
-                      display: "block",
-                      fontWeight: 600,
-                      mb: 0.5,
-                    }}
-                  >
-                    {msg.senderName}
-                  </Typography>
-                  <Typography variant="body1" sx={{ wordBreak: "break-word", lineHeight: 1.5 }}>
-                    {msg.content}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ 
-                      color: msg.senderRole === "admin" ? "rgba(255,255,255,0.8)" : "#999", 
-                      display: "block", 
-                      mt: 0.5,
-                      textAlign: "right",
-                    }}
-                  >
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </Typography>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: msg.senderRole === "admin" ? "rgba(255,255,255,0.9)" : "#666",
+                          display: "block",
+                          fontWeight: 600,
+                          mb: 0.5,
+                        }}
+                      >
+                        {msg.senderName}
+                      </Typography>
+                      <Typography variant="body1" sx={{ wordBreak: "break-word", lineHeight: 1.5 }}>
+                        {msg.content}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ 
+                          color: msg.senderRole === "admin" ? "rgba(255,255,255,0.8)" : "#999", 
+                          display: "block", 
+                          mt: 0.5,
+                          textAlign: "right",
+                        }}
+                      >
+                        {new Date(msg.timestamp).toLocaleTimeString()}
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      className="message-options"
+                      size="small"
+                      onClick={(e) => handleOpenMessageMenu(e, idx)}
+                      sx={{
+                        opacity: 0,
+                        transition: "opacity 0.2s",
+                        color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#666",
+                        "&:hover": {
+                          bgcolor: msg.senderRole === "admin" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
+                        },
+                      }}
+                    >
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </Box>
               </Box>
             ))}
@@ -721,6 +923,7 @@ const AdminChat = () => {
           </Box>
         </Box>
       )}
+      </Box>
 
       {/* Assign Dialog */}
       <Dialog open={openAssign} onClose={() => setOpenAssign(false)} maxWidth="sm" fullWidth>
@@ -746,214 +949,103 @@ const AdminChat = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Video Call Dialog */}
-      <Dialog
-        open={openVideoCall}
-        onClose={handleEndVideoCall}
-        maxWidth={isFullscreen ? false : "md"}
-        fullScreen={isFullscreen}
-        fullWidth
+      {/* GetStream Video Call Component */}
+      {selectedChat && (
+        <VideoCallComponent
+          open={openVideoCall}
+          onClose={handleEndVideoCall}
+          callId={`chat_${selectedChat._id}`}
+          callType="default"
+          participantName={selectedChat.userName}
+          participantImage={selectedChat.userImage}
+        />
+      )}
+
+      {/* Message Options Menu */}
+      <Menu
+        anchorEl={messageMenuAnchor}
+        open={Boolean(messageMenuAnchor)}
+        onClose={handleCloseMessageMenu}
         PaperProps={{
           sx: {
-            bgcolor: "#1a1a2e",
-            minHeight: isFullscreen ? "100vh" : "600px",
-          }
+            boxShadow: 3,
+            borderRadius: 2,
+            minWidth: 180,
+          },
         }}
       >
-        <DialogTitle sx={{ 
-          bgcolor: "#1a1a2e", 
-          color: "white", 
-          display: "flex", 
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid rgba(255,255,255,0.1)"
-        }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <VideocamIcon sx={{ color: "#4caf50" }} />
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                Video Call - {selectedChat?.userName}
-              </Typography>
-              <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>
-                {isCallActive && `Duration: ${formatCallDuration(callDuration)}`}
-              </Typography>
-            </Box>
+        <MenuItem
+          onClick={() => handleOpenDeleteDialog(selectedMessageIndex)}
+          sx={{
+            color: "#d32f2f",
+            "&:hover": {
+              bgcolor: "#ffebee",
+            },
+          }}
+        >
+          <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+          Delete Message
+        </MenuItem>
+      </Menu>
+
+      {/* Delete Message Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ bgcolor: "#fff3e0", color: "#e65100", fontWeight: 700 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <DeleteIcon />
+            Delete Message?
           </Box>
-          <IconButton onClick={toggleFullscreen} sx={{ color: "white" }}>
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-          </IconButton>
         </DialogTitle>
-
-        <DialogContent sx={{ 
-          bgcolor: "#0f0f1e", 
-          p: 0,
-          display: "flex",
-          flexDirection: "column",
-          position: "relative"
-        }}>
-          {/* Main Video Area */}
-          <Box sx={{ 
-            flex: 1, 
-            display: "flex", 
-            justifyContent: "center", 
-            alignItems: "center",
-            bgcolor: "#000",
-            position: "relative",
-            minHeight: isFullscreen ? "calc(100vh - 200px)" : "450px"
-          }}>
-            {/* Remote Video (User) */}
-            <Box sx={{ 
-              width: "100%", 
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              bgcolor: "#1a1a2e"
-            }}>
-              <Avatar 
-                src={selectedChat?.userImage}
-                sx={{ 
-                  width: 150, 
-                  height: 150,
-                  mb: 2,
-                  border: "4px solid #4caf50"
-                }}
-              >
-                {selectedChat?.userName?.[0]}
-              </Avatar>
-              <Typography variant="h5" sx={{ color: "white", fontWeight: 600 }}>
-                {selectedChat?.userName}
+        <DialogContent sx={{ bgcolor: "white", pt: 3 }}>
+          <Typography variant="body1" sx={{ color: "#666", mb: 2 }}>
+            Are you sure you want to delete this message? This action cannot be undone.
+          </Typography>
+          {messageToDelete !== null && messages[messageToDelete] && (
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: "#f5f5f5",
+                borderRadius: 2,
+                borderLeft: "3px solid #ff9800",
+              }}
+            >
+              <Typography variant="caption" sx={{ color: "#666", display: "block", mb: 0.5 }}>
+                {messages[messageToDelete].senderName}
               </Typography>
-              <Chip 
-                label="Connected" 
-                color="success" 
-                size="small" 
-                sx={{ mt: 1 }}
-              />
-            </Box>
-
-            {/* Local Video (Self) - Picture in Picture */}
-            <Paper sx={{ 
-              position: "absolute",
-              bottom: 20,
-              right: 20,
-              width: { xs: 120, md: 200 },
-              height: { xs: 90, md: 150 },
-              bgcolor: "#2a2a3e",
-              border: "2px solid #4caf50",
-              borderRadius: 2,
-              overflow: "hidden",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}>
-              {isVideoEnabled ? (
-                <Box sx={{ 
-                  width: "100%", 
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bgcolor: "#1a1a2e"
-                }}>
-                  <Avatar sx={{ width: 60, height: 60 }}>
-                    {session?.user?.name?.[0] || "A"}
-                  </Avatar>
-                </Box>
-              ) : (
-                <Box sx={{ 
-                  width: "100%", 
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  bgcolor: "#1a1a2e"
-                }}>
-                  <VideocamOffIcon sx={{ fontSize: 40, color: "#999" }} />
-                </Box>
-              )}
-            </Paper>
-
-            {/* Call Status Indicator */}
-            <Box sx={{ 
-              position: "absolute",
-              top: 20,
-              left: 20,
-              bgcolor: "rgba(0,0,0,0.7)",
-              px: 2,
-              py: 1,
-              borderRadius: 2
-            }}>
-              <Typography variant="body2" sx={{ color: "white", fontWeight: 600 }}>
-                🔴 Live • {formatCallDuration(callDuration)}
+              <Typography variant="body2" sx={{ color: "#1a1a2e" }}>
+                {messages[messageToDelete].content}
               </Typography>
             </Box>
-          </Box>
-
-          {/* Video Call Controls */}
-          <Box sx={{ 
-            p: 3,
-            bgcolor: "#1a1a2e",
-            display: "flex",
-            justifyContent: "center",
-            gap: 2,
-            borderTop: "1px solid rgba(255,255,255,0.1)"
-          }}>
-            <Tooltip title={isAudioEnabled ? "Mute Microphone" : "Unmute Microphone"}>
-              <IconButton
-                onClick={toggleAudio}
-                sx={{
-                  bgcolor: isAudioEnabled ? "#2196F3" : "#f44336",
-                  color: "white",
-                  width: 56,
-                  height: 56,
-                  "&:hover": {
-                    bgcolor: isAudioEnabled ? "#1976D2" : "#d32f2f",
-                  }
-                }}
-              >
-                {isAudioEnabled ? <MicIcon /> : <MicOffIcon />}
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title={isVideoEnabled ? "Turn Off Camera" : "Turn On Camera"}>
-              <IconButton
-                onClick={toggleVideo}
-                sx={{
-                  bgcolor: isVideoEnabled ? "#2196F3" : "#f44336",
-                  color: "white",
-                  width: 56,
-                  height: 56,
-                  "&:hover": {
-                    bgcolor: isVideoEnabled ? "#1976D2" : "#d32f2f",
-                  }
-                }}
-              >
-                {isVideoEnabled ? <VideocamIcon /> : <VideocamOffIcon />}
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="End Call">
-              <IconButton
-                onClick={handleEndVideoCall}
-                sx={{
-                  bgcolor: "#f44336",
-                  color: "white",
-                  width: 64,
-                  height: 64,
-                  "&:hover": {
-                    bgcolor: "#d32f2f",
-                  }
-                }}
-              >
-                <CallEndIcon sx={{ fontSize: 32 }} />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          )}
         </DialogContent>
+        <DialogActions sx={{ bgcolor: "white", p: 2, gap: 1 }}>
+          <Button
+            onClick={handleCloseDeleteDialog}
+            sx={{ color: "#666" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteMessage}
+            variant="contained"
+            color="error"
+            startIcon={<DeleteIcon />}
+            sx={{
+              bgcolor: "#d32f2f",
+              "&:hover": {
+                bgcolor: "#b71c1c",
+              },
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
-      </Box>
     </Box>
   );
 };

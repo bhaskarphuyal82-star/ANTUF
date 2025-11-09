@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import {
   Box,
   TextField,
@@ -21,11 +22,26 @@ import {
   Select,
   MenuItem,
   Stack,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import MicIcon from "@mui/icons-material/Mic";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import VideocamOffIcon from "@mui/icons-material/VideocamOff";
+import CallEndIcon from "@mui/icons-material/CallEnd";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+
+// Dynamic import for VideoCall component to avoid SSR issues
+const VideoCallComponent = dynamic(
+  () => import('../../VideoCall/VideoCallComponent'),
+  { ssr: false }
+);
 
 const UserChat = () => {
   const { data: session } = useSession();
@@ -40,7 +56,15 @@ const UserChat = () => {
     category: "general",
     priority: "medium",
   });
+  const [openVideoCall, setOpenVideoCall] = useState(false);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
+  const [isCallActive, setIsCallActive] = useState(false);
   const messagesEndRef = useRef(null);
+  const audioRef = useRef(null);
+  const [messageStatuses, setMessageStatuses] = useState({});
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -49,8 +73,29 @@ const UserChat = () => {
   }, [session?.user?.id]);
 
   useEffect(() => {
+    // Create audio element for notification sounds
+    audioRef.current = new Audio();
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    let interval;
+    if (isCallActive) {
+      interval = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isCallActive]);
 
   const fetchChats = async () => {
     try {
@@ -96,6 +141,15 @@ const UserChat = () => {
         setSelectedChat(updatedChat);
         setMessages(updatedChat.messages);
         setMessageInput("");
+        
+        // Play sent sound
+        playSound('sent');
+        
+        // Get the last message ID and simulate delivery/seen
+        const lastMessage = updatedChat.messages[updatedChat.messages.length - 1];
+        if (lastMessage && lastMessage._id) {
+          simulateMessageDelivery(lastMessage._id);
+        }
       } else {
         toast.error("Failed to send message");
       }
@@ -151,6 +205,94 @@ const UserChat = () => {
       urgent: "error",
     };
     return colors[priority] || "default";
+  };
+
+  const handleStartVideoCall = () => {
+    if (!selectedChat) {
+      toast.error('Please select a chat first');
+      return;
+    }
+    setOpenVideoCall(true);
+    setIsCallActive(true);
+    setCallDuration(0);
+    toast.success("Initiating video call...");
+  };
+
+  const handleEndVideoCall = () => {
+    setOpenVideoCall(false);
+    setIsCallActive(false);
+    setCallDuration(0);
+    setIsVideoEnabled(true);
+    setIsAudioEnabled(true);
+    setIsFullscreen(false);
+    toast.info("Video call ended");
+  };
+
+  const toggleVideo = () => {
+    setIsVideoEnabled(!isVideoEnabled);
+    toast.info(isVideoEnabled ? "Camera turned off" : "Camera turned on");
+  };
+
+  const toggleAudio = () => {
+    setIsAudioEnabled(!isAudioEnabled);
+    toast.info(isAudioEnabled ? "Microphone muted" : "Microphone unmuted");
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const formatCallDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const playSound = (type) => {
+    if (!audioRef.current) return;
+    
+    // Different sounds for different events
+    const sounds = {
+      sent: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZTA0PVKvo7bFgGgY+lt7yxnQnBSh+zPLaizsIGGS56+WiUxELTKXh8bllHgU7kNXzyngqBSl5yfDgkD4MFWCz6uysWhwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw',
+      delivered: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZTA0PVKvo7bFgGgY+lt7yxnQnBSh+zPLaizsIGGS56+WiUxELTKXh8bllHgU7kNXzyngqBSl5yfDgkD4MFWCz6uysWhwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw',
+      seen: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZTA0PVKvo7bFgGgY+lt7yxnQnBSh+zPLaizsIGGS56+WiUxELTKXh8bllHgU7kNXzyngqBSl5yfDgkD4MFWCz6uysWhwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzy2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw2o4+ChVgs+rrrFscBjuT2PPBdikFKIDM8NqOPgoVYLPq66xbHAY7k9jzwXYpBSiAzPDajj4KFWCz6uusWxwGO5PY88F2KQUogMzw'
+    };
+
+    try {
+      audioRef.current.src = sounds[type] || sounds.sent;
+      audioRef.current.volume = 0.3;
+      audioRef.current.play().catch(err => console.log('Sound play failed:', err));
+    } catch (error) {
+      console.log('Error playing sound:', error);
+    }
+  };
+
+  const updateMessageStatus = (messageId, status) => {
+    setMessageStatuses(prev => ({
+      ...prev,
+      [messageId]: status
+    }));
+
+    // Play sound based on status
+    if (status === 'delivered') {
+      playSound('delivered');
+      toast.info('Message delivered', { autoClose: 1000 });
+    } else if (status === 'seen') {
+      playSound('seen');
+      toast.success('Message seen', { autoClose: 1000 });
+    }
+  };
+
+  const simulateMessageDelivery = (messageId) => {
+    // Simulate delivered status after 1 second
+    setTimeout(() => {
+      updateMessageStatus(messageId, 'delivered');
+      
+      // Simulate seen status after 3 more seconds
+      setTimeout(() => {
+        updateMessageStatus(messageId, 'seen');
+      }, 3000);
+    }, 1000);
   };
 
   return (
@@ -267,13 +409,27 @@ const UserChat = () => {
                 {selectedChat.adminName || "Waiting for admin response..."}
               </Typography>
             </Box>
-            <Button
-              size="small"
-              onClick={() => setSelectedChat(null)}
-              sx={{ color: "white" }}
-            >
-              <CloseIcon />
-            </Button>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Tooltip title="Start Video Call">
+                <IconButton
+                  onClick={handleStartVideoCall}
+                  sx={{
+                    bgcolor: "#4caf50",
+                    color: "white",
+                    "&:hover": { bgcolor: "#45a049" },
+                  }}
+                >
+                  <VideocamIcon />
+                </IconButton>
+              </Tooltip>
+              <Button
+                size="small"
+                onClick={() => setSelectedChat(null)}
+                sx={{ color: "white" }}
+              >
+                <CloseIcon />
+              </Button>
+            </Box>
           </Box>
 
           {/* Messages */}
@@ -316,12 +472,33 @@ const UserChat = () => {
                     <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
                       {msg.content}
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "rgba(255,255,255,0.7)", display: "block", mt: 0.5 }}
-                    >
-                      {new Date(msg.timestamp).toLocaleTimeString()}
-                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "rgba(255,255,255,0.7)" }}
+                      >
+                        {new Date(msg.timestamp).toLocaleTimeString()}
+                      </Typography>
+                      {msg.senderRole === session?.user?.role && (
+                        <Box sx={{ display: "flex", alignItems: "center", ml: 0.5 }}>
+                          {messageStatuses[msg._id] === 'seen' ? (
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Typography variant="caption" sx={{ color: "#4caf50", fontSize: "0.7rem" }}>
+                                ✓✓
+                              </Typography>
+                            </Box>
+                          ) : messageStatuses[msg._id] === 'delivered' ? (
+                            <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)", fontSize: "0.7rem" }}>
+                              ✓✓
+                            </Typography>
+                          ) : (
+                            <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", fontSize: "0.7rem" }}>
+                              ✓
+                            </Typography>
+                          )}
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               ))
@@ -447,6 +624,18 @@ const UserChat = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* GetStream Video Call Component */}
+      {selectedChat && (
+        <VideoCallComponent
+          open={openVideoCall}
+          onClose={handleEndVideoCall}
+          callId={`chat_${selectedChat._id}`}
+          callType="default"
+          participantName={selectedChat.adminName || "Support Team"}
+          participantImage={selectedChat.adminImage}
+        />
+      )}
     </Box>
   );
 };
