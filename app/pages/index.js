@@ -58,6 +58,13 @@ export const staticPages = [
     description: 'महत्त्वपूर्ण दस्तावेजहरू',
     icon: '📄',
   },
+  {
+    id: 'affiliates',
+    title: 'सम्बद्ध संगठन / Affiliates',
+    path: '/pages/affiliates',
+    description: 'हाम्रा सम्बद्ध संगठनहरू',
+    icon: '🤝',
+  },
 ];
 
 export default staticPages;
