@@ -147,42 +147,345 @@ const ScrollableTabs = () => {
             zIndex: 1,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
           
-                      <IconButton
+            <IconButton
+              onClick={() => router.push('/')}
               sx={{
                 color: "white",
                 display: { xs: "none", md: "flex" },
                 padding: "12px",
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: "rgba(255, 0, 0, 0.2)"
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  transform: 'scale(1.1)',
                 },
                 '& .MuiSvgIcon-root': {
-                  fontSize: '2rem' // This makes the icon itself larger
+                  fontSize: '2rem'
                 }
               }}
             >
               <HomeIcon />
-            </IconButton>{/* Home icon */}
-               <Button
-        id="basic-button"
-        color='white'
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
-        ABOUT US
-      </Button>
+            </IconButton>
+            
+            <Button
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '12px', sm: '13px', md: '14px' },
+                px: { xs: 1.5, md: 2 },
+                py: 1,
+                borderRadius: 2,
+                textTransform: 'uppercase',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              ABOUT US
+            </Button>
         
-            <Button className="nav-button" size="small">होम</Button>
-            <Button className="nav-button" size="small">गतिविधि</Button>
-            <Button className="nav-button" size="small">संगठन</Button>
-            <Button className="nav-button" size="small">जनप्रतिनिधि</Button>
-            <Button className="nav-button" size="small">इतिहास</Button>
-            <Button className="nav-button" size="small">दस्तावेज</Button>
-            <Button className="nav-button" size="small">डाउनलोड</Button>
-            <Button className="nav-button" size="small">सम्पर्क</Button>
+            <Button 
+              onClick={() => router.push('/')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              होम
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/activities')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              गतिविधि
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/organization')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              संगठन
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/representatives')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              जनप्रतिनिधि
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/history')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              इतिहास
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/documents')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              दस्तावेज
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/downloads')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              डाउनलोड
+            </Button>
+            
+            <Button 
+              onClick={() => router.push('/contact')}
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '15px' },
+                px: { xs: 1.5, md: 2.5 },
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '3px',
+                  backgroundColor: 'white',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s ease',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'translateY(-2px)',
+                  '&::before': {
+                    transform: 'translateX(0)',
+                  },
+                },
+              }}
+            >
+              सम्पर्क
+            </Button>
           </Box>
  <Menu
         id="basic-menu"
