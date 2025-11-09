@@ -185,8 +185,9 @@ const Footer = () => {
           )}
 
           {/* Legal Links Section */}
-          <Grid item xs={12} sm={6} md={2}>
-            <Typography
+          <Grid item xs={12} sm={6} md={2} sx={{justifyContent:"space-end"}}>
+         <Box>
+             <Typography
               variant="subtitle1"
               fontWeight="bold"
               gutterBottom
@@ -268,54 +269,104 @@ const Footer = () => {
             >
               Contact Us
             </Typography>
+         </Box>
           </Grid>
-             <Box sx={{ mt: 4, pt: 3, borderTop: "1px solid #444" }}>
-          <Typography
-            variant={isSmallScreen ? "h6" : "h5"}
-            fontWeight="bold"
-            gutterBottom
-            sx={{
-              color: "green",
-              textAlign: "center",
-              mb: 3,
-            }}
-          >
-            Our Location / हाम्रो स्थान
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-          
-            }}
-          >
-            <Box
+          <Box>
+            <Typography
+              variant={isSmallScreen ? "h6" : "h5"}
+              fontWeight="bold"
+              gutterBottom
               sx={{
-                width: "100%",
-                maxWidth: isSmallScreen ? "100%" : "800px",
-                height: isSmallScreen ? "300px" : "350px",
-                borderRadius: 2,
-                
+                color: "green",
+                textAlign: "center",
+
               }}
             >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d56525.06391095446!2d85.334246!3d27.692066!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19f2dc69b5b5%3A0x458dbd5c96ec655e!2sALL%20NEPAL%20FEDERATION%20OF%20TRADE%20UNIONS!5e0!3m2!1sen!2sus!4v1762664560747!5m2!1sen!2sus"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="ANTUF Location Map"
-              />
+              Contact Us
+
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: isSmallScreen ? "100%" : "800px",
+                  height: isSmallScreen ? "300px" : "350px",
+                  borderRadius: 2,
+
+                }}
+              >
+                <Typography>
+                  All Nepal Federation of Trade Unions
+                  
+                </Typography>
+                <Typography>
+                  Paris Danda, Koteswor-32, Kathmandu
+                
+                </Typography>
+                <Typography>
+                    Phone: 977-01-4602758, Fax: 977-01-4602793
+                  
+                </Typography>
+                <Typography>
+                  Email: antuf2007@gmail.com & info@antuf.org
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
+          <Box>
+            <Typography
+              variant={isSmallScreen ? "h6" : "h5"}
+              fontWeight="bold"
+              gutterBottom
+              sx={{
+                color: "green",
+                textAlign: "center",
+
+              }}
+            >
+              Our Location / हाम्रो स्थान
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: isSmallScreen ? "100%" : "800px",
+                  height: isSmallScreen ? "300px" : "350px",
+                  borderRadius: 2,
+
+                }}
+              >
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d56525.06391095446!2d85.334246!3d27.692066!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19f2dc69b5b5%3A0x458dbd5c96ec655e!2sALL%20NEPAL%20FEDERATION%20OF%20TRADE%20UNIONS!5e0!3m2!1sen!2sus!4v1762664560747!5m2!1sen!2sus"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="ANTUF Location Map"
+                />
+              </Box>
+            </Box>
+          </Box>
         </Grid>
 
         {/* Google Maps Location Section */}
-     
+
 
         {/* Copyright Section */}
         <Box

@@ -86,8 +86,9 @@ export default function HomePage() {
 				ariaLabel="Quick Actions"
 				sx={{
 					position: 'fixed',
-					bottom: 16,
+					bottom: 75,
 					right: 16,
+
 					'& .MuiFab-primary': {
 						backgroundColor: '#4caf50',
 						'&:hover': {

@@ -316,7 +316,7 @@ const EventCalendarAdmin = () => {
               onChange={(e) => setFilterCategory(e.target.value)}
               label="श्रेणी"
               sx={{
-                color: "white",
+                color: "black",
                 "& .MuiOutlinedInput-notchedOutline": {
                   borderColor: "rgba(255, 255, 255, 0.23)",
                 },

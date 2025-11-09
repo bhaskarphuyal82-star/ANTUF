@@ -38,7 +38,8 @@ import {
   Download as DownloadIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
-
+ import Sidebar from "@/components/sidebar/SideBar";   
+import Profile from "@/components/admin/image/ImageComponent";
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -56,17 +57,13 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/');
-    } else if (session?.user?.role !== 'admin') {
-      router.push('/dashboard/user');
-    }
+  
   }, [session, status, router]);
 
   useEffect(() => {
-    if (session?.user?.role === 'admin') {
+    
       fetchDashboardData();
-    }
+    
   }, [session]);
 
   const fetchDashboardData = async () => {
@@ -105,28 +102,8 @@ export default function AdminDashboard() {
     }
   };
 
-  if (status === 'loading' || loading) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        }}
-      >
-        <Box sx={{ textAlign: 'center', color: 'white' }}>
-          <CircularProgress size={64} sx={{ color: 'white', mb: 2 }} />
-          <Typography variant="h6">Loading Dashboard...</Typography>
-        </Box>
-      </Box>
-    );
-  }
 
-  if (!session || session.user.role !== 'admin') {
-    return null;
-  }
+
 
   const statCards = [
     {
@@ -169,6 +146,7 @@ export default function AdminDashboard() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa', pb: 4 }}>
+
       {/* Header Section */}
       <Box
         sx={{
@@ -179,11 +157,12 @@ export default function AdminDashboard() {
         }}
       >
         <Container maxWidth="xl">
+                <Profile/>
           <Typography variant="h3" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
             Admin Dashboard
           </Typography>
           <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-            Welcome back, {session.user.name || 'Admin'}! Here's what's happening today.
+            Welcome back,  Here's what's happening today.
           </Typography>
         </Container>
       </Box>
@@ -286,7 +265,7 @@ export default function AdminDashboard() {
             <Grid item xs={12} sm={6} md={3}>
               <Button
                 component={Link}
-                href="/dashboard/admin/post"
+                href="/dashboard/admin/create/post"
                 fullWidth
                 variant="outlined"
                 startIcon={<ArticleIcon />}
@@ -642,6 +621,7 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
       </Container>
+        <Sidebar />
     </Box>
   );
 }

@@ -13,6 +13,12 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import CloseIcon from "@mui/icons-material/Close";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import { useRouter } from "next/navigation";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,6 +27,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
+import Collapse from "@mui/material/Collapse";
 import Page from "@/components/loginmodal/Page";
 import { useSession } from "next-auth/react";
 import Tabs from "@/components/tab/Tab";
@@ -37,6 +44,8 @@ const Navbar = () => {
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState({});
+  
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -45,6 +54,13 @@ const Navbar = () => {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  const toggleExpand = (index) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
   return (
@@ -260,48 +276,364 @@ const Navbar = () => {
         <Drawer open={drawerOpen} onClose={toggleDrawer(false)} anchor="left">
           <Box
             sx={{
-              width: 250,
-              backgroundColor: "#1A1A1A",
+              width: 280,
+              backgroundColor: "#9B2C2C",
               height: "100%",
-              color: "red",
+              display: "flex",
+              flexDirection: "column",
             }}
             role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
           >
-           
+            {/* Header with Logo and Close Button */}
+            <Box
+              sx={{
+                backgroundColor: "#F5F5F5",
+                p: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderBottom: "2px solid #9B2C2C",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    backgroundColor: "#9B2C2C",
+                    borderRadius: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "2rem" }}>🚩</Typography>
+                </Box>
+                <Box>
+                  <Typography sx={{ color: "#DC143C", fontWeight: 700, fontSize: "0.9rem" }}>
+                    अखिल नेपाल ट्रेड युनियन महासंघ
+                  </Typography>
+                  <Typography sx={{ color: "#DC143C", fontSize: "0.75rem" }}>
+                    (ANTUF)
+                  </Typography>
+                </Box>
+              </Box>
+              <IconButton 
+                onClick={toggleDrawer(false)}
+                sx={{ color: "#DC143C" }}
+              >
+                <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>✕</Typography>
+              </IconButton>
+            </Box>
 
-            <List>
-              {menuItems.map((item, index) => (
-                <div key={index}>
-                  <ListItem 
+            {/* Social Icons */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                py: 3,
+                borderBottom: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              <IconButton sx={{ 
+                bgcolor: "rgba(0,0,0,0.3)", 
+                color: "white",
+                '&:hover': { bgcolor: "rgba(0,0,0,0.5)" }
+              }}>
+                <Typography sx={{ fontSize: "1.2rem" }}>f</Typography>
+              </IconButton>
+              <IconButton sx={{ 
+                bgcolor: "rgba(0,0,0,0.3)", 
+                color: "white",
+                '&:hover': { bgcolor: "rgba(0,0,0,0.5)" }
+              }}>
+                <Typography sx={{ fontSize: "1.2rem" }}>📷</Typography>
+              </IconButton>
+              <IconButton sx={{ 
+                bgcolor: "rgba(0,0,0,0.3)", 
+                color: "white",
+                '&:hover': { bgcolor: "rgba(0,0,0,0.5)" }
+              }}>
+                <Typography sx={{ fontSize: "1.2rem" }}>▶</Typography>
+              </IconButton>
+            </Box>
+
+            {/* Menu Items */}
+            <List sx={{ flex: 1, overflowY: "auto", py: 0 }}>
+              {/* गृहपृष्ठ / Home */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  गृहपृष्ठ
+                </Typography>
+              </ListItem>
+
+              {/* हाम्रो बारेमा / About */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/pages/about");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  हाम्रो बारेमा
+                </Typography>
+              </ListItem>
+
+              {/* गतिविधि / Activities */}
+              <Box>
+                <ListItem 
+                  component="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpand(0);
+                  }}
+                  sx={{ 
+                    py: 2,
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0,0,0,0.2)',
+                    }
+                  }}
+                >
+                  <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem", flex: 1 }}>
+                    गतिविधि
+                  </Typography>
+                  <KeyboardArrowDownIcon 
                     sx={{ 
-                      textAlign: "left",
-                      cursor: "pointer",
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      }
-                    }}
-                    onClick={() => router.push(item.path)}
-                  >
-                    <Box>
-                      <Typography sx={{ p: 1, fontWeight: 600, color: 'white' }}>
-                        {item.title}
-                      </Typography>
-                      <Typography sx={{ px: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
-                        {item.titleEn}
-                      </Typography>
-                    </Box>
-                  </ListItem>
-                  <Divider
-                    style={{
-                      width: "100%",
-                      height: 1,
-                      backgroundColor: "#a3a3c2",
-                    }}
+                      color: 'white',
+                      transform: expandedItems[0] ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.3s'
+                    }} 
                   />
-                </div>
-              ))}
+                </ListItem>
+                {expandedItems[0] && (
+                  <Box sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
+                    <ListItem 
+                      component="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("/pages/activities");
+                        toggleDrawer(false)(e);
+                      }}
+                      sx={{ pl: 4, py: 1.5, cursor: 'pointer' }}
+                    >
+                      <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: "0.95rem" }}>
+                        सबै गतिविधि
+                      </Typography>
+                    </ListItem>
+                    <ListItem 
+                      component="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("/events");
+                        toggleDrawer(false)(e);
+                      }}
+                      sx={{ pl: 4, py: 1.5, cursor: 'pointer' }}
+                    >
+                      <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: "0.95rem" }}>
+                        कार्यक्रम
+                      </Typography>
+                    </ListItem>
+                  </Box>
+                )}
+              </Box>
+
+              {/* संगठन / Organization */}
+              <Box>
+                <ListItem 
+                  component="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpand(1);
+                  }}
+                  sx={{ 
+                    py: 2,
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0,0,0,0.2)',
+                    }
+                  }}
+                >
+                  <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem", flex: 1 }}>
+                    संगठन
+                  </Typography>
+                  <KeyboardArrowDownIcon 
+                    sx={{ 
+                      color: 'white',
+                      transform: expandedItems[1] ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.3s'
+                    }} 
+                  />
+                </ListItem>
+                {expandedItems[1] && (
+                  <Box sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
+                    <ListItem 
+                      component="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("/pages/organization");
+                        toggleDrawer(false)(e);
+                      }}
+                      sx={{ pl: 4, py: 1.5, cursor: 'pointer' }}
+                    >
+                      <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: "0.95rem" }}>
+                        संगठन संरचना
+                      </Typography>
+                    </ListItem>
+                    <ListItem 
+                      component="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("/pages/affiliates");
+                        toggleDrawer(false)(e);
+                      }}
+                      sx={{ pl: 4, py: 1.5, cursor: 'pointer' }}
+                    >
+                      <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: "0.95rem" }}>
+                        सम्बद्ध संगठन
+                      </Typography>
+                    </ListItem>
+                  </Box>
+                )}
+              </Box>
+
+              {/* जनप्रतिनिधि / Representatives */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/pages/representatives");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  जनप्रतिनिधि
+                </Typography>
+              </ListItem>
+
+              {/* इतिहास / History */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/pages/history");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  इतिहास
+                </Typography>
+              </ListItem>
+
+              {/* दस्तावेज / Documents */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/pages/documents");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  दस्तावेज
+                </Typography>
+              </ListItem>
+
+              {/* डाउनलोड / Downloads */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/downloads");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  डाउनलोड
+                </Typography>
+              </ListItem>
+
+              {/* सम्पर्क / Contact */}
+              <ListItem 
+                component="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/pages/contact");
+                  toggleDrawer(false)(e);
+                }}
+                sx={{ 
+                  py: 2,
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                  }
+                }}
+              >
+                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: "1.1rem" }}>
+                  सम्पर्क
+                </Typography>
+              </ListItem>
             </List>
           </Box>
         </Drawer>

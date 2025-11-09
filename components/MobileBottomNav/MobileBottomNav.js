@@ -7,7 +7,13 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import PersonIcon from "@mui/icons-material/Person";
 import PublicIcon from "@mui/icons-material/Public";
 import QrCodeIcon from "@mui/icons-material/QrCode";
-
+import {
+  Favorite as FavoriteIcon,
+  AccountBalance as BankIcon,
+  CreditCard as CardIcon,
+  Payment as PaymentIcon,
+  CheckCircle as CheckIcon,
+} from '@mui/icons-material';
 const MobileBottomNav = () => {
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width:600px)");
@@ -19,23 +25,23 @@ const MobileBottomNav = () => {
   const navItems = [
     {
       label: "हाम्रो बारेमा",
-      path: "/about-us",
+      path: "/about",
       icon: GroupsIcon,
     },
     {
       label: "दस्तावेज",
-      path: "/documents",
+      path: "/pages/documents",
       icon: DescriptionIcon,
     },
     {
       label: "नेतृत्व",
-      path: "/letter-to-leader",
+      path: "/pages/representatives",
       icon: PersonIcon,
     },
     {
-      label: "सरकार",
-      path: "/pages/nationalassembly",
-      icon: PublicIcon,
+      label: "दान",
+      path: "/pages/donation",
+      icon: FavoriteIcon,
     },
   ];
 

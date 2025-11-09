@@ -326,28 +326,7 @@ const LoginModal = ({ open, handleClose }) => {
             Log In with Facebook
           </Button>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-          <Button
-            variant="outlined"
-            startIcon={<LinkedInIcon />}
-            sx={{ textTransform: "none", color: "#fff" }}
-            fullWidth
-            style={{ marginRight: "8px", backgroundColor: "blue" }}
-            onClick={() => signIn("linkedin")}
-          >
-            Log In with LinkedIn
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<GitHubIcon />}
-            sx={{ textTransform: "none", color: "#fff" }}
-            fullWidth
-            style={{ marginRight: "8px", backgroundColor: "black" }}
-            onClick={() => signIn("github")}
-          >
-            Log In with Github
-          </Button>
-        </Box>
+        
 
         <Typography
           variant="body2"

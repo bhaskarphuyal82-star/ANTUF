@@ -210,17 +210,18 @@ const ContactUs = () => {
     <>
       <Navbar />
       
-      {/* Banner Section */}
+      {/* Banner Section - Modern Design */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
-          height: "40vh",
-          background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+          minHeight: "45vh",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
+          py: { xs: 6, md: 8 },
           "&::before": {
             content: '""',
             position: "absolute",
@@ -228,51 +229,75 @@ const ContactUs = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundImage: 'url("/images/pic2.png")',
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 0.1,
+            background: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%)",
+            zIndex: 1,
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "100px",
+            background: "linear-gradient(to top, #fff, transparent)",
             zIndex: 1,
           }
         }}
       >
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, textAlign: "center" }}>
-          <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 4 }}>
             <Chip
+              icon={<LanguageIcon />}
               label="English"
               onClick={() => setLanguage('en')}
-              color={language === 'en' ? 'primary' : 'default'}
               sx={{ 
-                backgroundColor: language === 'en' ? '#fff' : 'rgba(255,255,255,0.3)',
-                color: language === 'en' ? '#1976d2' : '#fff',
-                fontWeight: 600,
+                backgroundColor: language === 'en' ? '#fff' : 'rgba(255,255,255,0.2)',
+                color: language === 'en' ? '#667eea' : '#fff',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                px: 2,
+                py: 3,
+                backdropFilter: 'blur(10px)',
+                border: language === 'en' ? '2px solid #fff' : '2px solid rgba(255,255,255,0.3)',
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: language === 'en' ? '#fff' : 'rgba(255,255,255,0.5)',
+                  backgroundColor: language === 'en' ? '#fff' : 'rgba(255,255,255,0.35)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
                 }
               }}
             />
             <Chip
+              icon={<LanguageIcon />}
               label="नेपाली"
               onClick={() => setLanguage('ne')}
-              color={language === 'ne' ? 'primary' : 'default'}
               sx={{ 
-                backgroundColor: language === 'ne' ? '#fff' : 'rgba(255,255,255,0.3)',
-                color: language === 'ne' ? '#1976d2' : '#fff',
-                fontWeight: 600,
+                backgroundColor: language === 'ne' ? '#fff' : 'rgba(255,255,255,0.2)',
+                color: language === 'ne' ? '#667eea' : '#fff',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                px: 2,
+                py: 3,
+                backdropFilter: 'blur(10px)',
+                border: language === 'ne' ? '2px solid #fff' : '2px solid rgba(255,255,255,0.3)',
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: language === 'ne' ? '#fff' : 'rgba(255,255,255,0.5)',
+                  backgroundColor: language === 'ne' ? '#fff' : 'rgba(255,255,255,0.35)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
                 }
               }}
             />
           </Stack>
           <Typography
-            variant="h2"
+            variant="h1"
             sx={{
               color: "#fff",
-              fontWeight: "700",
-              mb: 2,
-              fontSize: { xs: "2rem", md: "3rem" },
-              textShadow: "2px 4px 8px rgba(0,0,0,0.3)",
+              fontWeight: "800",
+              mb: 3,
+              fontSize: { xs: "2.5rem", md: "4rem" },
+              textShadow: "0 4px 20px rgba(0,0,0,0.2)",
+              letterSpacing: "-0.02em",
             }}
           >
             {t.title}
@@ -280,12 +305,13 @@ const ContactUs = () => {
           <Typography
             variant="h5"
             sx={{
-              color: "#fff",
-              maxWidth: "700px",
+              color: "rgba(255,255,255,0.95)",
+              maxWidth: "800px",
               mx: "auto",
-              fontSize: { xs: "1.1rem", md: "1.3rem" },
-              fontWeight: "300",
-              textShadow: "1px 2px 4px rgba(0,0,0,0.3)",
+              fontSize: { xs: "1.1rem", md: "1.4rem" },
+              fontWeight: "400",
+              lineHeight: 1.6,
+              textShadow: "0 2px 10px rgba(0,0,0,0.15)",
             }}
           >
             {t.subtitle}
@@ -294,32 +320,37 @@ const ContactUs = () => {
       </Box>
 
       {/* Main Content */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 }, mt: { xs: -4, md: -6 } }}>
         {/* Contact Information Cards */}
         <Box sx={{ mb: 8 }}>
           <Typography 
             variant="h3" 
             gutterBottom 
             sx={{ 
-              color: "#333", 
-              mb: 6, 
+              color: "#1a1a2e", 
+              mb: 2, 
               textAlign: "center", 
-              fontWeight: "700",
-              position: "relative",
-              "&::after": {
-                content: '""',
-                position: "absolute",
-                bottom: -16,
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: 80,
-                height: 4,
-                backgroundColor: "#1976d2",
-                borderRadius: 2,
-              }
+              fontWeight: "800",
+              fontSize: { xs: "2rem", md: "2.5rem" },
+              letterSpacing: "-0.02em",
             }}
           >
             {t.getInTouch}
+          </Typography>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: "#666", 
+              mb: 6, 
+              textAlign: "center",
+              maxWidth: "600px",
+              mx: "auto",
+              fontSize: "1.1rem",
+            }}
+          >
+            {language === 'en' 
+              ? 'Choose your preferred way to reach out to us' 
+              : 'हामीलाई सम्पर्क गर्न आफ्नो मनपर्ने तरिका छान्नुहोस्'}
           </Typography>
           
           <Grid container spacing={4}>
@@ -328,29 +359,60 @@ const ContactUs = () => {
                 <Card
                   elevation={0}
                   sx={{
-                    p: 3,
+                    p: 4,
                     textAlign: "center",
                     height: "100%",
+                    background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
                     border: "2px solid #f0f0f0",
-                    borderRadius: 3,
-                    transition: "all 0.3s ease",
+                    borderRadius: 4,
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "4px",
+                      background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
+                      transform: "scaleX(0)",
+                      transformOrigin: "left",
+                      transition: "transform 0.4s ease",
+                    },
                     "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: "0 16px 48px rgba(25, 118, 210, 0.15)",
-                      borderColor: "#1976d2",
+                      transform: "translateY(-12px)",
+                      boxShadow: "0 20px 60px rgba(102, 126, 234, 0.25)",
+                      borderColor: "#667eea",
+                      "&::before": {
+                        transform: "scaleX(1)",
+                      }
                     }
                   }}
                 >
-                  <Box sx={{ mb: 3 }}>
-                    {info.icon}
+                  <Box 
+                    sx={{ 
+                      mb: 3,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      boxShadow: "0 8px 24px rgba(102, 126, 234, 0.3)",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    {React.cloneElement(info.icon, { sx: { fontSize: 40, color: "#fff" } })}
                   </Box>
-                  <Typography variant="h6" sx={{ fontWeight: "700", mb: 1, color: "#333" }}>
+                  <Typography variant="h6" sx={{ fontWeight: "700", mb: 2, color: "#1a1a2e", fontSize: "1.1rem" }}>
                     {info.title}
                   </Typography>
-                  <Typography variant="h6" sx={{ color: "#1976d2", mb: 1, fontWeight: "600" }}>
+                  <Typography variant="h6" sx={{ color: "#667eea", mb: 2, fontWeight: "700", fontSize: "1rem" }}>
                     {info.content}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "#666" }}>
+                  <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
                     {info.description}
                   </Typography>
                 </Card>
@@ -363,16 +425,42 @@ const ContactUs = () => {
         <Grid container spacing={6}>
           {/* Contact Form */}
           <Grid item xs={12}>
-            <Paper elevation={0} sx={{ p: 6, border: "1px solid #e0e0e0", borderRadius: 3 }}>
-              <Typography variant="h4" sx={{ color: "#333", fontWeight: "700", mb: 4, textAlign: "left" }}>
-                {t.contactForm}
-              </Typography>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: { xs: 4, md: 6 }, 
+                background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                border: "2px solid #f0f0f0", 
+                borderRadius: 4,
+                boxShadow: "0 10px 40px rgba(0,0,0,0.05)",
+              }}
+            >
+              <Box sx={{ textAlign: "center", mb: 5 }}>
+                <Typography variant="h4" sx={{ color: "#1a1a2e", fontWeight: "800", mb: 2, fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
+                  {t.contactForm}
+                </Typography>
+                <Box 
+                  sx={{ 
+                    width: 60, 
+                    height: 4, 
+                    background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
+                    borderRadius: 2,
+                    mx: "auto",
+                    mb: 2,
+                  }}
+                />
+                <Typography variant="body1" sx={{ color: "#666", maxWidth: "600px", mx: "auto" }}>
+                  {language === 'en' 
+                    ? 'Fill out the form below and our team will get back to you shortly' 
+                    : 'तलको फारम भर्नुहोस् र हाम्रो टोलीले तपाईंलाई छिट्टै सम्पर्क गर्नेछ'}
+                </Typography>
+              </Box>
               
               <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
-                      {t.selectReason}<span style={{ color: "#d32f2f" }}>*</span>
+                    <Typography variant="body1" sx={{ color: "#1a1a2e", mb: 1.5, fontWeight: "600", fontSize: "0.95rem" }}>
+                      {t.selectReason}<span style={{ color: "#f44336" }}>*</span>
                     </Typography>
                     <FormControl fullWidth error={!!errors.selectReason}>
                       <Select
@@ -381,17 +469,22 @@ const ContactUs = () => {
                         onChange={handleInputChange}
                         displayEmpty
                         sx={{
+                          borderRadius: 2,
+                          backgroundColor: "#fff",
                           "& .MuiOutlinedInput-notchedOutline": {
                             borderColor: "#e0e0e0",
+                            borderWidth: "2px",
                           },
                           "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#999",
+                            borderColor: "#667eea",
                           },
                           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#1976d2",
+                            borderColor: "#667eea",
+                            borderWidth: "2px",
                           },
                           "& .MuiSelect-select": {
-                            color: formData.selectReason ? "#333" : "#999",
+                            color: formData.selectReason ? "#1a1a2e" : "#999",
+                            py: 1.5,
                           }
                         }}
                       >
@@ -403,13 +496,13 @@ const ContactUs = () => {
                         <MenuItem value="general">{t.reasons.general}</MenuItem>
                         <MenuItem value="other">{t.reasons.other}</MenuItem>
                       </Select>
-                      {errors.selectReason && <Typography variant="caption" sx={{ color: "#d32f2f", mt: 1 }}>{errors.selectReason}</Typography>}
+                      {errors.selectReason && <Typography variant="caption" sx={{ color: "#f44336", mt: 1, ml: 1 }}>{errors.selectReason}</Typography>}
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
-                      {t.name}<span style={{ color: "#d32f2f" }}>*</span>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body1" sx={{ color: "#1a1a2e", mb: 1.5, fontWeight: "600", fontSize: "0.95rem" }}>
+                      {t.name}<span style={{ color: "#f44336" }}>*</span>
                     </Typography>
                     <TextField 
                       fullWidth 
@@ -419,13 +512,32 @@ const ContactUs = () => {
                       error={!!errors.name} 
                       helperText={errors.name} 
                       variant="outlined" 
-                      sx={{"& .MuiOutlinedInput-root": {"&:hover fieldset": {borderColor: "#999"},"&.Mui-focused fieldset": {borderColor: "#1976d2"}}}} 
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2,
+                          backgroundColor: "#fff",
+                          "& fieldset": {
+                            borderColor: "#e0e0e0",
+                            borderWidth: "2px",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#667eea",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#667eea",
+                            borderWidth: "2px",
+                          },
+                          "& input": {
+                            py: 1.5,
+                          }
+                        }
+                      }} 
                     />
                   </Grid>
                   
-                  <Grid item xs={12}>
-                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
-                      {t.email}<span style={{ color: "#d32f2f" }}>*</span>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body1" sx={{ color: "#1a1a2e", mb: 1.5, fontWeight: "600", fontSize: "0.95rem" }}>
+                      {t.email}<span style={{ color: "#f44336" }}>*</span>
                     </Typography>
                     <TextField 
                       fullWidth 
@@ -436,12 +548,31 @@ const ContactUs = () => {
                       error={!!errors.email} 
                       helperText={errors.email} 
                       variant="outlined" 
-                      sx={{"& .MuiOutlinedInput-root": {"&:hover fieldset": {borderColor: "#999"},"&.Mui-focused fieldset": {borderColor: "#1976d2"}}}} 
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2,
+                          backgroundColor: "#fff",
+                          "& fieldset": {
+                            borderColor: "#e0e0e0",
+                            borderWidth: "2px",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#667eea",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#667eea",
+                            borderWidth: "2px",
+                          },
+                          "& input": {
+                            py: 1.5,
+                          }
+                        }
+                      }} 
                     />
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
+                    <Typography variant="body1" sx={{ color: "#1a1a2e", mb: 1.5, fontWeight: "600", fontSize: "0.95rem" }}>
                       {t.contactNumber}
                     </Typography>
                     <TextField 
@@ -453,12 +584,22 @@ const ContactUs = () => {
                       placeholder={t.contactNumberPlaceholder}
                       sx={{
                         "& .MuiOutlinedInput-root": {
+                          borderRadius: 2,
+                          backgroundColor: "#fff",
+                          "& fieldset": {
+                            borderColor: "#e0e0e0",
+                            borderWidth: "2px",
+                          },
                           "&:hover fieldset": {
-                            borderColor: "#999",
+                            borderColor: "#667eea",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2",
+                            borderColor: "#667eea",
+                            borderWidth: "2px",
                           },
+                          "& input": {
+                            py: 1.5,
+                          }
                         },
                         "& .MuiOutlinedInput-input::placeholder": {
                           color: "#999",
@@ -469,8 +610,8 @@ const ContactUs = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" sx={{ color: "#333", mb: 1, fontWeight: "500" }}>
-                      {t.message}<span style={{ color: "#d32f2f" }}>*</span>
+                    <Typography variant="body1" sx={{ color: "#1a1a2e", mb: 1.5, fontWeight: "600", fontSize: "0.95rem" }}>
+                      {t.message}<span style={{ color: "#f44336" }}>*</span>
                     </Typography>
                     <TextField
                       fullWidth
@@ -480,17 +621,24 @@ const ContactUs = () => {
                       value={formData.message}
                       onChange={handleInputChange}
                       error={!!errors.message}
-                      helperText={errors.message}
+                      helperText={errors.message || `${formData.message.length}/300`}
                       variant="outlined"
                       placeholder={t.messagePlaceholder}
                       inputProps={{ maxLength: 300 }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
+                          borderRadius: 2,
+                          backgroundColor: "#fff",
+                          "& fieldset": {
+                            borderColor: "#e0e0e0",
+                            borderWidth: "2px",
+                          },
                           "&:hover fieldset": {
-                            borderColor: "#999",
+                            borderColor: "#667eea",
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2",
+                            borderColor: "#667eea",
+                            borderWidth: "2px",
                           },
                         },
                         "& .MuiOutlinedInput-input::placeholder": {
@@ -509,15 +657,18 @@ const ContactUs = () => {
                       size="large"
                       startIcon={<SendIcon />}
                       sx={{
-                        backgroundColor: "#1976d2",
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                         color: "#fff",
                         py: 2,
                         fontSize: "1.1rem",
-                        fontWeight: "600",
+                        fontWeight: "700",
                         borderRadius: 2,
                         textTransform: "none",
+                        boxShadow: "0 8px 24px rgba(102, 126, 234, 0.4)",
                         "&:hover": {
-                          backgroundColor: "#1565c0",
+                          background: "linear-gradient(135deg, #5568d3 0%, #6a3f91 100%)",
+                          boxShadow: "0 12px 32px rgba(102, 126, 234, 0.5)",
+                          transform: "translateY(-2px)",
                         },
                         transition: "all 0.3s ease",
                       }}
@@ -534,19 +685,33 @@ const ContactUs = () => {
           <Grid item xs={12} sx={{ mt: 4 }}>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
-                <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0", borderRadius: 3, height: "100%" }}>
-                  <Typography variant="h5" sx={{ color: "#333", fontWeight: "700", mb: 3 }}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 5, 
+                    border: "2px solid #f0f0f0", 
+                    borderRadius: 4, 
+                    height: "100%",
+                    background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      borderColor: "#667eea",
+                      boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                    }
+                  }}
+                >
+                  <Typography variant="h5" sx={{ color: "#1a1a2e", fontWeight: "800", mb: 4, fontSize: "1.5rem" }}>
                     {t.quickContact}
                   </Typography>
                   
                   <Box sx={{ mb: 4 }}>
-                    <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+                    <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.1rem" }}>
                       {t.generalInquiries}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                      📧 info@antuf.org
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      <EmailIcon sx={{ fontSize: 18, color: "#667eea" }} /> info@antuf.org
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666" }}>
+                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                       {language === 'en' 
                         ? 'For general questions and information about ANTUF' 
                         : 'ANTUF बारे सामान्य प्रश्न र जानकारीको लागि'}
@@ -556,13 +721,13 @@ const ContactUs = () => {
                   <Divider sx={{ my: 3 }} />
 
                   <Box sx={{ mb: 4 }}>
-                    <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+                    <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.1rem" }}>
                       {t.supportTeam}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                      📧 support@antuf.org
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      <EmailIcon sx={{ fontSize: 18, color: "#667eea" }} /> support@antuf.org
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666" }}>
+                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                       {language === 'en' 
                         ? 'For membership inquiries and support' 
                         : 'सदस्यता सोधपुछ र समर्थनको लागि'}
@@ -572,13 +737,13 @@ const ContactUs = () => {
                   <Divider sx={{ my: 3 }} />
 
                   <Box sx={{ mb: 4 }}>
-                    <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+                    <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.1rem" }}>
                       {t.partnerships}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", mb: 1 }}>
-                      📧 partnerships@antuf.org
+                    <Typography variant="body2" sx={{ color: "#666", mb: 1, display: "flex", alignItems: "center", gap: 1 }}>
+                      <EmailIcon sx={{ fontSize: 18, color: "#667eea" }} /> partnerships@antuf.org
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666" }}>
+                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                       {language === 'en' 
                         ? 'For collaboration and partnership opportunities' 
                         : 'सहकार्य र साझेदारी अवसरहरूको लागि'}
@@ -588,15 +753,15 @@ const ContactUs = () => {
                   <Box 
                     sx={{ 
                       p: 3, 
-                      backgroundColor: "#f8f9fa", 
-                      borderRadius: 2,
-                      border: "1px solid #e9ecef"
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      borderRadius: 3,
+                      border: "none",
                     }}
                   >
-                    <Typography variant="h6" sx={{ color: "#333", fontWeight: "600", mb: 2 }}>
-                      {t.responseTime}
+                    <Typography variant="h6" sx={{ color: "#fff", fontWeight: "700", mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
+                      <AccessTimeIcon /> {t.responseTime}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.95)", lineHeight: 1.8 }}>
                       {t.responseTimeText}
                     </Typography>
                   </Box>
@@ -605,91 +770,131 @@ const ContactUs = () => {
 
               {/* Social Media & Additional Info */}
               <Grid item xs={12} md={6}>
-                <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0", borderRadius: 3, height: "100%" }}>
-                  <Typography variant="h5" sx={{ color: "#333", fontWeight: "700", mb: 3 }}>
+                <Paper 
+                  elevation={0} 
+                  sx={{ 
+                    p: 5, 
+                    border: "2px solid #f0f0f0", 
+                    borderRadius: 4, 
+                    height: "100%",
+                    background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      borderColor: "#667eea",
+                      boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                    }
+                  }}
+                >
+                  <Typography variant="h5" sx={{ color: "#1a1a2e", fontWeight: "800", mb: 4, fontSize: "1.5rem" }}>
                     {language === 'en' ? 'Connect With Us' : 'हामीसँग जडान गर्नुहोस्'}
                   </Typography>
                   
-                  <Typography variant="body1" sx={{ color: "#666", mb: 3, lineHeight: 1.8 }}>
+                  <Typography variant="body1" sx={{ color: "#666", mb: 4, lineHeight: 1.8 }}>
                     {language === 'en' 
                       ? 'Stay connected with ANTUF through our social media channels for the latest updates, events, and community news.'
                       : 'नवीनतम अपडेट, कार्यक्रमहरू र समुदाय समाचारको लागि हाम्रो सोशल मिडिया च्यानलहरू मार्फत ANTUF सँग जडान रहनुहोस्।'}
                   </Typography>
 
-                  <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+                  <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       startIcon={<FacebookIcon />}
                       sx={{
-                        borderColor: "#1877f2",
-                        color: "#1877f2",
+                        background: "#1877f2",
+                        color: "#fff",
+                        px: 3,
+                        py: 1.5,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        textTransform: "none",
+                        boxShadow: "0 4px 12px rgba(24, 119, 242, 0.3)",
                         "&:hover": {
-                          backgroundColor: "#1877f2",
-                          color: "#fff",
-                          borderColor: "#1877f2",
-                        }
+                          background: "#0d65d9",
+                          boxShadow: "0 6px 16px rgba(24, 119, 242, 0.4)",
+                          transform: "translateY(-2px)",
+                        },
+                        transition: "all 0.3s ease",
                       }}
                     >
                       Facebook
                     </Button>
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       startIcon={<TwitterIcon />}
                       sx={{
-                        borderColor: "#1da1f2",
-                        color: "#1da1f2",
+                        background: "#1da1f2",
+                        color: "#fff",
+                        px: 3,
+                        py: 1.5,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        textTransform: "none",
+                        boxShadow: "0 4px 12px rgba(29, 161, 242, 0.3)",
                         "&:hover": {
-                          backgroundColor: "#1da1f2",
-                          color: "#fff",
-                          borderColor: "#1da1f2",
-                        }
+                          background: "#0c90e0",
+                          boxShadow: "0 6px 16px rgba(29, 161, 242, 0.4)",
+                          transform: "translateY(-2px)",
+                        },
+                        transition: "all 0.3s ease",
                       }}
                     >
                       Twitter
                     </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<LinkedInIcon />}
-                      sx={{
-                        borderColor: "#0077b5",
-                        color: "#0077b5",
-                        "&:hover": {
-                          backgroundColor: "#0077b5",
-                          color: "#fff",
-                          borderColor: "#0077b5",
-                        }
-                      }}
-                    >
-                      LinkedIn
-                    </Button>
                   </Stack>
 
-                  <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 4 }} />
 
                   <Box>
-                    <Typography variant="h6" sx={{ color: "#333", fontWeight: "600", mb: 2 }}>
+                    <Typography variant="h6" sx={{ color: "#1a1a2e", fontWeight: "700", mb: 3, fontSize: "1.1rem" }}>
                       {language === 'en' ? 'Visit Our Office' : 'हाम्रो कार्यालय भ्रमण गर्नुहोस्'}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", mb: 2, lineHeight: 1.8 }}>
-                      {language === 'en' 
-                        ? 'ANTUF Headquarters\nKathmandu, Nepal\n\nOffice Hours:\nMonday - Friday: 10:00 AM - 5:00 PM NPT\nSaturday: By appointment only\nSunday: Closed'
-                        : 'ANTUF मुख्यालय\nकाठमाडौं, नेपाल\n\nकार्यालय समय:\nसोमबार - शुक्रबार: बिहान १०:०० - साँझ ५:०० NPT\nशनिबार: भेटघाट अनुसार मात्र\nआइतबार: बन्द'}
-                    </Typography>
+                    <Box sx={{ mb: 3, display: "flex", alignItems: "start", gap: 1 }}>
+                      <LocationOnIcon sx={{ fontSize: 20, color: "#667eea", mt: 0.3 }} />
+                      <Box>
+                        <Typography variant="body2" sx={{ color: "#1a1a2e", fontWeight: 700, mb: 0.5 }}>
+                          ANTUF Headquarters
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#666" }}>
+                          Kathmandu, Nepal
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "start", gap: 1 }}>
+                      <AccessTimeIcon sx={{ fontSize: 20, color: "#667eea", mt: 0.3 }} />
+                      <Box>
+                        <Typography variant="body2" sx={{ color: "#1a1a2e", fontWeight: 700, mb: 0.5 }}>
+                          {language === 'en' ? 'Office Hours:' : 'कार्यालय समय:'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
+                          {language === 'en' 
+                            ? 'Monday - Friday: 10:00 AM - 5:00 PM NPT'
+                            : 'सोमबार - शुक्रबार: बिहान १०:०० - साँझ ५:०० NPT'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
+                          {language === 'en' 
+                            ? 'Saturday: By appointment only'
+                            : 'शनिबार: भेटघाट अनुसार मात्र'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
+                          {language === 'en' ? 'Sunday: Closed' : 'आइतबार: बन्द'}
+                        </Typography>
+                      </Box>
+                    </Box>
                   </Box>
 
                   <Box 
                     sx={{ 
                       p: 3, 
-                      mt: 3,
-                      backgroundColor: "#e3f2fd", 
-                      borderRadius: 2,
-                      border: "1px solid #bbdefb"
+                      mt: 4,
+                      background: "linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)",
+                      borderRadius: 3,
+                      border: "2px solid #bbdefb"
                     }}
                   >
-                    <Typography variant="body2" sx={{ color: "#1976d2", fontWeight: "600", mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: "#667eea", fontWeight: "700", mb: 1, fontSize: "1rem" }}>
                       💡 {language === 'en' ? 'Quick Tip' : 'द्रुत सुझाव'}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                    <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                       {language === 'en' 
                         ? 'For faster response, please include your membership ID (if applicable) in your message.'
                         : 'छिटो प्रतिक्रियाको लागि, कृपया आफ्नो सन्देशमा आफ्नो सदस्यता ID (यदि लागू हुन्छ भने) समावेश गर्नुहोस्।'}
@@ -702,28 +907,55 @@ const ContactUs = () => {
         </Grid>
 
         {/* FAQ Section */}
-        <Box sx={{ mt: 8 }}>
+        <Box sx={{ mt: 10 }}>
           <Typography 
-            variant="h4" 
+            variant="h3" 
             sx={{ 
-              color: "#333", 
-              fontWeight: "700", 
-              mb: 4, 
-              textAlign: "center" 
+              color: "#1a1a2e", 
+              fontWeight: "800", 
+              mb: 2, 
+              textAlign: "center",
+              fontSize: { xs: "2rem", md: "2.5rem" },
+              letterSpacing: "-0.02em",
             }}
           >
             {t.faqTitle}
           </Typography>
+          <Box 
+            sx={{ 
+              width: 60, 
+              height: 4, 
+              background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
+              borderRadius: 2,
+              mx: "auto",
+              mb: 6,
+            }}
+          />
           
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
-              <Card elevation={0} sx={{ p: 3, border: "1px solid #e0e0e0", borderRadius: 2, height: "100%" }}>
-                <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  border: "2px solid #f0f0f0", 
+                  borderRadius: 3, 
+                  height: "100%",
+                  background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    borderColor: "#667eea",
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                  }
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.15rem" }}>
                   {language === 'en' 
                     ? 'How can I become a member of ANTUF?' 
                     : 'म ANTUF को सदस्य कसरी बन्न सक्छु?'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                   {language === 'en'
                     ? 'You can join ANTUF by filling out our membership registration form available on the website. Once submitted, our team will review your application and contact you with further steps.'
                     : 'तपाईं वेबसाइटमा उपलब्ध हाम्रो सदस्यता दर्ता फारम भरेर ANTUF मा सामेल हुन सक्नुहुन्छ। एक पटक पेश गरेपछि, हाम्रो टोलीले तपाईंको आवेदन समीक्षा गर्नेछ र थप चरणहरूको साथ तपाईंलाई सम्पर्क गर्नेछ।'}
@@ -732,13 +964,28 @@ const ContactUs = () => {
             </Grid>
             
             <Grid item xs={12} md={6}>
-              <Card elevation={0} sx={{ p: 3, border: "1px solid #e0e0e0", borderRadius: 2, height: "100%" }}>
-                <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  border: "2px solid #f0f0f0", 
+                  borderRadius: 3, 
+                  height: "100%",
+                  background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    borderColor: "#667eea",
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                  }
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.15rem" }}>
                   {language === 'en' 
                     ? 'What events does ANTUF organize?' 
                     : 'ANTUF ले कस्ता कार्यक्रमहरू आयोजना गर्छ?'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                   {language === 'en'
                     ? 'ANTUF organizes various cultural, educational, and community events throughout the year. Check our event calendar for upcoming programs and activities.'
                     : 'ANTUF ले वर्षभरि विभिन्न सांस्कृतिक, शैक्षिक र सामुदायिक कार्यक्रमहरू आयोजना गर्दछ। आगामी कार्यक्रम र गतिविधिहरूको लागि हाम्रो कार्यक्रम पात्रो जाँच गर्नुहोस्।'}
@@ -747,13 +994,28 @@ const ContactUs = () => {
             </Grid>
             
             <Grid item xs={12} md={6}>
-              <Card elevation={0} sx={{ p: 3, border: "1px solid #e0e0e0", borderRadius: 2, height: "100%" }}>
-                <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  border: "2px solid #f0f0f0", 
+                  borderRadius: 3, 
+                  height: "100%",
+                  background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    borderColor: "#667eea",
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                  }
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.15rem" }}>
                   {language === 'en' 
                     ? 'How can I support ANTUF?' 
                     : 'म ANTUF लाई कसरी समर्थन गर्न सक्छु?'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                   {language === 'en'
                     ? 'You can support ANTUF through membership, volunteering, or making a donation. Visit our donation page to learn more about ways to contribute to our community initiatives.'
                     : 'तपाईं सदस्यता, स्वयंसेवा वा दान मार्फत ANTUF लाई समर्थन गर्न सक्नुहुन्छ। हाम्रो सामुदायिक पहलहरूमा योगदान गर्ने तरिकाहरूको बारेमा थप जान्न हाम्रो दान पृष्ठ हेर्नुहोस्।'}
@@ -762,13 +1024,28 @@ const ContactUs = () => {
             </Grid>
             
             <Grid item xs={12} md={6}>
-              <Card elevation={0} sx={{ p: 3, border: "1px solid #e0e0e0", borderRadius: 2, height: "100%" }}>
-                <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "600", mb: 2 }}>
+              <Card 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  border: "2px solid #f0f0f0", 
+                  borderRadius: 3, 
+                  height: "100%",
+                  background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    borderColor: "#667eea",
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                  }
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "#667eea", fontWeight: "700", mb: 2, fontSize: "1.15rem" }}>
                   {language === 'en' 
                     ? 'Can I partner with ANTUF for an event?' 
                     : 'के म कार्यक्रमको लागि ANTUF सँग साझेदारी गर्न सक्छु?'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: "#666", lineHeight: 1.8 }}>
                   {language === 'en'
                     ? 'Yes! We welcome partnerships and collaborations. Please contact us through the form above or email partnerships@antuf.org to discuss potential collaboration opportunities.'
                     : 'हो! हामी साझेदारी र सहयोगलाई स्वागत गर्छौं। सम्भावित सहयोग अवसरहरू छलफल गर्न कृपया माथिको फारम मार्फत वा partnerships@antuf.org मा इमेल गरेर हामीलाई सम्पर्क गर्नुहोस्।'}
