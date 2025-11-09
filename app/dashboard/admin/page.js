@@ -5,21 +5,39 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Users,
-  DollarSign,
-  ShoppingBag,
-  TrendingUp,
-  Calendar,
-  BookOpen,
-  FileText,
-  Activity,
-  ArrowUpRight,
-  ArrowDownRight,
-  Eye,
-  Edit,
-  Trash2,
-  Download,
-} from 'lucide-react';
+  Box,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Avatar,
+  Chip,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  CircularProgress,
+  LinearProgress,
+} from '@mui/material';
+import {
+  People as PeopleIcon,
+  AttachMoney as MoneyIcon,
+  ShoppingCart as CartIcon,
+  School as SchoolIcon,
+  Event as EventIcon,
+  Article as ArticleIcon,
+  TrendingUp as TrendingUpIcon,
+  TrendingDown as TrendingDownIcon,
+  ArrowForward as ArrowForwardIcon,
+  Download as DownloadIcon,
+  Visibility as VisibilityIcon,
+} from '@mui/icons-material';
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -89,18 +107,20 @@ export default function AdminDashboard() {
 
   if (status === 'loading' || loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-        <div style={{ textAlign: 'center', color: '#fff' }}>
-          <div style={{ width: '64px', height: '64px', border: '4px solid rgba(255,255,255,0.3)', borderTop: '4px solid #fff', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
-          <p style={{ fontSize: '18px', fontWeight: '500' }}>Loading Dashboard...</p>
-        </div>
-        <style jsx>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
-      </div>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        }}
+      >
+        <Box sx={{ textAlign: 'center', color: 'white' }}>
+          <CircularProgress size={64} sx={{ color: 'white', mb: 2 }} />
+          <Typography variant="h6">Loading Dashboard...</Typography>
+        </Box>
+      </Box>
     );
   }
 
@@ -108,326 +128,520 @@ export default function AdminDashboard() {
     return null;
   }
 
+  const statCards = [
+    {
+      title: 'Total Users',
+      value: stats.totalUsers.toLocaleString(),
+      icon: <PeopleIcon sx={{ fontSize: 40 }} />,
+      trend: 15.3,
+      trendUp: true,
+      color: '#10b981',
+      bgColor: '#dcfce7',
+    },
+    {
+      title: 'Total Revenue',
+      value: `$${stats.totalRevenue.toLocaleString()}`,
+      icon: <MoneyIcon sx={{ fontSize: 40 }} />,
+      trend: 23.5,
+      trendUp: true,
+      color: '#f59e0b',
+      bgColor: '#fef3c7',
+    },
+    {
+      title: 'Total Orders',
+      value: stats.totalOrders.toLocaleString(),
+      icon: <CartIcon sx={{ fontSize: 40 }} />,
+      trend: 8.2,
+      trendUp: true,
+      color: '#3b82f6',
+      bgColor: '#dbeafe',
+    },
+    {
+      title: 'Total Courses',
+      value: stats.totalCourses,
+      icon: <SchoolIcon sx={{ fontSize: 40 }} />,
+      trend: -2.1,
+      trendUp: false,
+      color: '#8b5cf6',
+      bgColor: '#ede9fe',
+    },
+  ];
+
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '24px' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#fff', marginBottom: '8px' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa', pb: 4 }}>
+      {/* Header Section */}
+      <Box
+        sx={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          pt: 4,
+          pb: 8,
+          mb: -4,
+        }}
+      >
+        <Container maxWidth="xl">
+          <Typography variant="h3" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
             Admin Dashboard
-          </h1>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)' }}>
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)' }}>
             Welcome back, {session.user.name || 'Admin'}! Here's what's happening today.
-          </p>
-        </div>
+          </Typography>
+        </Container>
+      </Box>
 
-        {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-          {/* Total Users Card */}
-          <StatCard
-            title="Total Users"
-            value={stats.totalUsers.toLocaleString()}
-            icon={<Users size={28} />}
-            trend={15.3}
-            trendUp={true}
-            color="#10b981"
-            bgColor="rgba(16, 185, 129, 0.1)"
-          />
-
-          {/* Total Revenue Card */}
-          <StatCard
-            title="Total Revenue"
-            value={`$${stats.totalRevenue.toLocaleString()}`}
-            icon={<DollarSign size={28} />}
-            trend={23.5}
-            trendUp={true}
-            color="#f59e0b"
-            bgColor="rgba(245, 158, 11, 0.1)"
-          />
-
-          {/* Total Orders Card */}
-          <StatCard
-            title="Total Orders"
-            value={stats.totalOrders.toLocaleString()}
-            icon={<ShoppingBag size={28} />}
-            trend={8.2}
-            trendUp={true}
-            color="#3b82f6"
-            bgColor="rgba(59, 130, 246, 0.1)"
-          />
-
-          {/* Total Courses Card */}
-          <StatCard
-            title="Total Courses"
-            value={stats.totalCourses}
-            icon={<BookOpen size={28} />}
-            trend={-2.1}
-            trendUp={false}
-            color="#8b5cf6"
-            bgColor="rgba(139, 92, 246, 0.1)"
-          />
-        </div>
+      <Container maxWidth="xl">
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {statCards.map((stat, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card
+                sx={{
+                  height: '100%',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 6,
+                  },
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Avatar
+                      sx={{
+                        bgcolor: stat.bgColor,
+                        color: stat.color,
+                        width: 64,
+                        height: 64,
+                      }}
+                    >
+                      {stat.icon}
+                    </Avatar>
+                    <Chip
+                      icon={stat.trendUp ? <TrendingUpIcon /> : <TrendingDownIcon />}
+                      label={`${Math.abs(stat.trend)}%`}
+                      color={stat.trendUp ? 'success' : 'error'}
+                      size="small"
+                      sx={{ fontWeight: 600 }}
+                    />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    {stat.title}
+                  </Typography>
+                  <Typography variant="h4" fontWeight="bold" color={stat.color}>
+                    {stat.value}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
 
         {/* Quick Actions */}
-        <div style={{ background: '#fff', borderRadius: '16px', padding: '24px', marginBottom: '32px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>Quick Actions</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-            <QuickActionButton
-              label="Manage Events"
-              icon={<Calendar size={20} />}
-              href="/dashboard/admin/events"
-              color="#3b82f6"
-            />
-            <QuickActionButton
-              label="Manage Courses"
-              icon={<BookOpen size={20} />}
-              href="/dashboard/admin/create"
-              color="#10b981"
-            />
-            <QuickActionButton
-              label="View Articles"
-              icon={<FileText size={20} />}
-              href="/dashboard/admin/post"
-              color="#f59e0b"
-            />
-            <QuickActionButton
-              label="View Orders"
-              icon={<ShoppingBag size={20} />}
-              href="/dashboard/admin/orders"
-              color="#8b5cf6"
-            />
-          </div>
-        </div>
+        <Card sx={{ mb: 4, p: 3 }}>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
+            Quick Actions
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                component={Link}
+                href="/dashboard/admin/events"
+                fullWidth
+                variant="outlined"
+                startIcon={<EventIcon />}
+                sx={{
+                  py: 1.5,
+                  justifyContent: 'flex-start',
+                  borderColor: '#3b82f6',
+                  color: '#3b82f6',
+                  '&:hover': {
+                    borderColor: '#2563eb',
+                    bgcolor: '#eff6ff',
+                  },
+                }}
+              >
+                Manage Events
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                component={Link}
+                href="/dashboard/admin/create"
+                fullWidth
+                variant="outlined"
+                startIcon={<SchoolIcon />}
+                sx={{
+                  py: 1.5,
+                  justifyContent: 'flex-start',
+                  borderColor: '#10b981',
+                  color: '#10b981',
+                  '&:hover': {
+                    borderColor: '#059669',
+                    bgcolor: '#d1fae5',
+                  },
+                }}
+              >
+                Manage Courses
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                component={Link}
+                href="/dashboard/admin/post"
+                fullWidth
+                variant="outlined"
+                startIcon={<ArticleIcon />}
+                sx={{
+                  py: 1.5,
+                  justifyContent: 'flex-start',
+                  borderColor: '#f59e0b',
+                  color: '#f59e0b',
+                  '&:hover': {
+                    borderColor: '#d97706',
+                    bgcolor: '#fef3c7',
+                  },
+                }}
+              >
+                View Articles
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                component={Link}
+                href="/dashboard/admin/orders"
+                fullWidth
+                variant="outlined"
+                startIcon={<CartIcon />}
+                sx={{
+                  py: 1.5,
+                  justifyContent: 'flex-start',
+                  borderColor: '#8b5cf6',
+                  color: '#8b5cf6',
+                  '&:hover': {
+                    borderColor: '#7c3aed',
+                    bgcolor: '#ede9fe',
+                  },
+                }}
+              >
+                View Orders
+              </Button>
+            </Grid>
+          </Grid>
+        </Card>
 
-        {/* Main Content Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', marginBottom: '32px' }}>
-          {/* Revenue Chart */}
-          <div style={{ gridColumn: 'span 8', background: '#fff', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937' }}>Revenue Overview</h2>
-              <button style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #e5e7eb', background: '#fff', color: '#6b7280', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Download size={16} />
-                Export
-              </button>
-            </div>
-            <div style={{ height: '300px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', gap: '12px' }}>
-              {stats.revenueData.map((item, index) => (
-                <div key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#10b981' }}>
-                    ${(item.revenue / 1000).toFixed(1)}k
-                  </div>
-                  <div
-                    style={{
-                      width: '100%',
-                      height: `${(item.revenue / 8000) * 250}px`,
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      borderRadius: '8px 8px 0 0',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
-                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                  ></div>
-                  <div style={{ fontSize: '12px', fontWeight: '500', color: '#6b7280' }}>
-                    {item.month}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Main Content */}
+        <Grid container spacing={3}>
+          {/* Revenue Overview */}
+          <Grid item xs={12} lg={8}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold">
+                      Revenue Overview
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Monthly revenue statistics
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DownloadIcon />}
+                    size="small"
+                  >
+                    Export
+                  </Button>
+                </Box>
 
-          {/* Additional Stats */}
-          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ background: '#fff', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                  <Calendar size={24} />
-                </div>
-                <div>
-                  <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Total Events</p>
-                  <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>{stats.totalEvents}</p>
-                </div>
-              </div>
-              <Link href="/dashboard/admin/events" style={{ fontSize: '14px', color: '#3b82f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                View all events <ArrowUpRight size={16} />
-              </Link>
-            </div>
+                {/* Revenue Chart */}
+                <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', height: 300 }}>
+                  {stats.revenueData.map((item, index) => {
+                    const height = (item.revenue / 8000) * 250;
+                    return (
+                      <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, maxWidth: 80 }}>
+                        <Typography variant="caption" fontWeight="bold" color="success.main" sx={{ mb: 1 }}>
+                          ${(item.revenue / 1000).toFixed(1)}k
+                        </Typography>
+                        <Paper
+                          elevation={3}
+                          sx={{
+                            width: '100%',
+                            height: `${height}px`,
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            borderRadius: '8px 8px 0 0',
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              opacity: 0.8,
+                              transform: 'scale(1.05)',
+                            },
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                          {item.month}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+                </Box>
 
-            <div style={{ background: '#fff', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b' }}>
-                  <FileText size={24} />
-                </div>
-                <div>
-                  <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Total Articles</p>
-                  <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>{stats.totalArticles}</p>
-                </div>
-              </div>
-              <Link href="/dashboard/admin/post" style={{ fontSize: '14px', color: '#f59e0b', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                Manage articles <ArrowUpRight size={16} />
-              </Link>
-            </div>
+                {/* Revenue Stats */}
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Total Earnings
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold" color="primary">
+                        $63,489.50
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        This Month
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold" color="success.main">
+                        $48,820
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Expenses
+                      </Typography>
+                      <Typography variant="h5" fontWeight="bold" color="error.main">
+                        $26,498
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
 
-            <div style={{ background: '#fff', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
-                  <Activity size={24} />
-                </div>
-                <div>
-                  <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Active Users</p>
-                  <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>842</p>
-                </div>
-              </div>
-              <p style={{ fontSize: '12px', color: '#6b7280' }}>67.5% of total users</p>
-            </div>
-          </div>
-        </div>
+          {/* Side Stats */}
+          <Grid item xs={12} lg={4}>
+            <Grid container spacing={3}>
+              {/* Events Card */}
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Avatar sx={{ bgcolor: '#dbeafe', color: '#3b82f6', mr: 2, width: 56, height: 56 }}>
+                        <EventIcon sx={{ fontSize: 30 }} />
+                      </Avatar>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Events
+                        </Typography>
+                        <Typography variant="h4" fontWeight="bold">
+                          {stats.totalEvents}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      component={Link}
+                      href="/dashboard/admin/events"
+                      fullWidth
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{ mt: 1 }}
+                    >
+                      View all events
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Articles Card */}
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Avatar sx={{ bgcolor: '#fef3c7', color: '#f59e0b', mr: 2, width: 56, height: 56 }}>
+                        <ArticleIcon sx={{ fontSize: 30 }} />
+                      </Avatar>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Articles
+                        </Typography>
+                        <Typography variant="h4" fontWeight="bold">
+                          {stats.totalArticles}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      component={Link}
+                      href="/dashboard/admin/post"
+                      fullWidth
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{ mt: 1 }}
+                    >
+                      Manage articles
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Active Users Card */}
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Avatar sx={{ bgcolor: '#dcfce7', color: '#10b981', mr: 2, width: 56, height: 56 }}>
+                        <PeopleIcon sx={{ fontSize: 30 }} />
+                      </Avatar>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Active Users
+                        </Typography>
+                        <Typography variant="h4" fontWeight="bold">
+                          842
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box sx={{ mt: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Activity Rate
+                        </Typography>
+                        <Typography variant="caption" fontWeight="bold">
+                          67.5%
+                        </Typography>
+                      </Box>
+                      <LinearProgress
+                        variant="determinate"
+                        value={67.5}
+                        sx={{
+                          height: 8,
+                          borderRadius: 5,
+                          bgcolor: '#e5e7eb',
+                          '& .MuiLinearProgress-bar': {
+                            background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+                          },
+                        }}
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
 
         {/* Recent Activity Tables */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px' }}>
+        <Grid container spacing={3} sx={{ mt: 1 }}>
           {/* Recent Users */}
-          <div style={{ gridColumn: 'span 6', background: '#fff', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>Recent Users</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Name</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Email</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Joined</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentUsers.map((user) => (
-                    <tr key={user.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                      <td style={{ padding: '12px 8px', fontSize: '14px', color: '#1f2937' }}>{user.name}</td>
-                      <td style={{ padding: '12px 8px', fontSize: '14px', color: '#6b7280' }}>{user.email}</td>
-                      <td style={{ padding: '12px 8px', fontSize: '14px', color: '#6b7280' }}>{user.joinedAt}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Link href="/dashboard/admin/alluser" style={{ marginTop: '16px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#3b82f6', textDecoration: 'none', fontWeight: '500' }}>
-              View all users <ArrowUpRight size={16} />
-            </Link>
-          </div>
+          <Grid item xs={12} lg={6}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6" fontWeight="bold">
+                    Recent Users
+                  </Typography>
+                  <IconButton size="small">
+                    <VisibilityIcon />
+                  </IconButton>
+                </Box>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Joined</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {stats.recentUsers.map((user) => (
+                        <TableRow
+                          key={user.id}
+                          sx={{
+                            '&:hover': { bgcolor: '#f9fafb' },
+                            transition: 'background-color 0.2s',
+                          }}
+                        >
+                          <TableCell>{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.joinedAt}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Button
+                  component={Link}
+                  href="/dashboard/admin/alluser"
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ mt: 2 }}
+                >
+                  View all users
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
 
           {/* Recent Orders */}
-          <div style={{ gridColumn: 'span 6', background: '#fff', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>Recent Orders</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>User</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Amount</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentOrders.map((order) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                      <td style={{ padding: '12px 8px', fontSize: '14px', color: '#1f2937' }}>{order.user}</td>
-                      <td style={{ padding: '12px 8px', fontSize: '14px', color: '#1f2937', fontWeight: '600' }}>${order.amount}</td>
-                      <td style={{ padding: '12px 8px' }}>
-                        <span style={{
-                          padding: '4px 12px',
-                          borderRadius: '12px',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          background: order.status === 'completed' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                          color: order.status === 'completed' ? '#10b981' : '#f59e0b'
-                        }}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Link href="/dashboard/admin/orders" style={{ marginTop: '16px', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#3b82f6', textDecoration: 'none', fontWeight: '500' }}>
-              View all orders <ArrowUpRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Stat Card Component
-function StatCard({ title, value, icon, trend, trendUp, color, bgColor }) {
-  return (
-    <div style={{
-      background: '#fff',
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      cursor: 'pointer',
-    }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 10px 40px rgba(0,0,0,0.1)';
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-        <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color }}>
-          {icon}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', fontWeight: '600', color: trendUp ? '#10b981' : '#ef4444' }}>
-          {trendUp ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-          {Math.abs(trend)}%
-        </div>
-      </div>
-      <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#6b7280', marginBottom: '8px' }}>
-        {title}
-      </h3>
-      <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937' }}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
-// Quick Action Button Component
-function QuickActionButton({ label, icon, href, color }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '16px',
-        borderRadius: '12px',
-        border: '2px solid #e5e7eb',
-        textDecoration: 'none',
-        color: '#1f2937',
-        transition: 'all 0.3s ease',
-        background: '#fff',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = color;
-        e.currentTarget.style.background = `${color}10`;
-        e.currentTarget.style.transform = 'translateY(-2px)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = '#e5e7eb';
-        e.currentTarget.style.background = '#fff';
-        e.currentTarget.style.transform = 'translateY(0)';
-      }}
-    >
-      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color }}>
-        {icon}
-      </div>
-      <span style={{ fontSize: '14px', fontWeight: '600' }}>{label}</span>
-    </Link>
+          <Grid item xs={12} lg={6}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6" fontWeight="bold">
+                    Recent Orders
+                  </Typography>
+                  <IconButton size="small">
+                    <VisibilityIcon />
+                  </IconButton>
+                </Box>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 600 }}>User</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Amount</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {stats.recentOrders.map((order) => (
+                        <TableRow
+                          key={order.id}
+                          sx={{
+                            '&:hover': { bgcolor: '#f9fafb' },
+                            transition: 'background-color 0.2s',
+                          }}
+                        >
+                          <TableCell>{order.user}</TableCell>
+                          <TableCell>
+                            <Typography fontWeight="bold">${order.amount}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={order.status}
+                              color={order.status === 'completed' ? 'success' : 'warning'}
+                              size="small"
+                              sx={{ fontWeight: 600, textTransform: 'capitalize' }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Button
+                  component={Link}
+                  href="/dashboard/admin/orders"
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ mt: 2 }}
+                >
+                  View all orders
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 }
