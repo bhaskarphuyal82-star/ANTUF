@@ -271,6 +271,52 @@ const Footer = () => {
           </Grid>
         </Grid>
 
+        {/* Google Maps Location Section */}
+        <Box sx={{ mt: 4, pt: 3, borderTop: "1px solid #444" }}>
+          <Typography
+            variant={isSmallScreen ? "h6" : "h5"}
+            fontWeight="bold"
+            gutterBottom
+            sx={{
+              color: "green",
+              textAlign: "center",
+              mb: 3,
+            }}
+          >
+            Our Location / हाम्रो स्थान
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: isSmallScreen ? "100%" : "800px",
+                height: isSmallScreen ? "300px" : "450px",
+                borderRadius: 2,
+                overflow: "hidden",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+              }}
+            >
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d56525.06391095446!2d85.334246!3d27.692066!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19f2dc69b5b5%3A0x458dbd5c96ec655e!2sALL%20NEPAL%20FEDERATION%20OF%20TRADE%20UNIONS!5e0!3m2!1sen!2sus!4v1762664560747!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="ANTUF Location Map"
+              />
+            </Box>
+          </Box>
+        </Box>
+
         {/* Copyright Section */}
         <Box
           sx={{
@@ -281,7 +327,7 @@ const Footer = () => {
           }}
         >
           <Typography variant="body2" sx={{ color: "#ccc", fontSize: isSmallScreen ? "12px" : "14px" }}>
-            © {new Date().getFullYear()} Tutorials Material. All rights reserved.
+            © {new Date().getFullYear()} All Nepal Federation of Trade Unions(ANTUF). All rights reserved.
           </Typography>
         </Box>
       </Box>
