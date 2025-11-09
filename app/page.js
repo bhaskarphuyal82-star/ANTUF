@@ -26,36 +26,37 @@ import { useRouter } from 'next/navigation';
 export default function HomePage() {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
+	const [presidentMessageOpen, setPresidentMessageOpen] = useState(false);
 
 	const actions = [
 		{ 
 			icon: <PhoneIcon />, 
-			name: 'सम्पर्क / Contact', 
+			name: 'सम्पर्क ', 
 			action: () => router.push('/pages/contact')
 		},
 		{ 
 			icon: <EmailIcon />, 
-			name: 'इमेल / Email', 
-			action: () => window.location.href = 'mailto:info@antuf.org'
+			name: 'अध्यक्षको सन्देश', 
+			action: () => setPresidentMessageOpen(true)
 		},
 		{ 
 			icon: <LocationIcon />, 
-			name: 'स्थान / Location', 
+			name: 'स्थान ', 
 			action: () => window.open('https://maps.google.com/?q=ALL+NEPAL+FEDERATION+OF+TRADE+UNIONS', '_blank')
 		},
 		{ 
 			icon: <DonateIcon />, 
-			name: 'दान / Donate', 
+			name: 'दान ', 
 			action: () => router.push('/pages/donation')
 		},
 		{ 
 			icon: <ArticleIcon />, 
-			name: 'लेख / Articles', 
+			name: 'लेख', 
 			action: () => router.push('/')
 		},
 		{ 
 			icon: <EventIcon />, 
-			name: 'कार्यक्रम / Events', 
+			name: 'कार्यक्रम', 
 			action: () => router.push('/events')
 		},
 	];
@@ -75,7 +76,10 @@ export default function HomePage() {
 			<Footer />
 			
 			{/* President Message Popup */}
-			<PresidentMessage />
+			<PresidentMessage 
+				externalOpen={presidentMessageOpen}
+				onExternalClose={() => setPresidentMessageOpen(false)}
+			/>
 
 			{/* Speed Dial */}
 			<SpeedDial

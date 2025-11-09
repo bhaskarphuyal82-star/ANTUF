@@ -24,7 +24,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function PresidentMessage() {
+export default function PresidentMessage({ externalOpen, onExternalClose }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -42,8 +42,18 @@ export default function PresidentMessage() {
     }
   }, []);
 
+  // Handle external open state
+  useEffect(() => {
+    if (externalOpen) {
+      setOpen(true);
+    }
+  }, [externalOpen]);
+
   const handleClose = () => {
     setOpen(false);
+    if (onExternalClose) {
+      onExternalClose();
+    }
   };
 
   const handleReadMore = () => {
@@ -116,7 +126,7 @@ export default function PresidentMessage() {
               }}
             >
               <Avatar
-                src="/images/president.jpg" // Update with actual image path
+                src="https://res.cloudinary.com/dfu758f7t/image/upload/v1762660632/antuf-president-300x300_m0nuve.png" // Update with actual image path
                 alt="President"
                 sx={{
                   width: { xs: 150, sm: 200 },
