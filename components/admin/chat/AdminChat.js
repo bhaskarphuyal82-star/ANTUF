@@ -42,6 +42,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import MicIcon from "@mui/icons-material/Mic";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import VideocamOffIcon from "@mui/icons-material/VideocamOff";
+import CallEndIcon from "@mui/icons-material/CallEnd";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
@@ -58,6 +65,12 @@ const AdminChat = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openVideoCall, setOpenVideoCall] = useState(false);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
+  const [isCallActive, setIsCallActive] = useState(false);
   const [quickResponses] = useState([
     "Thank you for contacting us. How can I help you today?",
     "I understand your concern. Let me look into this for you.",
@@ -77,6 +90,16 @@ const AdminChat = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    let interval;
+    if (isCallActive) {
+      interval = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isCallActive]);
 
   const fetchChats = async () => {
     try {
@@ -226,6 +249,43 @@ const AdminChat = () => {
       urgent: "error",
     };
     return colors[priority] || "default";
+  };
+
+  const handleStartVideoCall = () => {
+    setOpenVideoCall(true);
+    setIsCallActive(true);
+    setCallDuration(0);
+    toast.success("Video call started");
+  };
+
+  const handleEndVideoCall = () => {
+    setOpenVideoCall(false);
+    setIsCallActive(false);
+    setCallDuration(0);
+    setIsVideoEnabled(true);
+    setIsAudioEnabled(true);
+    setIsFullscreen(false);
+    toast.info("Video call ended");
+  };
+
+  const toggleVideo = () => {
+    setIsVideoEnabled(!isVideoEnabled);
+    toast.info(isVideoEnabled ? "Camera turned off" : "Camera turned on");
+  };
+
+  const toggleAudio = () => {
+    setIsAudioEnabled(!isAudioEnabled);
+    toast.info(isAudioEnabled ? "Microphone muted" : "Microphone unmuted");
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const formatCallDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -489,6 +549,19 @@ const AdminChat = () => {
               </Box>
             </Box>
             <Stack direction="row" spacing={1} alignItems="center">
+              <Tooltip title="Start Video Call">
+                <IconButton
+                  size="small"
+                  onClick={handleStartVideoCall}
+                  sx={{ 
+                    color: "#4caf50",
+                    bgcolor: "#e8f5e9",
+                    "&:hover": { bgcolor: "#c8e6c9" }
+                  }}
+                >
+                  <VideocamIcon />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Assign Chat">
                 <IconButton
                   size="small"
@@ -671,6 +744,214 @@ const AdminChat = () => {
             Assign to Me
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Video Call Dialog */}
+      <Dialog
+        open={openVideoCall}
+        onClose={handleEndVideoCall}
+        maxWidth={isFullscreen ? false : "md"}
+        fullScreen={isFullscreen}
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: "#1a1a2e",
+            minHeight: isFullscreen ? "100vh" : "600px",
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          bgcolor: "#1a1a2e", 
+          color: "white", 
+          display: "flex", 
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid rgba(255,255,255,0.1)"
+        }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <VideocamIcon sx={{ color: "#4caf50" }} />
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Video Call - {selectedChat?.userName}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>
+                {isCallActive && `Duration: ${formatCallDuration(callDuration)}`}
+              </Typography>
+            </Box>
+          </Box>
+          <IconButton onClick={toggleFullscreen} sx={{ color: "white" }}>
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ 
+          bgcolor: "#0f0f1e", 
+          p: 0,
+          display: "flex",
+          flexDirection: "column",
+          position: "relative"
+        }}>
+          {/* Main Video Area */}
+          <Box sx={{ 
+            flex: 1, 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center",
+            bgcolor: "#000",
+            position: "relative",
+            minHeight: isFullscreen ? "calc(100vh - 200px)" : "450px"
+          }}>
+            {/* Remote Video (User) */}
+            <Box sx={{ 
+              width: "100%", 
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "#1a1a2e"
+            }}>
+              <Avatar 
+                src={selectedChat?.userImage}
+                sx={{ 
+                  width: 150, 
+                  height: 150,
+                  mb: 2,
+                  border: "4px solid #4caf50"
+                }}
+              >
+                {selectedChat?.userName?.[0]}
+              </Avatar>
+              <Typography variant="h5" sx={{ color: "white", fontWeight: 600 }}>
+                {selectedChat?.userName}
+              </Typography>
+              <Chip 
+                label="Connected" 
+                color="success" 
+                size="small" 
+                sx={{ mt: 1 }}
+              />
+            </Box>
+
+            {/* Local Video (Self) - Picture in Picture */}
+            <Paper sx={{ 
+              position: "absolute",
+              bottom: 20,
+              right: 20,
+              width: { xs: 120, md: 200 },
+              height: { xs: 90, md: 150 },
+              bgcolor: "#2a2a3e",
+              border: "2px solid #4caf50",
+              borderRadius: 2,
+              overflow: "hidden",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}>
+              {isVideoEnabled ? (
+                <Box sx={{ 
+                  width: "100%", 
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: "#1a1a2e"
+                }}>
+                  <Avatar sx={{ width: 60, height: 60 }}>
+                    {session?.user?.name?.[0] || "A"}
+                  </Avatar>
+                </Box>
+              ) : (
+                <Box sx={{ 
+                  width: "100%", 
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: "#1a1a2e"
+                }}>
+                  <VideocamOffIcon sx={{ fontSize: 40, color: "#999" }} />
+                </Box>
+              )}
+            </Paper>
+
+            {/* Call Status Indicator */}
+            <Box sx={{ 
+              position: "absolute",
+              top: 20,
+              left: 20,
+              bgcolor: "rgba(0,0,0,0.7)",
+              px: 2,
+              py: 1,
+              borderRadius: 2
+            }}>
+              <Typography variant="body2" sx={{ color: "white", fontWeight: 600 }}>
+                🔴 Live • {formatCallDuration(callDuration)}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Video Call Controls */}
+          <Box sx={{ 
+            p: 3,
+            bgcolor: "#1a1a2e",
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+            borderTop: "1px solid rgba(255,255,255,0.1)"
+          }}>
+            <Tooltip title={isAudioEnabled ? "Mute Microphone" : "Unmute Microphone"}>
+              <IconButton
+                onClick={toggleAudio}
+                sx={{
+                  bgcolor: isAudioEnabled ? "#2196F3" : "#f44336",
+                  color: "white",
+                  width: 56,
+                  height: 56,
+                  "&:hover": {
+                    bgcolor: isAudioEnabled ? "#1976D2" : "#d32f2f",
+                  }
+                }}
+              >
+                {isAudioEnabled ? <MicIcon /> : <MicOffIcon />}
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={isVideoEnabled ? "Turn Off Camera" : "Turn On Camera"}>
+              <IconButton
+                onClick={toggleVideo}
+                sx={{
+                  bgcolor: isVideoEnabled ? "#2196F3" : "#f44336",
+                  color: "white",
+                  width: 56,
+                  height: 56,
+                  "&:hover": {
+                    bgcolor: isVideoEnabled ? "#1976D2" : "#d32f2f",
+                  }
+                }}
+              >
+                {isVideoEnabled ? <VideocamIcon /> : <VideocamOffIcon />}
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="End Call">
+              <IconButton
+                onClick={handleEndVideoCall}
+                sx={{
+                  bgcolor: "#f44336",
+                  color: "white",
+                  width: 64,
+                  height: 64,
+                  "&:hover": {
+                    bgcolor: "#d32f2f",
+                  }
+                }}
+              >
+                <CallEndIcon sx={{ fontSize: 32 }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </DialogContent>
       </Dialog>
       </Box>
     </Box>
