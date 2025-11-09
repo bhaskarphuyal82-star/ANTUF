@@ -22,7 +22,7 @@ import {
   Home as HomeIcon,
   EmojiEvents as EventsIcon,
   School as SchoolIcon,
-  Volunteer as VolunteerIcon,
+  VolunteerActivism as VolunteerIcon,
   Campaign as CampaignIcon,
   LocalHospital as HealthIcon,
 } from '@mui/icons-material';
