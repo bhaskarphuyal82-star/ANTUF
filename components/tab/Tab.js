@@ -125,9 +125,9 @@ const ScrollableTabs = () => {
       {/* Navigation Menu */}
       <Box
         sx={{
-          
-          justifyContent:"center",
-        
+
+          justifyContent: "center",
+
 
         }}
 
@@ -140,15 +140,15 @@ const ScrollableTabs = () => {
             py: 0.5,
             px: 3,
             display: 'flex',
-            height:50,
+            height: 50,
             alignItems: 'center',
-            justifyContent:"center",
+            justifyContent: "center",
             position: 'relative',
             zIndex: 1,
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
-          
+
             <IconButton
               onClick={() => router.push('/')}
               sx={{
@@ -167,7 +167,7 @@ const ScrollableTabs = () => {
             >
               <HomeIcon />
             </IconButton>
-            
+
             <Button
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
@@ -204,21 +204,25 @@ const ScrollableTabs = () => {
                 },
               }}
             >
-              ABOUT US
+
+
+              हाम्रो बारेमा
             </Button>
-        
-            <Button 
-              onClick={() => router.push('/')}
+
+            <Button
+              onClick={() => router.push('/pages')}
               sx={{
                 color: 'white',
                 fontWeight: 600,
-                fontSize: { xs: '13px', sm: '14px', md: '15px' },
-                px: { xs: 1.5, md: 2.5 },
+                fontSize: { xs: '12px', sm: '13px', md: '14px' },
+                px: { xs: 1.5, md: 2 },
                 py: 1,
                 borderRadius: 2,
                 transition: 'all 0.3s ease',
                 position: 'relative',
                 overflow: 'hidden',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -231,18 +235,19 @@ const ScrollableTabs = () => {
                   transition: 'transform 0.3s ease',
                 },
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.25)',
                   transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                   '&::before': {
                     transform: 'translateX(0)',
                   },
                 },
               }}
             >
-              होम
+              📄 सबै पृष्ठहरू
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/activities')}
               sx={{
                 color: 'white',
@@ -276,8 +281,8 @@ const ScrollableTabs = () => {
             >
               गतिविधि
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/organization')}
               sx={{
                 color: 'white',
@@ -311,8 +316,8 @@ const ScrollableTabs = () => {
             >
               संगठन
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/representatives')}
               sx={{
                 color: 'white',
@@ -346,8 +351,8 @@ const ScrollableTabs = () => {
             >
               जनप्रतिनिधि
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/history')}
               sx={{
                 color: 'white',
@@ -381,8 +386,8 @@ const ScrollableTabs = () => {
             >
               इतिहास
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/documents')}
               sx={{
                 color: 'white',
@@ -416,8 +421,8 @@ const ScrollableTabs = () => {
             >
               दस्तावेज
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/downloads')}
               sx={{
                 color: 'white',
@@ -451,8 +456,8 @@ const ScrollableTabs = () => {
             >
               डाउनलोड
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => router.push('/contact')}
               sx={{
                 color: 'white',
@@ -487,55 +492,55 @@ const ScrollableTabs = () => {
               सम्पर्क
             </Button>
           </Box>
- <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          list: {
-            'aria-labelledby': 'basic-button',
-          },
-        }}
-      >
-        <MenuItem 
-          onClick={() => {
-            handleClose();
-            router.push('/about');
-          }}
-          sx={{
-            color: 'inherit',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 0, 0, 0.1)',
-            }
-          }}
-        >
-          INTRODUCTION
-        </MenuItem>
-        <MenuItem 
-          onClick={handleClose}
-          sx={{
-            color: 'inherit',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 0, 0, 0.1)',
-            }
-          }}
-        >
-          HISTORY
-        </MenuItem>
-        <MenuItem 
-          onClick={handleClose}
-          sx={{
-            color: 'inherit',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 0, 0, 0.1)',
-            }
-          }}
-        >
-          ORGANIZATION
-        </MenuItem>
-      </Menu>
-   
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            slotProps={{
+              list: {
+                'aria-labelledby': 'basic-button',
+              },
+            }}
+          >
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                router.push('/about');
+              }}
+              sx={{
+                color: 'inherit',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                }
+              }}
+            >
+              INTRODUCTION
+            </MenuItem>
+            <MenuItem
+              onClick={handleClose}
+              sx={{
+                color: 'inherit',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                }
+              }}
+            >
+              HISTORY
+            </MenuItem>
+            <MenuItem
+              onClick={handleClose}
+              sx={{
+                color: 'inherit',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                }
+              }}
+            >
+              ORGANIZATION
+            </MenuItem>
+          </Menu>
+
         </Box>
       </Box>
     </>
