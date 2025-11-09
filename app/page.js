@@ -1,5 +1,6 @@
 // import Image from "next/image";
 "use client";
+import { useState } from "react";
 import styles from "./page.module.css";
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar"
@@ -9,8 +10,56 @@ import ArticlesGrid from "@/components/Article/Article"
 import Home from "@/components/home/Home"
 import VideoContent from "@/components/home/video";
 import PresidentMessage from "@/components/home/PresidentMessage";
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import {
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  LocationOn as LocationIcon,
+  Favorite as DonateIcon,
+  Article as ArticleIcon,
+  Event as EventIcon,
+} from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
+	const router = useRouter();
+	const [open, setOpen] = useState(false);
+
+	const actions = [
+		{ 
+			icon: <PhoneIcon />, 
+			name: 'सम्पर्क / Contact', 
+			action: () => router.push('/pages/contact')
+		},
+		{ 
+			icon: <EmailIcon />, 
+			name: 'इमेल / Email', 
+			action: () => window.location.href = 'mailto:info@antuf.org'
+		},
+		{ 
+			icon: <LocationIcon />, 
+			name: 'स्थान / Location', 
+			action: () => window.open('https://maps.google.com/?q=ALL+NEPAL+FEDERATION+OF+TRADE+UNIONS', '_blank')
+		},
+		{ 
+			icon: <DonateIcon />, 
+			name: 'दान / Donate', 
+			action: () => router.push('/pages/donation')
+		},
+		{ 
+			icon: <ArticleIcon />, 
+			name: 'लेख / Articles', 
+			action: () => router.push('/')
+		},
+		{ 
+			icon: <EventIcon />, 
+			name: 'कार्यक्रम / Events', 
+			action: () => router.push('/events')
+		},
+	];
+
 	return (
 		<div>
 			{/* <TapNav/> */}
@@ -27,6 +76,48 @@ export default function HomePage() {
 			
 			{/* President Message Popup */}
 			<PresidentMessage />
+
+			{/* Speed Dial */}
+			<SpeedDial
+				ariaLabel="Quick Actions"
+				sx={{
+					position: 'fixed',
+					bottom: 16,
+					right: 16,
+					'& .MuiFab-primary': {
+						backgroundColor: '#4caf50',
+						'&:hover': {
+							backgroundColor: '#45a049',
+						},
+					},
+				}}
+				icon={<SpeedDialIcon />}
+				onClose={() => setOpen(false)}
+				onOpen={() => setOpen(true)}
+				open={open}
+			>
+				{actions.map((action) => (
+					<SpeedDialAction
+						key={action.name}
+						icon={action.icon}
+						tooltipTitle={action.name}
+						tooltipOpen
+						onClick={() => {
+							action.action();
+							setOpen(false);
+						}}
+						sx={{
+							'& .MuiSpeedDialAction-fab': {
+								backgroundColor: '#fff',
+								'&:hover': {
+									backgroundColor: '#4caf50',
+									color: '#fff',
+								},
+							},
+						}}
+					/>
+				))}
+			</SpeedDial>
 		</div>
 	);
 }
