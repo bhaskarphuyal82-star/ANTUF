@@ -27,7 +27,13 @@ import Tabs from "@/components/tab/Tab";
 const Navbar = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const menuItems = ["Courses", "Jobs", "Practice",];
+  const menuItems = [
+    { title: "हाम्रो बारेमा", titleEn: "About Us", path: "/pages/about" },
+    { title: "सम्बद्ध संगठन", titleEn: "Affiliates", path: "/pages/affiliates" },
+    { title: "जनप्रतिनिधि", titleEn: "Representatives", path: "/pages/representatives" },
+    { title: "कार्यक्रम", titleEn: "Events", path: "/events" },
+    { title: "सम्पर्क", titleEn: "Contact", path: "/pages/contact" },
+  ];
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -266,10 +272,26 @@ const Navbar = () => {
            
 
             <List>
-              {menuItems.map((text, index) => (
+              {menuItems.map((item, index) => (
                 <div key={index}>
-                  <ListItem sx={{ textAlign: "left" }}>
-                    <Typography sx={{ p: 1 }}>{text}</Typography>
+                  <ListItem 
+                    sx={{ 
+                      textAlign: "left",
+                      cursor: "pointer",
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      }
+                    }}
+                    onClick={() => router.push(item.path)}
+                  >
+                    <Box>
+                      <Typography sx={{ p: 1, fontWeight: 600, color: 'white' }}>
+                        {item.title}
+                      </Typography>
+                      <Typography sx={{ px: 1, fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
+                        {item.titleEn}
+                      </Typography>
+                    </Box>
                   </ListItem>
                   <Divider
                     style={{
