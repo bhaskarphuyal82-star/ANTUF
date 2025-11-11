@@ -62,19 +62,30 @@ export const fetchSliders = createAsyncThunk(
 export const fetchHomeSliders = createAsyncThunk(
   "sliders/fetchHomeSliders",
 
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/sliders`);
+      console.log('Fetching home sliders from /api/sliders');
+      const response = await fetch(`/api/sliders`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log("Home sliders response status:", response.status);
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch sliders ${response.status}`);
+        const errorData = await response.text();
+        console.error("Home sliders API error:", errorData);
+        return rejectWithValue(`Failed to fetch sliders: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log("Home sliders fetched successfully:", data);
+      return data;
     } catch (error) {
-      toast.error(`error loading sliders ${error.message}`);
-
-      throw error;
+      console.error("Home sliders fetch error:", error);
+      return rejectWithValue(error.message);
     }
   }
 );

@@ -22,10 +22,22 @@ export default function ClientSaid() {
 
   const [error, setError] = useState(null);
 
+  // Demo/fallback sliders for when API fails
+  const demoSliders = [
+    {
+      _id: 'demo-1',
+      image: 'https://via.placeholder.com/1200x600?text=Welcome+to+ANTUF',
+      title: 'Welcome to ANTUF',
+      sub_title: 'Learn and Grow Together',
+      short_description: 'Explore our courses and resources to enhance your knowledge.',
+      button_link: '/course-details'
+    }
+  ];
+
   useEffect(() => {
     const getSliders = async () => {
       try {
-        console.log('Starting to fetch home sliders...');
+        console.log('Starting to fetch home sliders from /api/sliders...');
         const result = await dispatch(fetchHomeSliders()).unwrap();
         console.log('Fetched sliders successfully:', result);
         setError(null);
@@ -75,35 +87,26 @@ export default function ClientSaid() {
     ],
   };
 
-  if (loading) {
+  if (loading && sliders.length === 0) {
     return <ColorfulSkeletonLoader />;
   }
 
   // Check both local and Redux error states
   const displayError = error || reduxError;
   
-  if (displayError) {
-    console.warn('Display error:', displayError);
-    return (
-      <Box sx={{ p: 4, textAlign: 'center', minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography sx={sliderStyles.errorContainer}>
-          Error: {displayError}
-        </Typography>
-      </Box>
-    );
-  }
+  // Use demo sliders if no data is available
+  const slidersToDisplay = (sliders && sliders.length > 0) ? sliders : demoSliders;
 
-  if (!sliders || sliders.length === 0) {
-    console.warn('No sliders available');
-    return <ColorfulSkeletonLoader />;
+  if (displayError && sliders.length === 0) {
+    console.warn('Slider loading failed, using demo slider:', displayError);
   }
 
   return (
     <Box sx={sliderStyles.mainContainer}>
       <Slider {...settings}>
-        {sliders.map((item, index) => (
+        {slidersToDisplay.map((item, index) => (
           <Box
-            key={index}
+            key={item._id || index}
             sx={{
               ...sliderStyles.slideBox,
               position: 'relative',
