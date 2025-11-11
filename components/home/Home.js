@@ -87,19 +87,23 @@ export default function ClientSaid() {
     ],
   };
 
-  if (loading && sliders.length === 0) {
-    return <ColorfulSkeletonLoader />;
-  }
-
   // Check both local and Redux error states
   const displayError = error || reduxError;
   
-  // Use demo sliders if no data is available
+  // Use demo sliders if no data is available or error occurs
   const slidersToDisplay = (sliders && sliders.length > 0) ? sliders : demoSliders;
+  
+  // Show loading only if we don't have fallback sliders
+  if (loading && sliders.length === 0 && !displayError) {
+    return <ColorfulSkeletonLoader />;
+  }
 
   if (displayError && sliders.length === 0) {
     console.warn('Slider loading failed, using demo slider:', displayError);
   }
+  
+  // Always render - either real sliders or demo
+  console.log('Rendering sliders:', slidersToDisplay.length > 0 ? 'Real data' : 'Demo fallback');
 
   return (
     <Box sx={sliderStyles.mainContainer}>
