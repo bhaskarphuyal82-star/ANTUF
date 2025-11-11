@@ -4,18 +4,52 @@ import CurriculumCourse from "@/models/CurriculumCourse";
 
 import Razorpay from "razorpay";
 
-var razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_CLIENT_ID,
-  key_secret: process.env.RAZORPAY_CLIENT_SECRET,
-});
+// Initialize Razorpay with env variables if available
+const getRazorpayInstance = () => {
+  const keyId = process.env.RAZORPAY_CLIENT_ID;
+  const keySecret = process.env.RAZORPAY_CLIENT_SECRET;
+  
+  if (!keyId || !keySecret) {
+    console.warn("Razorpay credentials not configured");
+    return null;
+  }
+  
+  try {
+    return new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
+    });
+  } catch (error) {
+    console.error("Failed to initialize Razorpay:", error);
+    return null;
+  }
+};
 
 export async function GET(req, context) {
   await dbConnect();
 
   try {
+    const razorpay = getRazorpayInstance();
+    
+    if (!razorpay) {
+      return NextResponse.json(
+        { 
+          error: "Razorpay is not configured. Please add RAZORPAY_CLIENT_ID and RAZORPAY_CLIENT_SECRET to environment variables." 
+        }, 
+        { status: 500 }
+      );
+    }
+
     const course = await CurriculumCourse.findOne({
       slug: context?.params?.id,
     });
+
+    if (!course) {
+      return NextResponse.json(
+        { error: "Course not found" }, 
+        { status: 404 }
+      );
+    }
 
     const options = {
       amount: course.price * 100,

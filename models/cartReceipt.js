@@ -68,6 +68,7 @@ const CartReceiptSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       sparse: true,
+      index: true,
     },
     shippingAddress: {
       name: String,
@@ -101,7 +102,6 @@ const CartReceiptSchema = new mongoose.Schema(
 
 // Index for quick lookups
 CartReceiptSchema.index({ userId: 1 });
-CartReceiptSchema.index({ orderId: 1 });
 CartReceiptSchema.index({ createdAt: -1 });
 CartReceiptSchema.index({ paymentStatus: 1 });
 

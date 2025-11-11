@@ -8,10 +8,26 @@ import CourseOrder from "@/models/courseorder";
 import UserCourse from "@/models/usercourse";
 import Razorpay from "razorpay";
 
-var razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_CLIENT_ID,
-  key_secret: process.env.RAZORPAY_CLIENT_SECRET,
-});
+// Initialize Razorpay with env variables if available
+const getRazorpayInstance = () => {
+  const keyId = process.env.RAZORPAY_CLIENT_ID;
+  const keySecret = process.env.RAZORPAY_CLIENT_SECRET;
+  
+  if (!keyId || !keySecret) {
+    console.warn("Razorpay credentials not configured");
+    return null;
+  }
+  
+  try {
+    return new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
+    });
+  } catch (error) {
+    console.error("Failed to initialize Razorpay:", error);
+    return null;
+  }
+};
 
 export async function POST(req, context) {
   await dbConnect();
@@ -21,6 +37,17 @@ export async function POST(req, context) {
   const session = await getServerSession(authOptions);
 
   try {
+    const razorpay = getRazorpayInstance();
+    
+    if (!razorpay) {
+      return NextResponse.json(
+        { 
+          error: "Razorpay is not configured. Please add RAZORPAY_CLIENT_ID and RAZORPAY_CLIENT_SECRET to environment variables." 
+        }, 
+        { status: 500 }
+      );
+    }
+
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
     console.log("payment razor---", payment);
 
