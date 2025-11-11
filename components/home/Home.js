@@ -15,8 +15,8 @@ import { ColorfulSkeletonLoader } from "./ColorfulSkeletonLoader";
 export default function ClientSaid() {
   const dispatch = useDispatch();
 
-  const { sliders, loading } = useSelector((state) => {
-    console.log('Redux state:', state.sliders);
+  const { sliders, loading, error: reduxError } = useSelector((state) => {
+    console.log('Redux sliders state:', state.sliders);
     return state.sliders;
   });
 
@@ -25,11 +25,13 @@ export default function ClientSaid() {
   useEffect(() => {
     const getSliders = async () => {
       try {
+        console.log('Starting to fetch home sliders...');
         const result = await dispatch(fetchHomeSliders()).unwrap();
-        console.log('Fetched sliders:', result);
+        console.log('Fetched sliders successfully:', result);
+        setError(null);
       } catch (error) {
-        console.error('Slider error:', error);
-        setError("Failed to load slider");
+        console.error('Slider fetch error:', error);
+        setError(error || "Failed to load sliders");
       }
     };
 
@@ -77,15 +79,22 @@ export default function ClientSaid() {
     return <ColorfulSkeletonLoader />;
   }
 
-  if (error) {
+  // Check both local and Redux error states
+  const displayError = error || reduxError;
+  
+  if (displayError) {
+    console.warn('Display error:', displayError);
     return (
-      <Box>
-        <Typography sx={sliderStyles.errorContainer}>{error}</Typography>
+      <Box sx={{ p: 4, textAlign: 'center', minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography sx={sliderStyles.errorContainer}>
+          Error: {displayError}
+        </Typography>
       </Box>
     );
   }
 
   if (!sliders || sliders.length === 0) {
+    console.warn('No sliders available');
     return <ColorfulSkeletonLoader />;
   }
 

@@ -197,6 +197,61 @@ const sliderSlice = createSlice({
       .addCase(fetchSliderById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      // Fetch home sliders
+      .addCase(fetchHomeSliders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchHomeSliders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sliders = action.payload;
+      })
+      .addCase(fetchHomeSliders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      // Create slider
+      .addCase(createSlider.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createSlider.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sliders.push(action.payload.data || action.payload);
+      })
+      .addCase(createSlider.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      // Update slider
+      .addCase(updateSlider.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateSlider.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.sliders.findIndex(s => s._id === action.payload._id);
+        if (index !== -1) {
+          state.sliders[index] = action.payload;
+        }
+      })
+      .addCase(updateSlider.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      // Delete slider
+      .addCase(deleteSlider.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSlider.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sliders = state.sliders.filter(s => s._id !== action.payload);
+      })
+      .addCase(deleteSlider.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
       });
   },
 });
