@@ -11,19 +11,18 @@ const initialState = {
 export const fetchSliderById = createAsyncThunk(
   "sliders/fetchSliderById",
 
-  async (id) => {
+  async (id, { rejectWithValue }) => {
     try {
       const response = await fetch(`/api/admin/sliders/${id}`);
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch slider ${response.status}`);
+        return rejectWithValue(`Failed to fetch slider: ${response.status} ${response.statusText}`);
       }
 
       return await response.json();
     } catch (error) {
-      toast.error(`error loading slider ${error.message}`);
-
-      throw error;
+      toast.error(`Error loading slider: ${error.message}`);
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -31,20 +30,31 @@ export const fetchSliderById = createAsyncThunk(
 export const fetchSliders = createAsyncThunk(
   "sliders/fetchSliders",
 
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/admin/sliders`);
+      console.log("Fetching sliders from /api/admin/sliders");
+      const response = await fetch(`/api/admin/sliders`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-      console.log("response", response);
+      console.log("Slider response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error(`Failed to fetch slider ${response.status}`);
+        const errorData = await response.text();
+        console.error("Slider API error:", errorData);
+        return rejectWithValue(`Failed to fetch sliders: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log("Sliders fetched successfully:", data);
+      return data;
     } catch (error) {
-      console.log("error", error);
-      toast.error("error loading sliders ");
-      throw error;
+      console.error("Slider fetch error:", error);
+      toast.error(`Error loading sliders: ${error.message}`);
+      return rejectWithValue(error.message);
     }
   }
 );
