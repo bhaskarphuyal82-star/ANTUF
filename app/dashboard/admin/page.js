@@ -68,36 +68,72 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Mock data for now - replace with actual API calls
-      setStats({
-        totalUsers: 1248,
-        totalRevenue: 45231.89,
-        totalOrders: 532,
-        totalCourses: 24,
-        totalEvents: 12,
-        totalArticles: 156,
-        recentUsers: [
-          { id: 1, name: 'John Doe', email: 'john@example.com', joinedAt: '2024-01-15' },
-          { id: 2, name: 'Jane Smith', email: 'jane@example.com', joinedAt: '2024-01-14' },
-          { id: 3, name: 'Ram Sharma', email: 'ram@example.com', joinedAt: '2024-01-13' },
-        ],
-        recentOrders: [
-          { id: 1, user: 'John Doe', course: 'Web Development', amount: 99.99, status: 'completed', date: '2024-01-15' },
-          { id: 2, user: 'Jane Smith', course: 'Data Science', amount: 149.99, status: 'pending', date: '2024-01-14' },
-          { id: 3, user: 'Ram Sharma', course: 'Digital Marketing', amount: 79.99, status: 'completed', date: '2024-01-13' },
-        ],
-        revenueData: [
-          { month: 'Jan', revenue: 4200, growth: 12 },
-          { month: 'Feb', revenue: 5100, growth: 21 },
-          { month: 'Mar', revenue: 4800, growth: 14 },
-          { month: 'Apr', revenue: 6300, growth: 31 },
-          { month: 'May', revenue: 5900, growth: -6 },
-          { month: 'Jun', revenue: 7200, growth: 22 },
-        ],
-      });
+      setLoading(true);
+      
+      // Fetch recent users from database
+      const usersResponse = await fetch('/api/users/recent?limit=3');
+      const usersData = usersResponse.ok ? await usersResponse.json() : [];
+      
+      // Format recent users with proper date formatting
+      const formattedUsers = (usersData.users || []).map(user => ({
+        id: user._id,
+        name: user.fullName || user.name || 'Unknown User',
+        email: user.email,
+        joinedAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric' 
+        }) : 'N/A',
+      }));
+
+      // Fetch recent orders from database
+      const ordersResponse = await fetch('/api/orders/recent?limit=3');
+      const ordersData = ordersResponse.ok ? await ordersResponse.json() : [];
+      
+      const formattedOrders = (ordersData.orders || []).map(order => ({
+        id: order._id,
+        user: order.userId?.fullName || order.userId?.name || 'Unknown User',
+        course: order.courseId?.title || 'Unknown Course',
+        amount: order.amount || 0,
+        status: order.status || 'pending',
+        date: order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : 'N/A',
+      }));
+
+      // Fetch statistics from database
+      const statsResponse = await fetch('/api/dashboard/stats');
+      const statsData = statsResponse.ok ? await statsResponse.json() : {};
+
+      setStats(prevStats => ({
+        totalUsers: statsData.totalUsers || 1248,
+        totalRevenue: statsData.totalRevenue || 45231.89,
+        totalOrders: statsData.totalOrders || 532,
+        totalCourses: statsData.totalCourses || 24,
+        totalEvents: statsData.totalEvents || 12,
+        totalArticles: statsData.totalArticles || 156,
+        recentUsers: formattedUsers.length > 0 ? formattedUsers : prevStats.recentUsers,
+        recentOrders: formattedOrders.length > 0 ? formattedOrders : prevStats.recentOrders,
+        revenueData: statsData.revenueData || prevStats.revenueData,
+      }));
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      
+      // Fallback to mock data if API fails
+      setStats(prevStats => ({
+        ...prevStats,
+        recentUsers: prevStats.recentUsers.length === 0 ? [
+          { id: 1, name: 'John Doe', email: 'john@example.com', joinedAt: 'Jan 15, 2024' },
+          { id: 2, name: 'Jane Smith', email: 'jane@example.com', joinedAt: 'Jan 14, 2024' },
+          { id: 3, name: 'Ram Sharma', email: 'ram@example.com', joinedAt: 'Jan 13, 2024' },
+        ] : prevStats.recentUsers,
+        recentOrders: prevStats.recentOrders.length === 0 ? [
+          { id: 1, user: 'John Doe', course: 'Web Development', amount: 99.99, status: 'completed', date: '2024-01-15' },
+          { id: 2, user: 'Jane Smith', course: 'Data Science', amount: 149.99, status: 'pending', date: '2024-01-14' },
+          { id: 3, user: 'Ram Sharma', course: 'Digital Marketing', amount: 79.99, status: 'completed', date: '2024-01-13' },
+        ] : prevStats.recentOrders,
+      }));
+      
       setLoading(false);
     }
   };
@@ -145,81 +181,154 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa', pb: 4 }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8fafb' }}>
+      {/* Sidebar */}
+      <Sidebar />
 
-      {/* Header Section */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          pt: 4,
-          pb: 8,
-          mb: -4,
-        }}
-      >
-        <Container maxWidth="xl">
-                <Profile/>
-          <Typography variant="h3" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
-            Admin Dashboard
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)' }}>
-            Welcome back,  Here's what's happening today.
-          </Typography>
-        </Container>
-      </Box>
+      {/* Main Content */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+        {/* Header Section - Enhanced Design */}
+        <Box
+          sx={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            pt: { xs: 2, sm: 3, md: 4 },
+            pb: { xs: 3, sm: 4, md: 6 },
+            mb: { xs: 2, sm: 3, md: 4 },
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: '-50%',
+              right: '-50%',
+              width: '100%',
+              height: '100%',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
+              backgroundSize: '50px 50px',
+              animation: 'float 20s linear infinite',
+            },
+          }}
+        >
+          <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Profile />
+            </Box>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                color: 'white', 
+                fontWeight: 800, 
+                mb: 1,
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '2.75rem' }
+              }}
+            >
+              Admin Dashboard
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: 'rgba(255,255,255,0.95)',
+                fontSize: { xs: '0.9rem', md: '1.05rem' },
+                fontWeight: 500
+              }}
+            >
+              Welcome back, Here's your platform overview at a glance
+            </Typography>
+          </Container>
+        </Box>
 
-      <Container maxWidth="xl">
-        {/* Stats Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {statCards.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
-                sx={{
-                  height: '100%',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6,
-                  },
-                }}
-              >
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Avatar
-                      sx={{
-                        bgcolor: stat.bgColor,
-                        color: stat.color,
-                        width: 64,
-                        height: 64,
-                      }}
-                    >
-                      {stat.icon}
-                    </Avatar>
-                    <Chip
-                      icon={stat.trendUp ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                      label={`${Math.abs(stat.trend)}%`}
-                      color={stat.trendUp ? 'success' : 'error'}
-                      size="small"
-                      sx={{ fontWeight: 600 }}
-                    />
-                  </Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {stat.title}
-                  </Typography>
-                  <Typography variant="h4" fontWeight="bold" color={stat.color}>
-                    {stat.value}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      <Container maxWidth="xl" sx={{ flex: 1, display: 'flex', flexDirection: 'column', py: { xs: 2, md: 3 } }}>
+        {/* Stats Cards Section */}
+        <Box sx={{ mb: { xs: 3, md: 4 } }}>
+          <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }}>
+            {statCards.map((stat, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '3px',
+                      background: `linear-gradient(90deg, ${stat.color} 0%, transparent 100%)`,
+                    },
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 12px 24px rgba(0,0,0,0.12)',
+                      background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 100%)',
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Avatar
+                        sx={{
+                          bgcolor: stat.bgColor,
+                          color: stat.color,
+                          width: { xs: 48, sm: 56 },
+                          height: { xs: 48, sm: 56 },
+                          boxShadow: `0 4px 12px ${stat.color}33`,
+                        }}
+                      >
+                        {stat.icon}
+                      </Avatar>
+                      <Chip
+                        icon={stat.trendUp ? <TrendingUpIcon sx={{ fontSize: 16 }} /> : <TrendingDownIcon sx={{ fontSize: 16 }} />}
+                        label={`${Math.abs(stat.trend)}%`}
+                        color={stat.trendUp ? 'success' : 'error'}
+                        size="small"
+                        sx={{ fontWeight: 700, fontSize: '0.75rem' }}
+                      />
+                    </Box>
+                    <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', mb: 0.5 }}>
+                      {stat.title}
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, color: stat.color, mb: 0.5 }}>
+                      {stat.value}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: stat.trendUp ? '#10b981' : '#ef4444', fontWeight: 600 }}>
+                      {stat.trendUp ? '↑' : '↓'} {Math.abs(stat.trend)}% this month
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
 
         {/* Quick Actions */}
-        <Card sx={{ mb: 4, p: 3 }}>
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
+        <Card 
+          sx={{ 
+            mb: { xs: 3, md: 4 }, 
+            p: { xs: 1.5, sm: 2, md: 3 },
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+          }}
+        >
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 800, 
+              mb: 2.5, 
+              color: '#1f2937',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontSize: { xs: '1rem', md: '1.1rem' }
+            }}
+          >
             Quick Actions
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={{ xs: 1.5, sm: 2 }}>
             <Grid item xs={12} sm={6} md={3}>
               <Button
                 component={Link}
@@ -228,13 +337,16 @@ export default function AdminDashboard() {
                 variant="outlined"
                 startIcon={<EventIcon />}
                 sx={{
-                  py: 1.5,
+                  py: { xs: 1.2, sm: 1.5 },
                   justifyContent: 'flex-start',
                   borderColor: '#3b82f6',
                   color: '#3b82f6',
+                  fontWeight: 700,
+                  transition: 'all 0.3s',
                   '&:hover': {
-                    borderColor: '#2563eb',
-                    bgcolor: '#eff6ff',
+                    borderColor: '#1e40af',
+                    bgcolor: 'rgba(59, 130, 246, 0.08)',
+                    transform: 'translateY(-2px)',
                   },
                 }}
               >
@@ -249,13 +361,16 @@ export default function AdminDashboard() {
                 variant="outlined"
                 startIcon={<SchoolIcon />}
                 sx={{
-                  py: 1.5,
+                  py: { xs: 1.2, sm: 1.5 },
                   justifyContent: 'flex-start',
                   borderColor: '#10b981',
                   color: '#10b981',
+                  fontWeight: 700,
+                  transition: 'all 0.3s',
                   '&:hover': {
-                    borderColor: '#059669',
-                    bgcolor: '#d1fae5',
+                    borderColor: '#065f46',
+                    bgcolor: 'rgba(16, 185, 129, 0.08)',
+                    transform: 'translateY(-2px)',
                   },
                 }}
               >
@@ -270,13 +385,16 @@ export default function AdminDashboard() {
                 variant="outlined"
                 startIcon={<ArticleIcon />}
                 sx={{
-                  py: 1.5,
+                  py: { xs: 1.2, sm: 1.5 },
                   justifyContent: 'flex-start',
                   borderColor: '#f59e0b',
                   color: '#f59e0b',
+                  fontWeight: 700,
+                  transition: 'all 0.3s',
                   '&:hover': {
-                    borderColor: '#d97706',
-                    bgcolor: '#fef3c7',
+                    borderColor: '#b45309',
+                    bgcolor: 'rgba(245, 158, 11, 0.08)',
+                    transform: 'translateY(-2px)',
                   },
                 }}
               >
@@ -291,13 +409,16 @@ export default function AdminDashboard() {
                 variant="outlined"
                 startIcon={<CartIcon />}
                 sx={{
-                  py: 1.5,
+                  py: { xs: 1.2, sm: 1.5 },
                   justifyContent: 'flex-start',
                   borderColor: '#8b5cf6',
                   color: '#8b5cf6',
+                  fontWeight: 700,
+                  transition: 'all 0.3s',
                   '&:hover': {
-                    borderColor: '#7c3aed',
-                    bgcolor: '#ede9fe',
+                    borderColor: '#5b21b6',
+                    bgcolor: 'rgba(139, 92, 246, 0.08)',
+                    transform: 'translateY(-2px)',
                   },
                 }}
               >
@@ -308,17 +429,24 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Main Content */}
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2.5, sm: 3 }} sx={{ mb: { xs: 3, md: 4 } }}>
           {/* Revenue Overview */}
           <Grid item xs={12} lg={8}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
+            <Card 
+              sx={{ 
+                height: '100%',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 2.5 } }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                   <Box>
-                    <Typography variant="h6" fontWeight="bold">
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: '#1f2937', mb: 0.5 }}>
                       Revenue Overview
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600 }}>
                       Monthly revenue statistics
                     </Typography>
                   </Box>
@@ -326,36 +454,97 @@ export default function AdminDashboard() {
                     variant="outlined"
                     startIcon={<DownloadIcon />}
                     size="small"
+                    sx={{
+                      borderColor: '#e5e7eb',
+                      color: '#6b7280',
+                      fontWeight: 600,
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        borderColor: '#3b82f6',
+                        color: '#3b82f6',
+                        bgcolor: 'rgba(59, 130, 246, 0.05)',
+                      },
+                    }}
                   >
                     Export
                   </Button>
                 </Box>
 
-                {/* Revenue Chart */}
-                <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', height: 300 }}>
+                {/* Revenue Chart - Enhanced */}
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-end', 
+                    justifyContent: 'space-around', 
+                    height: { xs: 250, sm: 280, md: 320 },
+                    gap: { xs: 0.5, sm: 1 },
+                    mb: 3
+                  }}
+                >
                   {stats.revenueData.map((item, index) => {
-                    const height = (item.revenue / 8000) * 250;
+                    const height = (item.revenue / 8000) * 280;
                     return (
-                      <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, maxWidth: 80 }}>
-                        <Typography variant="caption" fontWeight="bold" color="success.main" sx={{ mb: 1 }}>
+                      <Box 
+                        key={index} 
+                        sx={{ 
+                          display: 'flex', 
+                          flexDirection: 'column', 
+                          alignItems: 'center', 
+                          flex: 1,
+                          maxWidth: 80,
+                          transition: 'all 0.3s',
+                          '&:hover': {
+                            transform: 'scale(1.05)',
+                          }
+                        }}
+                      >
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            fontWeight: 800, 
+                            color: '#667eea', 
+                            mb: 1,
+                            fontSize: '0.8rem'
+                          }}
+                        >
                           ${(item.revenue / 1000).toFixed(1)}k
                         </Typography>
                         <Paper
-                          elevation={3}
+                          elevation={0}
                           sx={{
                             width: '100%',
                             height: `${height}px`,
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            borderRadius: '8px 8px 0 0',
-                            transition: 'all 0.3s ease',
+                            background: `linear-gradient(180deg, #667eea 0%, #764ba2 100%)`,
+                            borderRadius: '12px 12px 0 0',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             cursor: 'pointer',
+                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.2)',
+                            position: 'relative',
                             '&:hover': {
-                              opacity: 0.8,
-                              transform: 'scale(1.05)',
+                              opacity: 0.9,
+                              boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)',
                             },
+                            '&::after': {
+                              content: '""',
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              height: '2px',
+                              background: 'rgba(255,255,255,0.3)',
+                              borderRadius: '12px 12px 0 0',
+                            }
                           }}
                         />
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: '#9ca3af', 
+                            mt: 1,
+                            fontWeight: 700,
+                            fontSize: '0.75rem'
+                          }}
+                        >
                           {item.month}
                         </Typography>
                       </Box>
@@ -364,33 +553,33 @@ export default function AdminDashboard() {
                 </Box>
 
                 {/* Revenue Stats */}
-                <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid container spacing={2}>
                   <Grid item xs={12} md={4}>
-                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2, border: '1px solid #e5e7eb' }}>
+                      <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         Total Earnings
                       </Typography>
-                      <Typography variant="h5" fontWeight="bold" color="primary">
+                      <Typography variant="h5" sx={{ fontWeight: 800, color: '#667eea', mt: 0.5 }}>
                         $63,489.50
                       </Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={12} md={4}>
-                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(16, 185, 129, 0.05)', borderRadius: 2, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         This Month
                       </Typography>
-                      <Typography variant="h5" fontWeight="bold" color="success.main">
+                      <Typography variant="h5" sx={{ fontWeight: 800, color: '#10b981', mt: 0.5 }}>
                         $48,820
                       </Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={12} md={4}>
-                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
+                    <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'rgba(239, 68, 68, 0.05)', borderRadius: 2, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                      <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         Expenses
                       </Typography>
-                      <Typography variant="h5" fontWeight="bold" color="error.main">
+                      <Typography variant="h5" sx={{ fontWeight: 800, color: '#ef4444', mt: 0.5 }}>
                         $26,498
                       </Typography>
                     </Box>
@@ -402,20 +591,40 @@ export default function AdminDashboard() {
 
           {/* Side Stats */}
           <Grid item xs={12} lg={4}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2.5}>
               {/* Events Card */}
               <Grid item xs={12}>
-                <Card>
+                <Card 
+                  sx={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
+                    }
+                  }}
+                >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Avatar sx={{ bgcolor: '#dbeafe', color: '#3b82f6', mr: 2, width: 56, height: 56 }}>
-                        <EventIcon sx={{ fontSize: 30 }} />
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: '#dbeafe', 
+                          color: '#3b82f6', 
+                          mr: 2, 
+                          width: 56, 
+                          height: 56,
+                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)'
+                        }}
+                      >
+                        <EventIcon sx={{ fontSize: 28 }} />
                       </Avatar>
                       <Box sx={{ flex: 1 }}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Total Events
                         </Typography>
-                        <Typography variant="h4" fontWeight="bold">
+                        <Typography variant="h5" sx={{ fontWeight: 800, color: '#3b82f6' }}>
                           {stats.totalEvents}
                         </Typography>
                       </Box>
@@ -425,7 +634,15 @@ export default function AdminDashboard() {
                       href="/dashboard/admin/events"
                       fullWidth
                       endIcon={<ArrowForwardIcon />}
-                      sx={{ mt: 1 }}
+                      sx={{ 
+                        mt: 1,
+                        color: '#3b82f6',
+                        fontWeight: 700,
+                        transition: 'all 0.3s',
+                        '&:hover': {
+                          transform: 'translateX(4px)',
+                        }
+                      }}
                     >
                       View all events
                     </Button>
@@ -435,17 +652,37 @@ export default function AdminDashboard() {
 
               {/* Articles Card */}
               <Grid item xs={12}>
-                <Card>
+                <Card 
+                  sx={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
+                    }
+                  }}
+                >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Avatar sx={{ bgcolor: '#fef3c7', color: '#f59e0b', mr: 2, width: 56, height: 56 }}>
-                        <ArticleIcon sx={{ fontSize: 30 }} />
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: '#fef3c7', 
+                          color: '#f59e0b', 
+                          mr: 2, 
+                          width: 56, 
+                          height: 56,
+                          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)'
+                        }}
+                      >
+                        <ArticleIcon sx={{ fontSize: 28 }} />
                       </Avatar>
                       <Box sx={{ flex: 1 }}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Total Articles
                         </Typography>
-                        <Typography variant="h4" fontWeight="bold">
+                        <Typography variant="h5" sx={{ fontWeight: 800, color: '#f59e0b' }}>
                           {stats.totalArticles}
                         </Typography>
                       </Box>
@@ -455,7 +692,15 @@ export default function AdminDashboard() {
                       href="/dashboard/admin/post"
                       fullWidth
                       endIcon={<ArrowForwardIcon />}
-                      sx={{ mt: 1 }}
+                      sx={{ 
+                        mt: 1,
+                        color: '#f59e0b',
+                        fontWeight: 700,
+                        transition: 'all 0.3s',
+                        '&:hover': {
+                          transform: 'translateX(4px)',
+                        }
+                      }}
                     >
                       Manage articles
                     </Button>
@@ -465,27 +710,47 @@ export default function AdminDashboard() {
 
               {/* Active Users Card */}
               <Grid item xs={12}>
-                <Card>
+                <Card 
+                  sx={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
+                    }
+                  }}
+                >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Avatar sx={{ bgcolor: '#dcfce7', color: '#10b981', mr: 2, width: 56, height: 56 }}>
-                        <PeopleIcon sx={{ fontSize: 30 }} />
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: '#dcfce7', 
+                          color: '#10b981', 
+                          mr: 2, 
+                          width: 56, 
+                          height: 56,
+                          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)'
+                        }}
+                      >
+                        <PeopleIcon sx={{ fontSize: 28 }} />
                       </Avatar>
                       <Box sx={{ flex: 1 }}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Active Users
                         </Typography>
-                        <Typography variant="h4" fontWeight="bold">
+                        <Typography variant="h5" sx={{ fontWeight: 800, color: '#10b981' }}>
                           842
                         </Typography>
                       </Box>
                     </Box>
                     <Box sx={{ mt: 2 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600 }}>
                           Activity Rate
                         </Typography>
-                        <Typography variant="caption" fontWeight="bold">
+                        <Typography variant="caption" sx={{ fontWeight: 800, color: '#10b981' }}>
                           67.5%
                         </Typography>
                       </Box>
@@ -510,26 +775,41 @@ export default function AdminDashboard() {
         </Grid>
 
         {/* Recent Activity Tables */}
-        <Grid container spacing={3} sx={{ mt: 1 }}>
+        <Grid container spacing={{ xs: 2.5, sm: 3 }}>
           {/* Recent Users */}
           <Grid item xs={12} lg={6}>
-            <Card>
-              <CardContent>
+            <Card 
+              sx={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#1f2937' }}>
                     Recent Users
                   </Typography>
-                  <IconButton size="small">
+                  <IconButton 
+                    size="small"
+                    sx={{
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        color: '#3b82f6',
+                        bgcolor: 'rgba(59, 130, 246, 0.08)',
+                      }
+                    }}
+                  >
                     <VisibilityIcon />
                   </IconButton>
                 </Box>
                 <TableContainer>
                   <Table>
                     <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Joined</TableCell>
+                      <TableRow sx={{ bgcolor: '#f9fafb' }}>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>Name</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>Email</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>Joined</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -537,13 +817,14 @@ export default function AdminDashboard() {
                         <TableRow
                           key={user.id}
                           sx={{
-                            '&:hover': { bgcolor: '#f9fafb' },
+                            '&:hover': { bgcolor: 'rgba(59, 130, 246, 0.03)' },
                             transition: 'background-color 0.2s',
+                            borderBottom: '1px solid #e5e7eb'
                           }}
                         >
-                          <TableCell>{user.name}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.joinedAt}</TableCell>
+                          <TableCell sx={{ py: 1.5, fontWeight: 600, color: '#1f2937' }}>{user.name}</TableCell>
+                          <TableCell sx={{ py: 1.5, color: '#6b7280' }}>{user.email}</TableCell>
+                          <TableCell sx={{ py: 1.5, color: '#6b7280', fontSize: '0.9rem' }}>{user.joinedAt}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -553,7 +834,15 @@ export default function AdminDashboard() {
                   component={Link}
                   href="/dashboard/admin/alluser"
                   endIcon={<ArrowForwardIcon />}
-                  sx={{ mt: 2 }}
+                  sx={{ 
+                    mt: 2,
+                    color: '#3b82f6',
+                    fontWeight: 700,
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateX(4px)',
+                    }
+                  }}
                 >
                   View all users
                 </Button>
@@ -563,23 +852,38 @@ export default function AdminDashboard() {
 
           {/* Recent Orders */}
           <Grid item xs={12} lg={6}>
-            <Card>
-              <CardContent>
+            <Card 
+              sx={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#1f2937' }}>
                     Recent Orders
                   </Typography>
-                  <IconButton size="small">
+                  <IconButton 
+                    size="small"
+                    sx={{
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        color: '#10b981',
+                        bgcolor: 'rgba(16, 185, 129, 0.08)',
+                      }
+                    }}
+                  >
                     <VisibilityIcon />
                   </IconButton>
                 </Box>
                 <TableContainer>
                   <Table>
                     <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 600 }}>User</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Amount</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                      <TableRow sx={{ bgcolor: '#f9fafb' }}>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>User</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>Amount</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#6b7280', fontSize: '0.85rem' }}>Status</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -587,20 +891,21 @@ export default function AdminDashboard() {
                         <TableRow
                           key={order.id}
                           sx={{
-                            '&:hover': { bgcolor: '#f9fafb' },
+                            '&:hover': { bgcolor: 'rgba(16, 185, 129, 0.03)' },
                             transition: 'background-color 0.2s',
+                            borderBottom: '1px solid #e5e7eb'
                           }}
                         >
-                          <TableCell>{order.user}</TableCell>
-                          <TableCell>
-                            <Typography fontWeight="bold">${order.amount}</Typography>
+                          <TableCell sx={{ py: 1.5, fontWeight: 600, color: '#1f2937' }}>{order.user}</TableCell>
+                          <TableCell sx={{ py: 1.5, fontWeight: 700, color: '#667eea' }}>
+                            ${order.amount}
                           </TableCell>
-                          <TableCell>
+                          <TableCell sx={{ py: 1.5 }}>
                             <Chip
                               label={order.status}
                               color={order.status === 'completed' ? 'success' : 'warning'}
                               size="small"
-                              sx={{ fontWeight: 600, textTransform: 'capitalize' }}
+                              sx={{ fontWeight: 700, textTransform: 'capitalize', fontSize: '0.75rem' }}
                             />
                           </TableCell>
                         </TableRow>
@@ -612,7 +917,15 @@ export default function AdminDashboard() {
                   component={Link}
                   href="/dashboard/admin/orders"
                   endIcon={<ArrowForwardIcon />}
-                  sx={{ mt: 2 }}
+                  sx={{ 
+                    mt: 2,
+                    color: '#10b981',
+                    fontWeight: 700,
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      transform: 'translateX(4px)',
+                    }
+                  }}
                 >
                   View all orders
                 </Button>
@@ -621,7 +934,7 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
       </Container>
-        <Sidebar />
+      </Box>
     </Box>
   );
 }

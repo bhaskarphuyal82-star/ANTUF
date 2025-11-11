@@ -11,8 +11,8 @@ export const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
-  boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
-  background: "#ffffff", // white background
+  boxShadow: "4px 0 20px rgba(102, 126, 234, 0.15)",
+  background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
   [theme.breakpoints.down("sm")]: {
     width: mobileDrawerWidth,
   },
@@ -25,8 +25,8 @@ export const closedMixin = (theme) => ({
   }),
   overflowX: "hidden",
   width: `calc(${theme.spacing(9)} + 1px)`,
-  boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
-  background: "#ffffff", // white background
+  boxShadow: "4px 0 20px rgba(102, 126, 234, 0.1)",
+  background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
@@ -41,7 +41,9 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(0, 2),
   ...theme.mixins.toolbar,
-  background: "#ffffff", // white
+  background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
+  borderBottom: "1px solid rgba(102, 126, 234, 0.1)",
+  transition: "all 0.3s ease",
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(0, 1),
   },
@@ -70,19 +72,19 @@ export const Drawer = styled(MuiDrawer, {
 
 export const menuItemStyles = (theme) => ({
   root: {
-    color: "red",
+    color: "#667eea",
     backgroundColor: "#ffffff",
     minHeight: 48,
     justifyContent: "center",
     px: 2.5,
     transition: "all 0.3s ease",
     "&:hover": {
-      backgroundColor: "#fff",
+      backgroundColor: "rgba(102, 126, 234, 0.08)",
       transform: "translateX(5px)",
     },
     "&.Mui-selected": {
-      backgroundColor: "#ffe5e5",
-      borderLeft: "4px solid red",
+      backgroundColor: "rgba(102, 126, 234, 0.15)",
+      borderLeft: "4px solid #667eea",
     },
     [theme.breakpoints.down("sm")]: {
       minHeight: 56,
@@ -93,17 +95,17 @@ export const menuItemStyles = (theme) => ({
     minWidth: 0,
     mr: 3,
     justifyContent: "center",
-    color: "red",
+    color: "#667eea",
+    transition: "all 0.3s ease",
     [theme.breakpoints.down("sm")]: {
       mr: 3,
     },
   },
   text: {
-    color: "red",
+    color: "#667eea",
     fontWeight: 500,
     fontSize: "0.95rem",
     transition: "opacity 0.3s ease",
-    textShadow: "0 1px 2px rgba(255, 0, 0, 0.3)",
     [theme.breakpoints.down("sm")]: {
       fontSize: "0.875rem",
     },
@@ -111,8 +113,10 @@ export const menuItemStyles = (theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
     backgroundColor: "#ffffff",
+    color: "#6b7280",
     "&:hover": {
-      backgroundColor: "rgb(250, 250, 250)",
+      backgroundColor: "rgba(102, 126, 234, 0.05)",
+      color: "#667eea",
     },
     [theme.breakpoints.down("sm")]: {
       paddingLeft: theme.spacing(3),
@@ -121,15 +125,17 @@ export const menuItemStyles = (theme) => ({
 });
 
 export const logoStyles = {
-  color: "red",
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
   fontFamily: "'Pacifico', cursive",
   fontSize: "1.5rem",
   textAlign: "center",
   margin: "12px 0",
-  textShadow: "0 0 10px rgba(255, 0, 0, 0.3)",
   transition: "all 0.3s ease",
   "&:hover": {
-    textShadow: "0 0 15px rgba(255, 0, 0, 0.5)",
+    transform: "scale(1.05)",
   },
   "@media (max-width:600px)": {
     fontSize: "1.3rem",
@@ -138,8 +144,9 @@ export const logoStyles = {
 };
 
 export const dividerStyles = {
-  backgroundColor: "rgba(255, 0, 0, 0.1)", // light red
+  backgroundColor: "rgba(102, 126, 234, 0.1)",
   margin: "8px 0",
+  transition: "all 0.3s ease",
 };
 
 export const Backdrop = styled("div")(({ theme, open }) => ({

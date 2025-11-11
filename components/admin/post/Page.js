@@ -16,3 +16,5 @@ const Page = () => {
 };
 
 export default Page;    
+
+// http://localhost:3000/dashboard/admin/create/post

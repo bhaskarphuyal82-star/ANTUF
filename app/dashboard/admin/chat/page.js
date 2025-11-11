@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import Sidebar from "@/components/sidebar/SideBar";
 export default function AdminChatPage() {
   const { data: session, status } = useSession();
   const router = useRouter();

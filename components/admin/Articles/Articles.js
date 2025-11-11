@@ -162,98 +162,206 @@ const Articles = () => {
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "wrap",
+                    flexDirection: { xs: "column", sm: "row" },
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: 2,
-                    padding: 2,
-                    bgcolor: "#212121",
-                    ml: 12,
-                    my: 1,
-                    width: "90%",
+                    gap: { xs: 1.5, sm: 2, md: 3 },
+                    padding: { xs: 2, sm: 2.5, md: 3 },
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: "16px",
+                    mx: { xs: 1, sm: 2, md: 3 },
+                    my: 2,
+                    boxShadow: "0 8px 32px rgba(102, 126, 234, 0.1)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                        boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
+                    }
                 }}
             >
                 <TextField
                     variant="outlined"
-                    placeholder="Search your content"
+                    placeholder="Search your content..."
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                🔍
+                            </InputAdornment>
+                        ),
+                    }}
                     InputLabelProps={{
-                        style: { color: "#8A12FC" },
+                        style: { color: "#667eea" },
                     }}
                     sx={{
-                        input: { color: "white", fontSize: "1.2rem", height: "2rem" },
-
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": { borderColor: "#8A12FC" },
-                            "&:hover fieldset": { borderColor: "#8A12FC" },
-                            "&.Mui-focused fieldset": { borderColor: "#8A12FC" },
+                        flex: 1,
+                        minWidth: { xs: "100%", sm: "300px" },
+                        input: { 
+                            color: "#1f2937", 
+                            fontSize: "1rem",
+                            height: "2.5rem",
+                            padding: "12px 16px",
                         },
+                        "& .MuiOutlinedInput-root": {
+                            backgroundColor: "#ffffff",
+                            borderRadius: "12px",
+                            transition: "all 0.3s ease",
+                            "& fieldset": { 
+                                borderColor: "rgba(102, 126, 234, 0.3)" 
+                            },
+                            "&:hover fieldset": { 
+                                borderColor: "#667eea",
+                                boxShadow: "0 0 0 3px rgba(102, 126, 234, 0.1)"
+                            },
+                            "&.Mui-focused fieldset": { 
+                                borderColor: "#667eea",
+                                borderWidth: "2px",
+                                boxShadow: "0 0 0 3px rgba(102, 126, 234, 0.1)"
+                            },
+                        },
+                        "& .MuiInputBase-input::placeholder": {
+                            color: "#9ca3af",
+                            opacity: 0.7,
+                        }
                     }}
                 />
                 <Button
                     variant="contained"
-                    sx={{
-                        bgcolor: "purple",
-                        ":hover": { bgcolor: "darkviolet" },
-                        whiteSpace: "nowrap",
-                        padding: "12px 25px",
-                        fontSize: "1.1rem",
-                    }}
                     onClick={handleOpen}
+                    sx={{
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "#ffffff",
+                        whiteSpace: "nowrap",
+                        padding: { xs: "10px 20px", sm: "12px 28px" },
+                        fontSize: { xs: "0.95rem", sm: "1rem" },
+                        fontWeight: 600,
+                        borderRadius: "12px",
+                        border: "none",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+                        "&:hover": {
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 8px 25px rgba(102, 126, 234, 0.6)",
+                            background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
+                        },
+                        "&:active": {
+                            transform: "translateY(0px)",
+                        }
+                    }}
                 >
-                    New Content
+                    + New Content
                 </Button>
             </Box>
 
             <Dialog
                 PaperProps={{
                     sx: {
-                        bgcolor: "#212121",
-                        color: "#fff",
+                        background: "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(249,250,251,0.95) 100%)",
+                        backdropFilter: "blur(10px)",
+                        borderRadius: "20px",
+                        border: "1px solid rgba(102, 126, 234, 0.2)",
+                        color: "#1f2937",
+                        boxShadow: "0 20px 60px rgba(102, 126, 234, 0.3)",
                     },
                 }}
                 open={dialogOpen}
                 onClose={handleClose}
-                maxWidth="lg"
+                maxWidth="sm"
                 fullWidth
             >
-                <DialogTitle>Add New Content</DialogTitle>
+                <DialogTitle
+                    sx={{
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "#ffffff",
+                        fontWeight: 700,
+                        fontSize: "1.5rem",
+                        padding: "24px",
+                        borderRadius: "20px 20px 0 0",
+                    }}
+                >
+                    ✨ Add New Content
+                </DialogTitle>
 
-                <DialogContent>
+                <DialogContent
+                    sx={{
+                        padding: { xs: 2, sm: 3 },
+                        gap: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
                     <TextField
+                        autoFocus
                         fullWidth
                         label="Content Title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         InputLabelProps={{
-                            style: { color: "#8A12FC" },
+                            style: { color: "#667eea", fontWeight: 600 },
                         }}
                         sx={{
-                            marginBottom: 3,
-                            input: { color: "white", fontSize: "1.2rem", height: "2rem" },
+                            marginTop: 2,
+                            "& .MuiOutlinedInput-input": {
+                                color: "#1f2937",
+                                fontSize: "1rem",
+                                padding: "14px 16px",
+                            },
                             "& .MuiOutlinedInput-root": {
-                                "& fieldset": { borderColor: "#8A12FC" },
-                                "&:hover fieldset": { borderColor: "#8A12FC" },
-                                "&.Mui-focused fieldset": { borderColor: "#8A12FC" },
+                                borderRadius: "12px",
+                                backgroundColor: "rgba(255,255,255,0.6)",
+                                transition: "all 0.3s ease",
+                                "& fieldset": {
+                                    borderColor: "rgba(102, 126, 234, 0.3)",
+                                    borderWidth: "1.5px",
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "#667eea",
+                                    boxShadow: "0 0 0 3px rgba(102, 126, 234, 0.1)",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#667eea",
+                                    borderWidth: "2px",
+                                    boxShadow: "0 0 0 4px rgba(102, 126, 234, 0.15)",
+                                },
                             },
                         }}
                     />
 
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 2
-                    }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: 2,
+                            padding: "20px",
+                            backgroundColor: "rgba(102, 126, 234, 0.05)",
+                            borderRadius: "16px",
+                            border: "2px dashed rgba(102, 126, 234, 0.3)",
+                            transition: "all 0.3s ease",
+                            "&:hover": {
+                                borderColor: "#667eea",
+                                backgroundColor: "rgba(102, 126, 234, 0.08)",
+                            }
+                        }}
+                    >
                         <Button
                             component="label"
                             variant="outlined"
-                            startIcon={<ImageIcon />}
+                            startIcon={<ImageIcon sx={{ fontSize: "24px" }} />}
                             sx={{
-                                color: "#8A12FC",
-                                borderColor: "#8A12FC",
+                                color: "#667eea",
+                                borderColor: "#667eea",
+                                fontWeight: 600,
+                                padding: "10px 20px",
+                                borderRadius: "10px",
+                                border: "2px solid #667eea",
+                                transition: "all 0.3s ease",
                                 "&:hover": {
-                                    borderColor: "#6A0DAD",
-                                    backgroundColor: "rgba(138, 18, 252, 0.1)",
+                                    borderColor: "#764ba2",
+                                    color: "#764ba2",
+                                    backgroundColor: "rgba(102, 126, 234, 0.1)",
+                                    transform: "translateY(-2px)",
+                                    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.2)",
                                 },
                             }}
                         >
@@ -268,80 +376,111 @@ const Articles = () => {
                         </Button>
 
                         {isUploading && (
-                            <CircularProgress
-                                size={24}
-                                sx={{ color: "#8A12FC" }}
-                            />
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <CircularProgress
+                                    size={20}
+                                    sx={{ color: "#667eea" }}
+                                />
+                                <Typography sx={{ color: "#667eea", fontWeight: 600 }}>
+                                    Uploading...
+                                </Typography>
+                            </Box>
                         )}
 
                         {preview && (
-                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: 1,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        fontSize: "0.9rem",
+                                        color: "#667eea",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    ✓ Preview
+                                </Typography>
                                 <img
                                     src={preview}
                                     alt="Preview"
                                     style={{
-                                        maxWidth: '100%',
-                                        maxHeight: '200px',
-                                        borderRadius: '8px',
-                                        objectFit: 'cover'
+                                        maxWidth: "100%",
+                                        maxHeight: "250px",
+                                        borderRadius: "12px",
+                                        objectFit: "cover",
+                                        boxShadow: "0 8px 16px rgba(102, 126, 234, 0.2)",
+                                        border: "2px solid rgba(102, 126, 234, 0.3)",
                                     }}
                                 />
                             </Box>
                         )}
                     </Box>
+
                     <FormControl
                         fullWidth
-                        margin="normal"
                         sx={{
                             "& .MuiInputLabel-root": {
-                                color: "#8A12FC", // Label color, dimmed if disabled
-                            },
-                            "&:hover .MuiInputLabel-root": {
-                                color: "#8A12FC", // Hover label color
+                                color: "#667eea",
+                                fontWeight: 600,
                             },
                             "& .MuiInputLabel-root.Mui-focused": {
-                                color: "#8A12FC", // Focused label color
+                                color: "#667eea",
                             },
                             "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px",
+                                backgroundColor: "rgba(255,255,255,0.6)",
                                 "& fieldset": {
-                                    borderColor: "#8A12FC", // Default border color
+                                    borderColor: "rgba(102, 126, 234, 0.3)",
+                                    borderWidth: "1.5px",
                                 },
                                 "&:hover fieldset": {
-                                    borderColor: "#8A12FC", // Hover border color
+                                    borderColor: "#667eea",
+                                    boxShadow: "0 0 0 3px rgba(102, 126, 234, 0.1)",
                                 },
                                 "&.Mui-focused fieldset": {
-                                    borderColor: "#8A12FC", // Focused border color
+                                    borderColor: "#667eea",
+                                    borderWidth: "2px",
+                                    boxShadow: "0 0 0 4px rgba(102, 126, 234, 0.15)",
                                 },
                             },
                             "& .MuiSvgIcon-root": {
-                                color: "#8A12FC", // Icon color
-                            },
-                            "&:hover .MuiSvgIcon-root": {
-                                color: "#8A12FC", // Icon hover color
-                            },
-                            "&.Mui-focused .MuiSvgIcon-root": {
-                                color: "#8A12FC", // Icon focus color
+                                color: "#667eea",
                             },
                         }}
                     >
-                        <InputLabel id="category-label">Category</InputLabel>
+                        <InputLabel id="category-label">Select Category</InputLabel>
                         <Select
                             labelId="category-label"
                             id="category-select"
-                            value={category || ""} // Ensure value is never undefined
+                            value={category || ""}
                             onChange={handleChange}
                             sx={{
-                                color: "#fff",
+                                color: "#1f2937",
+                                fontWeight: 600,
                             }}
                             MenuProps={{
                                 PaperProps: {
                                     sx: {
-                                        bgcolor: "#2A2A2A",
-                                        maxHeight: 300,
+                                        background: "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(249,250,251,0.95) 100%)",
+                                        maxHeight: 350,
+                                        border: "1px solid rgba(102, 126, 234, 0.2)",
+                                        borderRadius: "12px",
+                                        boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
                                         "& .MuiMenuItem-root": {
-                                            color: "#fff",
+                                            color: "#1f2937",
+                                            fontWeight: 500,
+                                            padding: "12px 16px",
+                                            transition: "all 0.2s ease",
                                             "&:hover": {
-                                                bgcolor: "#8A12FC",
+                                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                                color: "#ffffff",
+                                                fontWeight: 600,
                                             },
                                         },
                                     },
@@ -350,53 +489,77 @@ const Articles = () => {
                         >
                             {loading ? (
                                 <MenuItem disabled>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <CircularProgress size={20} />
-                                        Loading...
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                        <CircularProgress size={18} sx={{ color: "#667eea" }} />
+                                        <span>Loading categories...</span>
                                     </Box>
                                 </MenuItem>
                             ) : filteredSubCategories?.length > 0 ? (
                                 filteredSubCategories.map((subcategory) => (
-                                    <MenuItem 
-                                        key={subcategory._id} 
+                                    <MenuItem
+                                        key={subcategory._id}
                                         value={subcategory._id}
                                     >
                                         {subcategory.name}
                                     </MenuItem>
                                 ))
                             ) : (
-                                <MenuItem disabled>No categories available</MenuItem>
+                                <MenuItem disabled>
+                                    <Typography sx={{ color: "#ef4444" }}>
+                                        No categories available
+                                    </Typography>
+                                </MenuItem>
                             )}
                         </Select>
                     </FormControl>
                 </DialogContent>
 
-                <DialogActions>
+                <DialogActions
+                    sx={{
+                        padding: "20px 24px",
+                        gap: 1.5,
+                        borderTop: "1px solid rgba(102, 126, 234, 0.1)",
+                    }}
+                >
                     <Button
                         onClick={handleClose}
                         sx={{
-                            color: "#fff",
-                            bgcolor: "red",
-                            ":hover": { bgcolor: "darkred" },
-                            whiteSpace: "nowrap",
-                            padding: "12px 24px",
-                            fontSize: "1.1rem",
+                            color: "#ef4444",
+                            borderColor: "#ef4444",
+                            border: "2px solid #ef4444",
+                            fontWeight: 600,
+                            padding: "10px 24px",
+                            borderRadius: "10px",
+                            transition: "all 0.3s ease",
+                            "&:hover": {
+                                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 4px 12px rgba(239, 68, 68, 0.2)",
+                            },
                         }}
+                        variant="outlined"
                     >
                         Cancel
                     </Button>
                     <Button
                         onClick={handleSave}
                         sx={{
-                            color: "#fff",
-                            bgcolor: "purple",
-                            ":hover": { bgcolor: "darkviolet" },
-                            whiteSpace: "nowrap",
-                            padding: "12px 24px",
-                            fontSize: "1.1rem",
+                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            color: "#ffffff",
+                            fontWeight: 600,
+                            padding: "10px 32px",
+                            borderRadius: "10px",
+                            border: "none",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+                            "&:hover": {
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 8px 25px rgba(102, 126, 234, 0.6)",
+                            },
                         }}
+                        variant="contained"
                     >
-                        Save
+                        Save Content
                     </Button>
                 </DialogActions>
             </Dialog>

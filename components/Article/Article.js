@@ -275,20 +275,7 @@ const ArticlesGrid = () => {
                     },
                   }}
                 >
-                  <IconButton
-                    sx={{
-                      background: "linear-gradient(135deg, #ef4444 0%, #f87171 100%)",
-                      color: "#fff",
-                      width: 80,
-                      height: 80,
-                      "&:hover": {
-                        background: "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
-                        transform: "scale(1.1)",
-                      },
-                    }}
-                  >
-                    <PlayArrow sx={{ fontSize: 48 }} />
-                  </IconButton>
+               
                 </Box>
               </Box>
             </Box>

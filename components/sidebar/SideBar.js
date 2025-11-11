@@ -1,294 +1,462 @@
-import React, { useState } from "react";
+"use client";
+
+import * as React from "react";
 import {
-  AppBar,
-  Drawer,
+  Box,
+  Divider,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
+  Collapse,
+  Typography,
   IconButton,
-  Box,
+  useMediaQuery,
+  SwipeableDrawer,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
-import ChatIcon from "@mui/icons-material/Chat";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import BuildIcon from "@mui/icons-material/Build";
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import HelpIcon from "@mui/icons-material/Help";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useRouter } from "next/navigation"; // Import useRouter
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import CategoryIcon from "@mui/icons-material/Category";
-import AcUnitIcon from "@mui/icons-material/AcUnit";
-import LiveHelpIcon from "@mui/icons-material/LiveHelp";
-import AlignVerticalCenterIcon from "@mui/icons-material/AlignVerticalCenter";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import MoneyIcon from "@mui/icons-material/Money";
-import PostAddSharpIcon from '@mui/icons-material/PostAddSharp';
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import Link from '@mui/material/Link'; // Import Link component
-
-
 
 import {
-  drawerStyles,
-  listItemStyles,
-  listItemIconStyles,
-  logoutIconStyles,
-  appBarStyles,
-  drawerMobileStyles,
-  mainContentStyles,
-} from "./sidebarStyles";
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Dashboard as DashboardIcon,
+  ShoppingCart as ShoppingCartIcon,
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+  Menu as MenuIcon,
+  ExitToApp as ExitToAppIcon,
+} from "@mui/icons-material";
 
-const Sidebar = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const router = useRouter();
+import { useTheme } from "@mui/material/styles";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
+import ChatIcon from '@mui/icons-material/Chat';
+import PostAddSharpIcon from '@mui/icons-material/PostAddSharp';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import BuildIcon from '@mui/icons-material/Build';
+import CategoryIcon from '@mui/icons-material/Category';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import EventIcon from '@mui/icons-material/Event';
+
+import {
+  Drawer,
+  DrawerHeader,
+  menuItemStyles,
+  logoStyles,
+  dividerStyles,
+  Backdrop,
+  drawerWidth,
+  mobileDrawerWidth,
+} from "./DrawerStyles";
+
+
+const menuItems = [
+  {
+    title: "Main",
+    icon: <DashboardIcon />,
+    items: [
+      { label: "Dashboard", path: "/" },
+      { label: "Profile", path: "profile" },
+    ],
+  },
+  {
+    title: "Content Management",
+    icon: <PostAddSharpIcon />,
+    items: [
+      { label: "Articles", path: "create/post" },
+      { label: "Slider", path: "slider/list" },
+      { label: "Video", path: "create/video" },
+    ],
+  },
+  {
+    title: "Courses & Categories",
+    icon: <CategoryIcon />,
+    items: [
+      { label: "Categories", path: "create/category" },
+      { label: "Subcategories", path: "create/subcategory" },
+      { label: "Category with Subcategory", path: "create/catewithsubcate" },
+    ],
+  },
+  {
+    title: "Orders & Sales",
+    icon: <ShoppingCartIcon />,
+    items: [
+      { label: "Card Orders", path: "orders" },
+    ],
+  },
+  {
+    title: "Users & Messages",
+    icon: <ManageAccountsIcon />,
+    items: [
+      { label: "All Users", path: "member" },
+      { label: "Chat", path: "create/chat" },
+    ],
+  },
+  {
+    title: "Events",
+    icon: <EventIcon />,
+    items: [
+      { label: "Events", path: "events" },
+    ],
+  },
+];
+
+export default function Sidebar() {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [open, setOpen] = React.useState(true);
+  const [expandedMenus, setExpandedMenus] = React.useState({});
+  const [activeItem, setActiveItem] = React.useState(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const menuItems = [
-    {
-      text: "Dashboard",
-      icon: <HomeIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin",
-    },
-    {
-      text: "Chat",
-      icon: <ChatIcon sx={{ fontSize: "32px" }} />,
-       link: "/dashboard/admin/create/chat",
-    },
-   
-    // {
-    //   text: "Create Content & Courses",
-    //   icon: <ChatIcon sx={{ fontSize: "32px" }} />,
-    //   link: "/dashboard/admin/content/create",
-    // },
-     {
-      text: "Articles",
-      icon: <PostAddSharpIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/post",
-    },
-     {
-      text: "Slider",
-      icon: <BarChartIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/slider/list",
-    },
-    {
-      text: "Video",
-      icon: <YouTubeIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/video",
-    },
-    {
-      text: "Card Order",
-      icon: <BuildIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/orders",
-    },
-    {
-      text: "Home",
-      icon: <LiveHelpIcon sx={{ fontSize: "32px" }} />,
-      link: "/",
-    },
-    {
-      text: "Create Category",
-      icon: <CategoryIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/category",
-    },
-    {
-      text: "Create SubCategory",
-      icon: <AcUnitIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/subcategory",
-    },
-    {
-      text: "Create Category With SubCategory",
-      icon: <AlignVerticalCenterIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/create/catewithsubcate",
-    },
-    
-    {
-      text: "All User",
-      icon: <ManageAccountsIcon sx={{ fontSize: "32px" }} />,
-      link: "/dashboard/admin/member",
-    },
-    {
-      text: "Event",
-      icon: <MoneyIcon sx={{ fontSize: "32px" }} />,
-        link: "/dashboard/admin/events",
-    },
-  ];
+  const handleNavigation = (path) => {
+    setActiveItem(path);
+    router.push(`/dashboard/admin/${path}`);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  const toggleMenu = (title) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
+  };
+
+  const handleDrawerToggle = () => {
+    if (isMobile) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const handleDrawerClose = () => {
+    if (isMobile) {
+      setMobileOpen(false);
+    } else {
+      setOpen(false);
+    }
+  };
+
+  const styles = menuItemStyles(theme);
+
+  const renderMobileDrawer = (
+    <>
+      <Backdrop open={mobileOpen} onClick={handleDrawerToggle} />
+      <SwipeableDrawer
+        variant="temporary"
+        open={mobileOpen}
+        onOpen={handleDrawerToggle}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: mobileDrawerWidth,
+            background: "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
+            boxShadow: "4px 0 20px rgba(0, 0, 0, 0.08)",
+          },
+        }}
+        swipeAreaWidth={20}
+        disableSwipeToOpen={false}
+      >
+        <DrawerContent
+          open={true}
+          handleDrawerClose={handleDrawerToggle}
+          isMobile={true}
+          styles={styles}
+          handleNavigation={handleNavigation}
+          activeItem={activeItem}
+          expandedMenus={expandedMenus}
+          toggleMenu={toggleMenu}
+        />
+      </SwipeableDrawer>
+    </>
+  );
+
+  const renderDesktopDrawer = (
+    <Drawer variant="permanent" open={open}>
+      <DrawerContent
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        isMobile={false}
+        styles={styles}
+        handleNavigation={handleNavigation}
+        activeItem={activeItem}
+        expandedMenus={expandedMenus}
+        toggleMenu={toggleMenu}
+      />
+    </Drawer>
+  );
 
   return (
-    <Box sx={{ display: "flex " }}>
-      {!isSmallScreen && (
-        <Drawer
-          variant="permanent"
-          sx={drawerStyles(isHovered)}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <List>
-            {menuItems.map((item, index) => (
-              <ListItem
-                key={index}
-                sx={{
-                  marginBottom: "10px",
-                  padding: isHovered ? "10px 20px" : "10px 0",
-                  cursor: "pointer",
-                  ":hover": {
-                    borderLeft: "19px solid blueviolet !important",
-                  },
-                  transition: "border-bottom 0.3s ease",
-                }}
-                onClick={() => router.push(item.link)} // Navigate using router.push
-              >
-                <ListItemIcon
-                  sx={{
-                    color: "white",
-                    minWidth: isHovered ? "50px" : "40px",
-                    justifyContent: "center",
-                    marginLeft: "20px",
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                {isHovered && (
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ marginLeft: "10px", fontSize: "18px" }}
-                  />
-                )}
-              </ListItem>
-            ))}
-            {/* <SimpleTreeView>
-        <TreeItem itemId="grid" label="Data Grid">
-          <TreeItem itemId="grid-community" label= <Link href="/dashboard/admin/create/post"  rel="noopener">
-                Articles
-              </Link>
-           />
-          <TreeItem itemId="grid-pro"   label={
-              <Link href="/dashboard/admin/create/content"  rel="noopener">
-                Tutorial
-              </Link>
-            }/>
-          <TreeItem itemId="grid-pr"   label={
-              <Link href="/dashboard/admin/create/course"  rel="noopener">
-              Courses
-              </Link>
-            }/>
-        </TreeItem>
-        <TreeItem itemId="pickers" label="Date and Time Pickers">
-          <TreeItem itemId="pickers-community" label="@mui/x-date-pickers" />
-          <TreeItem itemId="pickers-pro" label="@mui/x-date-pickers-pro" />
-        </TreeItem>
-        <TreeItem itemId="charts" label="Charts">
-          <TreeItem itemId="charts-community" label="@mui/x-charts" />
-        </TreeItem>
-        <TreeItem itemId="tree-view" label="Tree View">
-          <TreeItem itemId="tree-view-community" label="@mui/x-tree-view" />
-        </TreeItem>
-      </SimpleTreeView> */}
-
-            {/* Logout Item */}
-            <ListItem
-              sx={{
-                marginBottom: "10px",
-                padding: isHovered ? "10px 20px" : "10px 0",
-                cursor: "pointer",
-                ":hover": {
-                  borderLeft: "19px solid blueviolet !important",
-                },
-                transition: "border-bottom 0.3s ease",
-              }}
-              onClick={() => {
-                signOut({ callbackUrl: "/" });
-                setDrawerOpen(false);
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: "white",
-                  minWidth: isHovered ? "50px" : "40px",
-                  justifyContent: "center",
-                  marginLeft: "20px",
-                }}
-              >
-                <ExitToAppIcon sx={{ fontSize: "32px", color: "blueviolet" }} />
-              </ListItemIcon>
-              {isHovered && (
-                <ListItemText
-                  primary="Logout"
-                  sx={{ marginLeft: "10px", fontSize: "18px" }}
-                />
-              )}
-            </ListItem>
-          </List>
-        </Drawer>
-      )}
-
-      {isSmallScreen && (
-        <AppBar position="fixed" sx={{ backgroundColor: "#1a1a1a" }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={() => setDrawerOpen(!drawerOpen)}
-            >
-              <MenuIcon sx={{ fontSize: "32px" }} />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-      )}
-
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+    <>
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        edge="start"
+        onClick={handleDrawerToggle}
         sx={{
-          display: isSmallScreen ? "block" : "none",
-          "& .MuiDrawer-paper": {
-            width: 300,
-            backgroundColor: "#1a1a1a",
-            color: "white",
+          position: "fixed",
+          left: 16,
+          top: 16,
+          zIndex: theme.zIndex.drawer + 1,
+          backgroundColor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
+          },
+          display: { xs: "block", sm: open ? "none" : "block" },
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+      {isMobile ? renderMobileDrawer : renderDesktopDrawer}
+    </>
+  );
+}
+
+function DrawerContent({
+  open,
+  handleDrawerClose,
+  isMobile,
+  styles,
+  handleNavigation,
+  activeItem,
+  expandedMenus,
+  toggleMenu,
+}) {
+  const theme = useTheme();
+
+  return (
+    <>
+      <DrawerHeader>
+        {open && <Typography sx={logoStyles}>ANTUF</Typography>}
+        {(!isMobile || open) && (
+          <IconButton
+            onClick={handleDrawerClose}
+            sx={{ 
+              color: "#667eea",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                color: "#764ba2",
+                transform: "scale(1.1)",
+              }
+            }}
+            size={isMobile ? "medium" : "small"}
+          >
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
+          </IconButton>
+        )}
+      </DrawerHeader>
+      <Divider sx={dividerStyles} />
+
+      <Box
+        sx={{
+          overflowY: "auto",
+          overflowX: "hidden",
+          height: "calc(100vh - 64px)",
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(102, 126, 234, 0.2)",
+            borderRadius: "3px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "rgba(102, 126, 234, 0.3)",
           },
         }}
       >
-        <List>
-          {menuItems.map((item, index) => (
-            <ListItem
-              key={index}
-              sx={{ cursor: "pointer" }}
-              onClick={() => {
-                router.push(item.link); // Navigate using router.push
-                setDrawerOpen(false);
-              }}
-            >
-              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          marginLeft: { sm: "100px", xs: "0" },
-        }}
-      >
-        <Toolbar />
+        {menuItems.map((menuItem, index) => (
+          <React.Fragment key={menuItem.title}>
+            <List disablePadding>
+              {menuItem.items.length > 1 ? (
+                <>
+                  <ListItem disablePadding sx={{ display: "block" }}>
+                    <ListItemButton
+                      onClick={() => toggleMenu(menuItem.title)}
+                      sx={{
+                        ...styles.root,
+                        color: "#667eea",
+                        backgroundColor: expandedMenus[menuItem.title] 
+                          ? "rgba(102, 126, 234, 0.08)" 
+                          : "#ffffff",
+                        borderLeft: expandedMenus[menuItem.title]
+                          ? "4px solid #667eea"
+                          : "none",
+                        "&:hover": {
+                          backgroundColor: "rgba(102, 126, 234, 0.05)",
+                          transform: "translateX(4px)",
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ ...styles.icon, color: "#667eea" }}>
+                        {React.cloneElement(menuItem.icon, {
+                          sx: { color: "#667eea" },
+                        })}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={menuItem.title}
+                        sx={{
+                          ...styles.text,
+                          opacity: open ? 1 : 0,
+                          color: "#667eea",
+                          fontWeight: 600,
+                        }}
+                      />
+                      {open &&
+                        (expandedMenus[menuItem.title] ? (
+                          <ExpandLessIcon sx={{ color: "#667eea" }} />
+                        ) : (
+                          <ExpandMoreIcon sx={{ color: "#667eea" }} />
+                        ))}
+                    </ListItemButton>
+                  </ListItem>
+                  <Collapse
+                    in={expandedMenus[menuItem.title] && open}
+                    timeout="auto"
+                    unmountOnExit
+                    sx={{ overflow: "hidden" }}
+                  >
+                    <List disablePadding>
+                      {menuItem.items.map((item) => (
+                        <ListItem key={item.path} disablePadding>
+                          <ListItemButton
+                            onClick={() => handleNavigation(item.path)}
+                            sx={{
+                              ...styles.root,
+                              ...styles.nested,
+                              backgroundColor: activeItem === item.path
+                                ? "rgba(102, 126, 234, 0.1)"
+                                : "#ffffff",
+                              color: activeItem === item.path 
+                                ? "#667eea"
+                                : "#6b7280",
+                              ...(activeItem === item.path && {
+                                backgroundColor: "rgba(102, 126, 234, 0.1)",
+                                borderLeft: "4px solid #667eea",
+                              }),
+                            }}
+                          >
+                            <ListItemText
+                              primary={item.label}
+                              sx={{
+                                ...styles.text,
+                                opacity: open ? 1 : 0,
+                                color: activeItem === item.path 
+                                  ? "#667eea"
+                                  : "#6b7280",
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                </>
+              ) : (
+                menuItem.items.map((item) => (
+                  <ListItem key={item.path} disablePadding>
+                    <ListItemButton
+                      onClick={() => handleNavigation(item.path)}
+                      sx={{
+                        ...styles.root,
+                        backgroundColor: activeItem === item.path
+                          ? "rgba(102, 126, 234, 0.1)"
+                          : "#ffffff",
+                        color: activeItem === item.path 
+                          ? "#667eea"
+                          : "#6b7280",
+                        ...(activeItem === item.path && {
+                          backgroundColor: "rgba(102, 126, 234, 0.1)",
+                          borderLeft: "4px solid #667eea",
+                        }),
+                      }}
+                    >
+                      <ListItemIcon sx={{ 
+                        ...styles.icon, 
+                        color: activeItem === item.path 
+                          ? "#667eea"
+                          : "#6b7280",
+                      }}>
+                        {React.cloneElement(menuItem.icon, {
+                          sx: { 
+                            color: activeItem === item.path 
+                              ? "#667eea"
+                              : "#6b7280",
+                          },
+                        })}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.label}
+                        sx={{
+                          ...styles.text,
+                          opacity: open ? 1 : 0,
+                          color: activeItem === item.path 
+                            ? "#667eea"
+                            : "#6b7280",
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))
+              )}
+            </List>
+            {index < menuItems.length - 1 && <Divider sx={dividerStyles} />}
+          </React.Fragment>
+        ))}
       </Box>
-    </Box>
-   
-  );
-};
 
-export default Sidebar;
+      {/* Logout Section */}
+      <Divider sx={dividerStyles} />
+      <Box sx={{ p: 2 }}>
+        <ListItemButton
+          onClick={() => signOut({ callbackUrl: "/" })}
+          sx={{
+            ...styles.root,
+            backgroundColor: "#ffffff",
+            color: "#ef4444",
+            justifyContent: open ? "flex-start" : "center",
+            borderRadius: "8px",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              backgroundColor: "rgba(239, 68, 68, 0.08)",
+              transform: "translateX(4px)",
+              color: "#dc2626",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ 
+            ...styles.icon, 
+            color: "#ef4444",
+            minWidth: open ? "40px" : "auto",
+          }}>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          {open && (
+            <ListItemText
+              primary="Logout"
+              sx={{
+                ...styles.text,
+                color: "#ef4444",
+                fontWeight: 600,
+                opacity: 1,
+              }}
+            />
+          )}
+        </ListItemButton>
+      </Box>
+    </>
+  );
+}

@@ -55,7 +55,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import LockIcon from "@mui/icons-material/Lock";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-
+import Sidebar from "@/components/sidebar/SideBar";
 // Dynamic import for VideoCall component to avoid SSR issues
 const VideoCallComponent = dynamic(
   () => import('../../VideoCall/VideoCallComponent'),
@@ -415,514 +415,507 @@ const AdminChat = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "calc(100vh - 64px)" }}>
-      {/* Stats Dashboard */}
-      <Box sx={{ p: 3, bgcolor: "white", borderBottom: "1px solid #e0e0e0" }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: "#1a1a2e" }}>
-          Support Chat Dashboard
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ bgcolor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
-              <CardContent>
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Box>
-                    <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
-                      {stats.total}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.9)" }}>
-                      Total Chats
-                    </Typography>
-                  </Box>
-                  <Badge badgeContent={unreadCount} color="error">
-                    <NotificationsActiveIcon sx={{ fontSize: 40, color: "white" }} />
-                  </Badge>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ bgcolor: "#4caf50" }}>
-              <CardContent>
-                <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
-                  {stats.active}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.9)" }}>
-                  Active Chats
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ bgcolor: "#ff9800" }}>
-              <CardContent>
-                <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
-                  {stats.urgent}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.9)" }}>
-                  Urgent
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ bgcolor: "#9e9e9e" }}>
-              <CardContent>
-                <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
-                  {stats.closed}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.9)" }}>
-                  Closed Chats
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+    <Box sx={{ display: "flex", bgcolor: "#f5f5f5", minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Box sx={{ width: { xs: 0, sm: 250, md: 280 }, bgcolor: "white", borderRight: "1px solid #e0e0e0" }}>
+        <Sidebar />
       </Box>
 
-      <Box sx={{ display: "flex", height: "calc(100vh - 250px)" }}>
-      {/* Chat List */}
-      <Box
-        sx={{
-          width: { xs: "100%", md: "40%" },
-          borderRight: "1px solid #e0e0e0",
-          overflowY: "auto",
-          bgcolor: "white",
-          display: selectedChat && window.innerWidth < 960 ? "none" : "block",
-        }}
-      >
-        <Box sx={{ p: 2, position: "sticky", top: 0, bgcolor: "white", zIndex: 10, borderBottom: "1px solid #e0e0e0" }}>
-          <Typography variant="h6" sx={{ color: "#1a1a2e", mb: 2, fontWeight: 700 }}>
-            Support Tickets
-            {unreadCount > 0 && (
-              <Chip
-                label={`${unreadCount} new`}
-                size="small"
-                color="error"
-                sx={{ ml: 2 }}
-              />
-            )}
+      {/* Main Content */}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* Stats Dashboard */}
+        <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: "white", borderBottom: "1px solid #e0e0e0", overflowY: "auto", maxHeight: "30%" }}>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: "#1a1a2e" }}>
+            Support Chat Dashboard
           </Typography>
-          
-          {/* Search Bar */}
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Search chats..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: <SearchIcon sx={{ color: "#666", mr: 1 }} />,
-            }}
-            sx={{ mb: 2 }}
-          />
-          
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-            <FormControl size="small" sx={{ flex: 1 }}>
-              <InputLabel sx={{ color: "white" }}>Status</InputLabel>                <Select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  label="Status"
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#e0e0e0",
-                    },
-                  }}
-                >
-                  <MenuItem value="all">All Status</MenuItem>
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="closed">Closed</MenuItem>
-                  <MenuItem value="archived">Archived</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl size="small" sx={{ flex: 1 }}>
-                <InputLabel>Priority</InputLabel>
-                <Select
-                  value={filterPriority}
-                  onChange={(e) => setFilterPriority(e.target.value)}
-                  label="Priority"
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#e0e0e0",
-                    },
-                  }}
-                >
-                  <MenuItem value="all">All Priority</MenuItem>
-                <MenuItem value="low">Low</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="high">High</MenuItem>
-                <MenuItem value="urgent">Urgent</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box>
-
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : filteredChats.length === 0 ? (
-          <Typography sx={{ p: 4, color: "#999", textAlign: "center" }}>
-            No chats found
-          </Typography>
-        ) : (
-          filteredChats.map((chat) => {
-            const unreadMessages = chat.messages.filter(
-              (msg) => !msg.isRead && msg.senderRole !== "admin"
-            ).length;
-            
-            return (
-              <Card
-                key={chat._id}
-                onClick={() => handleSelectChat(chat)}
-                sx={{
-                  m: 1.5,
-                  cursor: "pointer",
-                  bgcolor: selectedChat?._id === chat._id ? "#e3f2fd" : "white",
-                  border: selectedChat?._id === chat._id ? "2px solid #2196F3" : "1px solid #e0e0e0",
-                  "&:hover": { bgcolor: "#f5f5f5", boxShadow: 2 },
-                  transition: "all 0.2s",
-                }}
-              >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ bgcolor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", borderRadius: 2 }}>
                 <CardContent sx={{ p: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
-                    <Badge badgeContent={unreadMessages} color="error">
-                      <Avatar 
-                        src={chat.userImage} 
-                        sx={{ 
-                          width: 45, 
-                          height: 45,
-                          bgcolor: chat.userId ? "#2196F3" : "#ff9800" // Blue for users, Orange for guests
-                        }}
-                      >
-                        {chat.userId ? chat.userName?.[0] : "G"} {/* G for Guest */}
-                      </Avatar>
-                    </Badge>
-                    <Box sx={{ flex: 1, overflow: "hidden" }}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            color: "#1a1a2e",
-                            fontWeight: 600,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {chat.userId ? chat.userName : `Guest: ${chat.userName}`}
-                        </Typography>
-                        {!chat.userId && (
-                          <Chip 
-                            label="GUEST" 
-                            size="small" 
-                            sx={{ 
-                              height: 18, 
-                              fontSize: "0.65rem",
-                              bgcolor: "#ff9800",
-                              color: "white",
-                              fontWeight: 600
-                            }} 
-                          />
-                        )}
-                      </Box>
-                      <Typography
-                        variant="caption"
-                        sx={{ 
-                          color: "#666",
-                          display: "block",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {chat.userId ? chat.subject : `${chat.userEmail} • ${chat.subject}`}
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box>
+                      <Typography variant="h4" sx={{ color: "black", fontWeight: 700 }}>
+                        {stats.total}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: "rgba(19, 19, 19, 0.9)" }}>
+                        Total Chats
                       </Typography>
                     </Box>
-                  </Box>
-                  <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                    <Chip
-                      label={chat.status}
-                      size="small"
-                      color={getStatusColor(chat.status)}
-                      sx={{ height: 22, fontSize: "0.75rem" }}
-                    />
-                    <Chip
-                      label={chat.priority}
-                      size="small"
-                      color={getPriorityColor(chat.priority)}
-                      sx={{ height: 22, fontSize: "0.75rem" }}
-                    />
-                    {chat.category && (
-                      <Chip
-                        label={chat.category}
-                        size="small"
-                        variant="outlined"
-                        sx={{ height: 22, fontSize: "0.75rem" }}
-                      />
-                    )}
+                    <Badge badgeContent={unreadCount} color="error">
+                      <NotificationsActiveIcon sx={{ fontSize: 32, color: "white" }} />
+                    </Badge>
                   </Box>
                 </CardContent>
               </Card>
-            );
-          })
-        )}
-      </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ bgcolor: "#4caf50", borderRadius: 2 }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
+                    {stats.active}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)" }}>
+                    Active Chats
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ bgcolor: "#ff9800", borderRadius: 2 }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
+                    {stats.urgent}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)" }}>
+                    Urgent
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ bgcolor: "#9e9e9e", borderRadius: 2 }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Typography variant="h4" sx={{ color: "white", fontWeight: 700 }}>
+                    {stats.closed}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.9)" }}>
+                    Closed Chats
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
 
-      {/* Chat Window */}
-      {selectedChat && (
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "#fafafa" }}>
-          {/* Header */}
+        {/* Chat Container */}
+        <Box sx={{ flex: 1, display: "flex", overflow: "hidden", gap: 0 }}>
+          {/* Chat List */}
           <Box
             sx={{
-              p: 2,
-              bgcolor: "white",
-              borderBottom: "1px solid #e0e0e0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Avatar 
-                src={selectedChat.userImage} 
-                sx={{ 
-                  width: 48, 
-                  height: 48,
-                  bgcolor: selectedChat.userId ? "#2196F3" : "#ff9800"
-                }}
-              >
-                {selectedChat.userId ? selectedChat.userName?.[0] : "G"}
-              </Avatar>
-              <Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography variant="h6" sx={{ color: "#1a1a2e", fontWeight: 700 }}>
-                    {selectedChat.userId ? selectedChat.userName : `Guest: ${selectedChat.userName}`}
-                  </Typography>
-                  {!selectedChat.userId && (
-                    <Chip 
-                      label="GUEST USER" 
-                      size="small" 
-                      sx={{ 
-                        height: 20, 
-                        fontSize: "0.7rem",
-                        bgcolor: "#ff9800",
-                        color: "white",
-                        fontWeight: 600
-                      }} 
-                    />
-                  )}
-                </Box>
-                <Typography variant="caption" sx={{ color: "#666", display: "block" }}>
-                  {selectedChat.userId ? 
-                    `${selectedChat.subject} • ${selectedChat.category}` : 
-                    `📧 ${selectedChat.userEmail}`
-                  }
-                </Typography>
-                {!selectedChat.userId && (
-                  <Typography variant="caption" sx={{ color: "#999", display: "block", fontSize: "0.65rem" }}>
-                    {selectedChat.subject} • {selectedChat.category}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Tooltip title="Start Video Call">
-                <IconButton
-                  size="small"
-                  onClick={handleStartVideoCall}
-                  sx={{ 
-                    color: "#4caf50",
-                    bgcolor: "#e8f5e9",
-                    "&:hover": { bgcolor: "#c8e6c9" }
-                  }}
-                >
-                  <VideocamIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Assign Chat">
-                <IconButton
-                  size="small"
-                  onClick={() => setOpenAssign(true)}
-                  sx={{ color: "#2196F3" }}
-                >
-                  <AssignmentIcon />
-                </IconButton>
-              </Tooltip>
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <Select
-                  value={selectedChat.status}
-                  onChange={(e) => handleUpdateStatus(e.target.value)}
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#e0e0e0",
-                    },
-                  }}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="closed">Closed</MenuItem>
-                  <MenuItem value="archived">Archived</MenuItem>
-                </Select>
-              </FormControl>
-              <IconButton
-                size="small"
-                onClick={() => setSelectedChat(null)}
-                sx={{ color: "#666" }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Stack>
-          </Box>
-
-          {/* Messages */}
-          <Box
-            sx={{
-              flex: 1,
+              width: { xs: selectedChat ? "0%" : "100%", sm: "35%", md: "30%" },
+              borderRight: "1px solid #e0e0e0",
               overflowY: "auto",
-              p: 3,
+              bgcolor: "white",
+              transition: "width 0.3s ease",
               display: "flex",
               flexDirection: "column",
-              gap: 2,
-              bgcolor: "#fafafa",
             }}
           >
-            {messages.map((msg, idx) => (
-              <Box
-                key={idx}
-                sx={{
-                  display: "flex",
-                  justifyContent: msg.senderRole === "admin" ? "flex-end" : "flex-start",
-                  animation: "fadeIn 0.3s ease-in",
-                  position: "relative",
-                  "&:hover .message-options": {
-                    opacity: 1,
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    maxWidth: "70%",
-                    bgcolor: msg.senderRole === "admin" ? "#2196F3" : "white",
-                    color: msg.senderRole === "admin" ? "white" : "#1a1a2e",
-                    p: 2,
-                    borderRadius: 3,
-                    boxShadow: 1,
-                    position: "relative",
-                  }}
-                >
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: msg.senderRole === "admin" ? "rgba(255,255,255,0.9)" : "#666",
-                          display: "block",
-                          fontWeight: 600,
-                          mb: 0.5,
-                        }}
-                      >
-                        {msg.senderName}
-                      </Typography>
-                      <Typography variant="body1" sx={{ wordBreak: "break-word", lineHeight: 1.5 }}>
-                        {msg.content}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{ 
-                          color: msg.senderRole === "admin" ? "rgba(255,255,255,0.8)" : "#999", 
-                          display: "block", 
-                          mt: 0.5,
-                          textAlign: "right",
-                        }}
-                      >
-                        {new Date(msg.timestamp).toLocaleTimeString()}
-                      </Typography>
-                    </Box>
-                    <IconButton
-                      className="message-options"
-                      size="small"
-                      onClick={(e) => handleOpenMessageMenu(e, idx)}
-                      sx={{
-                        opacity: 0,
-                        transition: "opacity 0.2s",
-                        color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#666",
-                        "&:hover": {
-                          bgcolor: msg.senderRole === "admin" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
-                        },
-                      }}
-                    >
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                </Box>
+            <Box sx={{ p: 2, borderBottom: "1px solid #e0e0e0", bgcolor: "white", position: "sticky", top: 0, zIndex: 10 }}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                <Typography variant="h6" sx={{ color: "#1a1a2e", fontWeight: 700, flex: 1 }}>
+                  Support Tickets
+                </Typography>
+                {unreadCount > 0 && (
+                  <Chip
+                    label={`${unreadCount} new`}
+                    size="small"
+                    color="error"
+                  />
+                )}
               </Box>
-            ))}
-            <div ref={messagesEndRef} />
-          </Box>
-
-          {/* Input Area */}
-          <Box sx={{ p: 2, bgcolor: "white", borderTop: "1px solid #e0e0e0" }}>
-            {/* Quick Responses */}
-            <Box sx={{ mb: 2, display: "flex", gap: 1, flexWrap: "wrap" }}>
-              {quickResponses.map((response, idx) => (
-                <Chip
-                  key={idx}
-                  label={response.substring(0, 30) + "..."}
-                  size="small"
-                  onClick={() => setMessageInput(response)}
-                  sx={{ 
-                    cursor: "pointer",
-                    "&:hover": { bgcolor: "#e3f2fd" },
-                  }}
-                />
-              ))}
-            </Box>
-            
-            <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
+              
+              {/* Search Bar */}
               <TextField
                 fullWidth
-                placeholder="Type your response..."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
+                size="small"
+                placeholder="Search chats..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: <SearchIcon sx={{ color: "#666", mr: 1 }} />,
                 }}
-                multiline
-                maxRows={4}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    bgcolor: "#f5f5f5",
-                    "& fieldset": {
-                      borderColor: "#e0e0e0",
-                    },
-                  },
-                }}
+                sx={{ mb: 2 }}
               />
-              <Tooltip title="Attach File">
-                <IconButton sx={{ color: "#666" }}>
-                  <AttachFileIcon />
-                </IconButton>
-              </Tooltip>
-              <Button
-                variant="contained"
-                endIcon={<SendIcon />}
-                onClick={handleSendMessage}
-                disabled={!messageInput.trim()}
-                sx={{ 
-                  background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-                  minWidth: 100,
-                  height: 48,
-                }}
-              >
-                Send
-              </Button>
+              
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                <FormControl size="small" sx={{ flex: 1 }}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    label="Status"
+                  >
+                    <MenuItem value="all">All Status</MenuItem>
+                    <MenuItem value="active">Active</MenuItem>
+                    <MenuItem value="closed">Closed</MenuItem>
+                    <MenuItem value="archived">Archived</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl size="small" sx={{ flex: 1 }}>
+                  <InputLabel>Priority</InputLabel>
+                  <Select
+                    value={filterPriority}
+                    onChange={(e) => setFilterPriority(e.target.value)}
+                    label="Priority"
+                  >
+                    <MenuItem value="all">All Priority</MenuItem>
+                    <MenuItem value="low">Low</MenuItem>
+                    <MenuItem value="medium">Medium</MenuItem>
+                    <MenuItem value="high">High</MenuItem>
+                    <MenuItem value="urgent">Urgent</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Box>
+
+            {/* Chat List Items */}
+            <Box sx={{ flex: 1, overflowY: "auto" }}>
+              {loading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : filteredChats.length === 0 ? (
+                <Typography sx={{ p: 4, color: "#999", textAlign: "center" }}>
+                  No chats found
+                </Typography>
+              ) : (
+                filteredChats.map((chat) => {
+                  const unreadMessages = chat.messages.filter(
+                    (msg) => !msg.isRead && msg.senderRole !== "admin"
+                  ).length;
+                  
+                  return (
+                    <Card
+                      key={chat._id}
+                      onClick={() => handleSelectChat(chat)}
+                      sx={{
+                        m: 1,
+                        cursor: "pointer",
+                        bgcolor: selectedChat?._id === chat._id ? "#e3f2fd" : "white",
+                        border: selectedChat?._id === chat._id ? "2px solid #2196F3" : "1px solid #e0e0e0",
+                        "&:hover": { bgcolor: "#f5f5f5", boxShadow: 2 },
+                        transition: "all 0.2s",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <CardContent sx={{ p: 1.5 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                          <Badge badgeContent={unreadMessages} color="error">
+                            <Avatar 
+                              src={chat.userImage} 
+                              sx={{ 
+                                width: 40, 
+                                height: 40,
+                                bgcolor: chat.userId ? "#2196F3" : "#ff9800"
+                              }}
+                            >
+                              {chat.userId ? chat.userName?.[0] : "G"}
+                            </Avatar>
+                          </Badge>
+                          <Box sx={{ flex: 1, overflow: "hidden" }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.3 }}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: "#1a1a2e",
+                                  fontWeight: 600,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {chat.userId ? chat.userName : `Guest: ${chat.userName}`}
+                              </Typography>
+                              {!chat.userId && (
+                                <Chip 
+                                  label="GUEST" 
+                                  size="small" 
+                                  sx={{ 
+                                    height: 16, 
+                                    fontSize: "0.6rem",
+                                    bgcolor: "#ff9800",
+                                    color: "white",
+                                    fontWeight: 600
+                                  }} 
+                                />
+                              )}
+                            </Box>
+                            <Typography
+                              variant="caption"
+                              sx={{ 
+                                color: "#666",
+                                display: "block",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                fontSize: "0.75rem"
+                              }}
+                            >
+                              {chat.userId ? chat.subject : `${chat.userEmail}`}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                          <Chip
+                            label={chat.status}
+                            size="small"
+                            color={getStatusColor(chat.status)}
+                            sx={{ height: 18, fontSize: "0.7rem" }}
+                          />
+                          <Chip
+                            label={chat.priority}
+                            size="small"
+                            color={getPriorityColor(chat.priority)}
+                            sx={{ height: 18, fontSize: "0.7rem" }}
+                          />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              )}
             </Box>
           </Box>
+
+          {/* Chat Window */}
+          {selectedChat && (
+            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "#fafafa", overflow: "hidden" }}>
+              {/* Header */}
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor: "white",
+                  borderBottom: "1px solid #e0e0e0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1, minWidth: 0 }}>
+                  <Avatar 
+                    src={selectedChat.userImage} 
+                    sx={{ 
+                      width: 45, 
+                      height: 45,
+                      bgcolor: selectedChat.userId ? "#2196F3" : "#ff9800"
+                    }}
+                  >
+                    {selectedChat.userId ? selectedChat.userName?.[0] : "G"}
+                  </Avatar>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.3 }}>
+                      <Typography variant="body1" sx={{ color: "#1a1a2e", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {selectedChat.userId ? selectedChat.userName : `Guest: ${selectedChat.userName}`}
+                      </Typography>
+                      {!selectedChat.userId && (
+                        <Chip 
+                          label="GUEST" 
+                          size="small" 
+                          sx={{ 
+                            height: 18, 
+                            fontSize: "0.65rem",
+                            bgcolor: "#ff9800",
+                            color: "white",
+                            fontWeight: 600
+                          }} 
+                        />
+                      )}
+                    </Box>
+                    <Typography variant="caption" sx={{ color: "#666", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {selectedChat.userId ? 
+                        `${selectedChat.subject}` : 
+                        `${selectedChat.userEmail}`
+                      }
+                    </Typography>
+                  </Box>
+                </Box>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <Tooltip title="Start Video Call">
+                    <IconButton
+                      size="small"
+                      onClick={handleStartVideoCall}
+                      sx={{ 
+                        color: "#4caf50",
+                        bgcolor: "#e8f5e9",
+                        "&:hover": { bgcolor: "#c8e6c9" }
+                      }}
+                    >
+                      <VideocamIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                    <Select
+                      value={selectedChat.status}
+                      onChange={(e) => handleUpdateStatus(e.target.value)}
+                    >
+                      <MenuItem value="active">Active</MenuItem>
+                      <MenuItem value="closed">Closed</MenuItem>
+                      <MenuItem value="archived">Archived</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <IconButton
+                    size="small"
+                    onClick={() => setSelectedChat(null)}
+                    sx={{ color: "#666" }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
+              </Box>
+
+              {/* Messages */}
+              <Box
+                sx={{
+                  flex: 1,
+                  overflowY: "auto",
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1.5,
+                  bgcolor: "#fafafa",
+                }}
+              >
+                {messages.map((msg, idx) => (
+                  <Box
+                    key={idx}
+                    sx={{
+                      display: "flex",
+                      justifyContent: msg.senderRole === "admin" ? "flex-end" : "flex-start",
+                      animation: "fadeIn 0.3s ease-in",
+                      position: "relative",
+                      "&:hover .message-options": {
+                        opacity: 1,
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        maxWidth: "70%",
+                        bgcolor: msg.senderRole === "admin" ? "#2196F3" : "white",
+                        color: msg.senderRole === "admin" ? "white" : "#1a1a2e",
+                        p: 1.5,
+                        borderRadius: 2,
+                        boxShadow: 1,
+                        position: "relative",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: msg.senderRole === "admin" ? "rgba(255,255,255,0.9)" : "#666",
+                              display: "block",
+                              fontWeight: 600,
+                              mb: 0.3,
+                            }}
+                          >
+                            {msg.senderName}
+                          </Typography>
+                          <Typography variant="body2" sx={{ wordBreak: "break-word", lineHeight: 1.4 }}>
+                            {msg.content}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ 
+                              color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#999", 
+                              display: "block", 
+                              mt: 0.5,
+                              textAlign: "right",
+                              fontSize: "0.7rem"
+                            }}
+                          >
+                            {new Date(msg.timestamp).toLocaleTimeString()}
+                          </Typography>
+                        </Box>
+                        <IconButton
+                          className="message-options"
+                          size="small"
+                          onClick={(e) => handleOpenMessageMenu(e, idx)}
+                          sx={{
+                            opacity: 0,
+                            transition: "opacity 0.2s",
+                            color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#666",
+                            "&:hover": {
+                              bgcolor: msg.senderRole === "admin" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
+                            },
+                            minWidth: "32px",
+                            minHeight: "32px",
+                          }}
+                        >
+                          <MoreVertIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Box>
+                ))}
+                <div ref={messagesEndRef} />
+              </Box>
+
+              {/* Input Area */}
+              <Box sx={{ p: 2, bgcolor: "white", borderTop: "1px solid #e0e0e0" }}>
+                {/* Quick Responses */}
+                <Box sx={{ mb: 1.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                  {quickResponses.map((response, idx) => (
+                    <Chip
+                      key={idx}
+                      label={response.substring(0, 20) + "..."}
+                      size="small"
+                      onClick={() => setMessageInput(response)}
+                      sx={{ 
+                        cursor: "pointer",
+                        fontSize: "0.7rem",
+                        "&:hover": { bgcolor: "#e3f2fd" },
+                      }}
+                    />
+                  ))}
+                </Box>
+                
+                <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
+                  <TextField
+                    fullWidth
+                    placeholder="Type message..."
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    multiline
+                    maxRows={3}
+                    size="small"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        bgcolor: "#f5f5f5",
+                      },
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleSendMessage}
+                    disabled={!messageInput.trim()}
+                    sx={{ 
+                      background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+                      minWidth: 60,
+                      height: 40,
+                    }}
+                  >
+                    <SendIcon fontSize="small" />
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          {/* No Chat Selected Message */}
+          {!selectedChat && (
+            <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "#fafafa" }}>
+              <Box sx={{ textAlign: "center" }}>
+                <VideocamIcon sx={{ fontSize: 60, color: "#ccc", mb: 2 }} />
+                <Typography variant="h6" sx={{ color: "#999", mb: 1 }}>
+                  No chat selected
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#bbb" }}>
+                  Select a chat to start messaging
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
-      )}
       </Box>
 
       {/* Assign Dialog */}
