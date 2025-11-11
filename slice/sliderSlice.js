@@ -13,7 +13,7 @@ export const fetchSliderById = createAsyncThunk(
 
   async (id) => {
     try {
-      const response = await fetch(`${process.env.API}/admin/sliders/${id}`);
+      const response = await fetch(`/api/admin/sliders/${id}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch slider ${response.status}`);
@@ -21,7 +21,7 @@ export const fetchSliderById = createAsyncThunk(
 
       return await response.json();
     } catch (error) {
-      toast.error(`error loaidig slider ${error.message}`);
+      toast.error(`error loading slider ${error.message}`);
 
       throw error;
     }
@@ -33,7 +33,7 @@ export const fetchSliders = createAsyncThunk(
 
   async () => {
     try {
-      const response = await fetch(`${process.env.API}/admin/sliders`);
+      const response = await fetch(`/api/admin/sliders`);
 
       console.log("response", response);
       if (!response.ok) {
@@ -42,7 +42,7 @@ export const fetchSliders = createAsyncThunk(
 
       return await response.json();
     } catch (error) {
-      console.log("eror", error);
+      console.log("error", error);
       toast.error("error loading sliders ");
       throw error;
     }
@@ -50,11 +50,11 @@ export const fetchSliders = createAsyncThunk(
 );
 
 export const fetchHomeSliders = createAsyncThunk(
-  "sliders/fetchSliders",
+  "sliders/fetchHomeSliders",
 
   async () => {
     try {
-      const response = await fetch(`${process.env.API}/sliders`);
+      const response = await fetch(`/api/sliders`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch sliders ${response.status}`);
@@ -74,7 +74,7 @@ export const createSlider = createAsyncThunk(
 
   async (sliderData) => {
     try {
-      const response = await fetch(`${process.env.API}/admin/sliders`, {
+      const response = await fetch(`/api/admin/sliders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,12 +83,12 @@ export const createSlider = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error(`Failed  to create slider ${response.status}`);
+        throw new Error(`Failed to create slider ${response.status}`);
       }
 
       const data = await response.json();
 
-      toast.success("slider created successfuuly");
+      toast.success("slider created successfully");
 
       return data;
     } catch (error) {
@@ -104,7 +104,7 @@ export const updateSlider = createAsyncThunk(
 
   async ({ id, sliderData }) => {
     try {
-      const response = await fetch(`${process.env.API}/admin/sliders/${id}`, {
+      const response = await fetch(`/api/admin/sliders/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export const deleteSlider = createAsyncThunk(
 
   async (id) => {
     try {
-      const response = await fetch(`${process.env.API}/admin/sliders/${id}`, {
+      const response = await fetch(`/api/admin/sliders/${id}`, {
         method: "DELETE",
       });
 
@@ -147,6 +147,7 @@ export const deleteSlider = createAsyncThunk(
       return id;
     } catch (error) {
       toast.error(`error deleting slider ${error.message}`);
+      throw error;
     }
   }
 );

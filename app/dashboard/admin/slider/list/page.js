@@ -20,7 +20,19 @@ const SlidersPage = () => {
   }, [dispatch]);
 
   if (error) {
-    console.error('Error loading sliders:', error);
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", flexDirection: "column", gap: 2 }}>
+        <Typography variant="h6" color="error">
+          Error loading sliders: {error}
+        </Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => dispatch(fetchSliders())}
+        >
+          Retry
+        </Button>
+      </Box>
+    );
   }
 
  
