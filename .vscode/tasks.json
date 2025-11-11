@@ -1,0 +1,129 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "� Start Here: Deployment README",
+			"type": "shell",
+			"command": "cat",
+			"args": ["DEPLOYMENT_README.md"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "⚡ Quick Deploy (5 minutes)",
+			"type": "shell",
+			"command": "cat",
+			"args": ["QUICK_DEPLOY.md"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "📋 Copy-Paste Variables",
+			"type": "shell",
+			"command": "cat",
+			"args": ["ENV_VARIABLES_COPY_PASTE.md"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "📚 Complete Guide",
+			"type": "shell",
+			"command": "cat",
+			"args": ["DEPLOYMENT_FINAL.md"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "📊 Deployment Status",
+			"type": "shell",
+			"command": "cat",
+			"args": ["DEPLOYMENT_STATUS.md"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "🔧 Verify Environment Variables",
+			"type": "shell",
+			"command": "bash",
+			"args": ["verify-deployment.sh"],
+			"group": "none",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "🌐 Open Vercel Environment Settings",
+			"type": "shell",
+			"command": "open",
+			"args": ["https://vercel.com/dashboard/antuf/settings/environment-variables"],
+			"group": "none",
+			"problemMatcher": [],
+			"isBackground": true
+		},
+		{
+			"label": "🚀 Open Vercel Deployments",
+			"type": "shell",
+			"command": "open",
+			"args": ["https://vercel.com/dashboard/antuf/deployments"],
+			"group": "none",
+			"problemMatcher": [],
+			"isBackground": true
+		},
+		{
+			"label": "🌍 Visit Production Site",
+			"type": "shell",
+			"command": "open",
+			"args": ["https://antuf.org"],
+			"group": "none",
+			"problemMatcher": [],
+			"isBackground": true
+		},
+		{
+			"label": "🏗️ Build Project",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "build"],
+			"group": "build",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "🚀 Dev Server",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "dev"],
+			"group": "none",
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			}
+		}
+	]
+}
