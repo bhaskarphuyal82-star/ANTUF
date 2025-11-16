@@ -6,8 +6,8 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      minLength: 3,
-      maxLength: 20,
+      minLength: 1,
+      maxLength: 100,
     },
     email: {
       type: String,
@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       lowercase: true,
+      index: true,
     },
     image: {
       type: String,
@@ -22,7 +23,13 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    provider: {
+      type: String,
+      enum: ["credentials", "google", "github", "facebook", "linkedin"],
+      default: "credentials",
     },
     organization: {
       type: String,

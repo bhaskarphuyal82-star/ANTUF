@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         key: process.env.RAZORPAY_CLIENT_ID,
         amount: data && data.amount * 100,
         currency: "INR",
-        name: "Tutorialsmaterial",
+        name: "ANTUFal",
         description: "Test Payment",
         order_id: data && data.id,
         handler: function (response) {

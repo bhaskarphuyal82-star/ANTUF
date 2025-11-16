@@ -11,7 +11,7 @@ export const metadata = {
     default: 'All Nepal Federation of Trade Unions(ANTUF)',
     template: 'All Nepal Federation of Trade Unions(ANTUF)'
   },
-  description: 'A modern learning management system',
+  description: 'All Nepal Federation of Trade Unions(ANTUF)',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -29,7 +29,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'All Nepal Federation of Trade Unions(ANTUF)',
-    description: 'A modern learning management system',
+    description: 'All Nepal Federation of Trade Unions(ANTUF)',
     images: ['/images/og-image.jpg']
   }
 };
@@ -43,27 +43,27 @@ export const viewport = {
 export default function RootLayout({ children }) {
   // const structuredData = {
   //   "@context": "https://schema.org",
-  //   "@type": "EducationalOrganization",
-  //   "name": "TutorialsMaterial",
-  //   "description": "Comprehensive programming tutorials and courses",
-  //   "url": "https://tutorialsmaterial.com",
-  //   "logo": "https://tutorialsmaterial.com/images/logo2.png",
+  //   "@type": "organization",
+  //   "name": "All Nepal Federation of Trade Unions(ANTUF)",
+  //   "description": "All Nepal Federation of Trade Unions(ANTUF)",
+  //   "url": "https://antuf.org",
+  //   "logo": "https://antuf.org/images/logo2.png",
   //   "sameAs": [
-  //     "https://twitter.com/tutorialsmaterial"
+  //     "https://twitter.com/antuf"
   //   ],
   //   "hasOfferCatalog": {
   //     "@type": "OfferCatalog",
-  //     "name": "Programming Courses",
+  //     "name": "All Nepal Federation of Trade Unions(ANTUF)",
   //     "itemListElement": [
   //       {
   //         "@type": "Course",
-  //         "name": "Web Development",
-  //         "description": "Learn modern web development technologies"
+  //         "name": " Development",
+  //         "description": "All Nepal Federation of Trade Unions(ANTUF)"
   //       },
   //       {
   //         "@type": "Course", 
-  //         "name": "Programming Languages",
-  //         "description": "Master popular programming languages"
+  //         "name": "Membership",
+  //         "description": "All Nepal Federation of Trade Unions(ANTUF)"
   //       }
   //     ]
   //   }

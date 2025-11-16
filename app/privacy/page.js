@@ -182,8 +182,8 @@ const PrivacyPolicy = () => {
             If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
           </Typography>
           <Box sx={{ pl: 2 }}>
-            <Typography variant="body1"><strong>Email:</strong> privacy@tutorialsmaterial.com</Typography>
-            <Typography variant="body1"><strong>Website:</strong> https://tutorialsmaterial.com</Typography>
+            <Typography variant="body1"><strong>Email:</strong> privacy@antuf.org</Typography>
+            <Typography variant="body1"><strong>Website:</strong> https://antuf.org</Typography>
           </Box>
 
           <Box sx={{ mt: 4, p: 3, backgroundColor: "#e8f5e8", borderRadius: 2 }}>

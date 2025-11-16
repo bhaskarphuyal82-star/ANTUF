@@ -100,7 +100,7 @@ const RefundPolicy = () => {
             To request a refund, please follow these steps:
           </Typography>
           <Box component="ol" sx={{ pl: 4, mb: 2 }}>
-            <Typography component="li" variant="body1">Contact our support team at support@tutorialsmaterial.com</Typography>
+            <Typography component="li" variant="body1">Contact our support team at support@antuf.org</Typography>
             <Typography component="li" variant="body1">Include your order number and reason for the refund request</Typography>
             <Typography component="li" variant="body1">Provide any relevant details about your experience</Typography>
             <Typography component="li" variant="body1">Wait for our team to review your request (typically 2-3 business days)</Typography>
@@ -186,9 +186,9 @@ const RefundPolicy = () => {
             For refund requests or questions about this policy, please contact us:
           </Typography>
           <Box sx={{ pl: 2 }}>
-            <Typography variant="body1"><strong>Email:</strong> support@tutorialsmaterial.com</Typography>
+            <Typography variant="body1"><strong>Email:</strong> support@antuf.org</Typography>
             <Typography variant="body1"><strong>Phone:</strong> +1 (555) 123-4567</Typography>
-            <Typography variant="body1"><strong>Website:</strong> https://tutorialsmaterial.com</Typography>
+            <Typography variant="body1"><strong>Website:</strong> https://antuf.org/</Typography>
             <Typography variant="body1"><strong>Business Hours:</strong> Monday - Friday, 9 AM - 6 PM EST</Typography>
           </Box>
 

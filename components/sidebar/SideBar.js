@@ -71,7 +71,7 @@ const menuItems = [
     ],
   },
   {
-    title: "Courses & Categories",
+    title: "Categories",
     icon: <CategoryIcon />,
     items: [
       { label: "Categories", path: "create/category" },
@@ -99,6 +99,14 @@ const menuItems = [
     icon: <EventIcon />,
     items: [
       { label: "Events", path: "events" },
+    ],
+  },
+  {
+    title: "Report",
+    icon: <ManageAccountsIcon />,
+    items: [
+      { label: "All Users", path: "member" },
+      { label: "Chat", path: "create/chat" },
     ],
   },
 ];

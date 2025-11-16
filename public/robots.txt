@@ -10,7 +10,6 @@ Disallow: /api/auth/
 Disallow: /api/upload/
 
 # Sitemap location
-Sitemap: https://tutorialsmaterial.com/sitemap.xml
+Sitemap: https://antuf.org/sitemap.xml
 
-# Crawl delay
-Crawl-delay: 1
+# Crawl delayCrawl-delay: 1

@@ -33,8 +33,7 @@ const NavBar = () => {
           <Typography variant="h6">Home &gt; Checkout</Typography>
         </Box>
 
-        {/* Center Animated Tutorialsmaterial
- Text */}
+    
         <Typography
           variant="h1"
           sx={{
@@ -49,7 +48,7 @@ const NavBar = () => {
             position: "relative",
           }}
         >
-          Tutorialsmaterial
+          All Nepal Federation of Trade Unions(ANTUF)
 
         </Typography>
 

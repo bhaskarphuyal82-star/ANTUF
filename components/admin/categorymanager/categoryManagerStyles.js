@@ -6,7 +6,7 @@ const categoryManagerStyles = {
     backdropFilter: "blur(10px)",
     borderRadius: "20px",
     border: "1px solid rgba(102, 126, 234, 0.2)",
-    mx: { xs: 1, sm: 2, md: 3 },
+    mx: "auto",
     my: 2,
     boxShadow: "0 8px 32px rgba(102, 126, 234, 0.1)",
     transition: "all 0.3s ease",
@@ -14,6 +14,7 @@ const categoryManagerStyles = {
       boxShadow: "0 12px 40px rgba(102, 126, 234, 0.15)",
     },
     maxWidth: "1000px",
+    width: "100%",
   },
 
   // Header section

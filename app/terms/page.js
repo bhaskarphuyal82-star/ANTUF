@@ -182,8 +182,8 @@ const TermsAndConditions = () => {
             If you have any questions about these Terms and Conditions, please contact us at:
           </Typography>
           <Box sx={{ pl: 2 }}>
-            <Typography variant="body1"><strong>Email:</strong> support@tutorialsmaterial.com</Typography>
-            <Typography variant="body1"><strong>Website:</strong> https://tutorialsmaterial.com</Typography>
+            <Typography variant="body1"><strong>Email:</strong> support@antuf.org</Typography>
+            <Typography variant="body1"><strong>Website:</strong> https://antuf.org/</Typography>
           </Box>
 
           <Box sx={{ mt: 4, p: 3, backgroundColor: "#e3f2fd", borderRadius: 2 }}>
