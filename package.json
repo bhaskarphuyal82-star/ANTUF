@@ -40,7 +40,7 @@
     "md-block": "^0.0.1",
     "mongoose": "^8.19.1",
     "nepali-datetime": "^1.5.0",
-    "next": "^15.5.4",
+    "next": "^16.0.7",
     "next-auth": "^4.24.11",
     "node-fetch": "^3.3.2",
     "prop-types": "^15.8.1",
