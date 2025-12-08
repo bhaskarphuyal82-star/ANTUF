@@ -1,6 +1,7 @@
 "use client";
 
-import { act, useState } from "react";
+import { act, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -59,6 +60,10 @@ const CaptchaProtectionPopup = () => {
 };
 
 const LoginModal = ({ open, handleClose }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+  
   const [activeTab, setActiveTab] = useState(0);
   const [form, setForm] = useState({
     name: "",
@@ -70,6 +75,27 @@ const LoginModal = ({ open, handleClose }) => {
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // Redirect after successful authentication
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const callbackUrl = searchParams.get('callbackUrl');
+      const userRole = session.user.role;
+      const isAdmin = session.user.isAdmin || userRole === 'admin';
+
+      // Close modal and redirect
+      if (isAdmin && callbackUrl?.includes('/admin')) {
+        handleClose();
+        router.push(callbackUrl);
+      } else if (isAdmin) {
+        handleClose();
+        router.push('/dashboard/admin');
+      } else if (callbackUrl) {
+        handleClose();
+        router.push(callbackUrl);
+      }
+    }
+  }, [status, session, searchParams, router, handleClose]);
 
   const handleChange = (e) => {
     setForm({
