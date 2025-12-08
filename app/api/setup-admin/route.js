@@ -23,7 +23,20 @@ export async function POST(req) {
       );
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    // Update user to admin without triggering validation on all fields
+    const user = await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { 
+        $set: { 
+          role: 'admin',
+          isAdmin: true 
+        }
+      },
+      { 
+        new: true,
+        runValidators: false // Skip validation to avoid date field issues
+      }
+    );
 
     if (!user) {
       return NextResponse.json(
@@ -31,11 +44,6 @@ export async function POST(req) {
         { status: 404 }
       );
     }
-
-    // Update to admin
-    user.role = 'admin';
-    user.isAdmin = true;
-    await user.save();
 
     return NextResponse.json({
       success: true,
