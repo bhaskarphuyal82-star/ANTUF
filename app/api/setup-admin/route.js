@@ -23,36 +23,35 @@ export async function POST(req) {
       );
     }
 
-    // Update user to admin without triggering validation on all fields
-    const user = await User.findOneAndUpdate(
-      { email: email.toLowerCase() },
-      { 
-        $set: { 
-          role: 'admin',
-          isAdmin: true 
-        }
-      },
-      { 
-        new: true,
-        runValidators: false // Skip validation to avoid date field issues
-      }
-    );
-
-    if (!user) {
+    // Check if user exists first
+    const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
+    
+    if (!existingUser) {
       return NextResponse.json(
         { error: "User not found" },
         { status: 404 }
       );
     }
 
+    // Use direct MongoDB update to bypass Mongoose validation
+    await User.collection.updateOne(
+      { email: email.toLowerCase() },
+      { 
+        $set: { 
+          role: 'admin',
+          isAdmin: true 
+        }
+      }
+    );
+
     return NextResponse.json({
       success: true,
       message: "User updated to admin",
       user: {
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        isAdmin: user.isAdmin,
+        email: existingUser.email,
+        name: existingUser.name,
+        role: 'admin',
+        isAdmin: true,
       }
     });
 
