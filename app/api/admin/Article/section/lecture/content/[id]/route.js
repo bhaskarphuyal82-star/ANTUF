@@ -3,8 +3,6 @@ import dbConnect from "@/utils/dbConnect";
 
 import Articles from "@/models/Articles";
 
-import slugify from "slugify";
-
 export async function PUT(req, { params }) {
   try {
     await dbConnect();

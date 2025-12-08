@@ -24,7 +24,7 @@ export default function ArticleLayout({ content, loading }) {
     if (!content || loading) return;
 
     // Check if content is a full curriculum or a single lecture
-    if (content.sections && Array.isArray(content.sections)) {
+    if (content.sections && Array.isArray(content.sections) && content.sections.length > 0) {
       // It's a full curriculum, get the first lecture from the first section
       const firstSection = content.sections[0];
       if (firstSection && firstSection.lectures && firstSection.lectures.length > 0) {
@@ -37,7 +37,7 @@ export default function ArticleLayout({ content, loading }) {
         });
       }
     } else {
-      // It's already a single lecture
+      // It's a simple article without sections
       setDisplayContent(content);
     }
   }, [content, loading]);

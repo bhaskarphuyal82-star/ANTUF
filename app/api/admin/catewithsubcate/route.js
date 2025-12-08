@@ -5,7 +5,17 @@ import dbConnect from "@/utils/dbConnect";
 import CateWithSubCate from "@/models/catewithsubcate";
 import SubCategory from "@/models/subcategory";
 
-import slugify from "slugify";
+// Simple slug generator that supports all languages
+const generateSlug = (text) => {
+  if (!text) return 'category-' + Date.now();
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'category-' + Date.now();
+};
 
 export async function GET() {
   await dbConnect();
@@ -42,7 +52,7 @@ export async function POST(req) {
       subcategoryId,
       title,
       subtitle,
-      slug: slugify(title) || slugify(subcategorytitle), // Generating a slug from the title or subcategory name
+      slug: generateSlug(title) || generateSlug(subcategorytitle), // Generating a slug from the title or subcategory name
     });
     console.log("Successfully created ---------", cateWithSubCate);
     return NextResponse.json(cateWithSubCate);

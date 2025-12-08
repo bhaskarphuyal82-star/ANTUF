@@ -1,7 +1,6 @@
 // Import necessary modules
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
-import slugify from "slugify";
 import Articles from "@/models/Articles";
 
 // Define the GET function to retrieve a specific curriculum or lecture by slug

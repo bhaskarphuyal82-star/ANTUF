@@ -2,7 +2,18 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 
 import Articles from "@/models/Articles";
-import slugify from "slugify";
+
+// Simple slug generator
+const generateSlug = (text) => {
+  if (!text) return 'lecture-' + Date.now();
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'lecture-' + Date.now();
+};
 
 export async function PUT(req, context) {
   await dbConnect();
@@ -23,7 +34,7 @@ export async function PUT(req, context) {
     if (lectureIndex === -1) {
       return NextResponse.json({ err: "Lecture not found" });
     }
-    const slug = slugify(updatedSection?.title);
+    const slug = updatedSection?.slug || generateSlug(updatedSection?.title);
     updatedSection.slug = slug;
     section.lectures[lectureIndex] = updatedSection;
     await article.save();

@@ -5,7 +5,7 @@ export async function GET() {
   await dbConnect();
 
   try {
-    const article = await Articles.find({})
+    const article = await Articles.find({ status: "published" })
       .populate("category", "name") // Populate category with name field
       .sort({ createdAt: -1 })
       .limit(6);

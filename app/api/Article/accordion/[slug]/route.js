@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
-import slugify from "slugify";
 import Articles from "@/models/Articles";
 
 export async function GET(req, context) {

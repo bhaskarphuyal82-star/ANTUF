@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
-import slugify from "slugify";
 import Articles from "@/models/Articles";
 
 export async function PUT(req, context) {
   try {
     await dbConnect();
 
+    const params = await context.params;
     const body = await req.json();
-    console.log("Received update data:", body);
+    console.log("Received update data for article:", params.id);
 
     if (!body.title) {
       return NextResponse.json(
@@ -17,16 +17,40 @@ export async function PUT(req, context) {
       );
     }
 
+    if (!body.slug || body.slug.trim() === '') {
+      return NextResponse.json(
+        { error: "Slug is required" },
+        { status: 400 }
+      );
+    }
+
     const updateData = {
-      title: body.title,
-      slug: slugify(body.title, { lower: true, strict: true }),
-      imageUrl: body.imageUrl,
+      title: body.title.trim(),
+      slug: body.slug.trim(),
+      subtitle: body.subtitle?.trim() || "",
+      excerpt: body.excerpt?.trim() || "",
+      content: body.content || "",
+      featureImage: body.featureImage || "",
+      imageAlt: body.imageAlt?.trim() || `${body.title.trim()} feature image`,
+      thumbnail: body.thumbnail || "",
+      category: body.category,
+      tags: body.tags || [],
+      status: body.status || "draft",
+      publishedAt: body.status === "published" && !body.publishedAt ? new Date() : body.publishedAt,
+      isFeatured: body.isFeatured || false,
+      isPinned: body.isPinned || false,
+      difficulty: body.difficulty || "beginner",
+      contentLanguage: body.language || "ne",
+      metaTitle: body.metaTitle?.trim() || body.title.trim(),
+      metaDescription: body.metaDescription?.trim() || "",
+      metaKeywords: body.metaKeywords || [],
+      allowComments: body.allowComments !== false,
       sections: body.sections || [],
       updatedAt: new Date(),
     };
 
     const article = await Articles.findByIdAndUpdate(
-      context.params.id,
+      params.id,
       { $set: updateData },
       {
         new: true,

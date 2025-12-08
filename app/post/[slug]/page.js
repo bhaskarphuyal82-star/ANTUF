@@ -25,7 +25,7 @@ import {useState, useEffect} from "react";
           try {
             setLoading(true);
             const response = await fetch(
-              `${process.env.API}/Article/${params?.slug}`,
+              `/api/Article/${params?.slug}`,
               {
                 method: "GET",
               }

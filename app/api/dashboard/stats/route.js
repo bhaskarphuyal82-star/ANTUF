@@ -1,7 +1,9 @@
 import dbConnect from "@/utils/dbConnect";
 import User from '@/models/user';
 import Order from '@/models/order';
-
+import Articles from '@/models/Articles';
+import CurriculumCourse from '@/models/CurriculumCourse';
+import EventCalendar from '@/models/eventCalendar';
 
 import { NextResponse } from 'next/server';
 
@@ -20,9 +22,9 @@ export async function GET(request) {
     ] = await Promise.all([
       User.countDocuments(),
       Order.countDocuments(),
-      Course.countDocuments(),
-      Event.countDocuments(),
-      Post.countDocuments(),
+      CurriculumCourse.countDocuments(),
+      EventCalendar.countDocuments(),
+      Articles.countDocuments(),
       getRevenueData(),
     ]);
 

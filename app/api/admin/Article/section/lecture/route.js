@@ -3,7 +3,17 @@ import dbConnect from "@/utils/dbConnect";
 
 import Articles from "@/models/Articles";
 
-import slugify from "slugify";
+// Simple slug generator
+const generateSlug = (text) => {
+  if (!text) return 'lecture-' + Date.now();
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'lecture-' + Date.now();
+};
 
 export async function POST(req) {
   await dbConnect();
@@ -26,7 +36,7 @@ export async function POST(req) {
       );
     }
 
-    const slug = slugify(newLecture?.title);
+    const slug = newLecture?.slug || generateSlug(newLecture?.title);
     section.lectures.push({ ...newLecture, slug });
     await article.save();
     const newlyAddedLecture = section.lectures[section.lectures.length - 1];

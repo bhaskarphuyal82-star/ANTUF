@@ -34,11 +34,26 @@ const UserSchema = new mongoose.Schema(
     organization: {
       type: String,
     },
-    // Additional Profile Fields
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    // Basic Profile Fields
     phone: {
       type: String,
       trim: true,
     },
+    bio: {
+      type: String,
+      maxLength: 500,
+    },
+    // Legacy address fields (kept for backward compatibility)
     address: {
       type: String,
       trim: true,
@@ -59,7 +74,119 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    // Permanent Address Array
+    district: {
+      type: String,
+      trim: true,
+    },
+    province: {
+      type: String,
+      trim: true,
+    },
+    municipality: {
+      type: String,
+      trim: true,
+    },
+    wardNo: {
+      type: String,
+      trim: true,
+    },
+    // Permanent Address Fields (legacy)
+    permanentAddress: {
+      type: String,
+      trim: true,
+    },
+    permanentCity: {
+      type: String,
+      trim: true,
+    },
+    permanentDistrict: {
+      type: String,
+      trim: true,
+    },
+    permanentMunicipality: {
+      type: String,
+      trim: true,
+    },
+    permanentProvince: {
+      type: String,
+      trim: true,
+    },
+    permanentWardNo: {
+      type: String,
+      trim: true,
+    },
+    // Temporary Address Fields (legacy)
+    temporaryAddress: {
+      type: String,
+      trim: true,
+    },
+    temporaryCity: {
+      type: String,
+      trim: true,
+    },
+    temporaryDistrict: {
+      type: String,
+      trim: true,
+    },
+    temporaryMunicipality: {
+      type: String,
+      trim: true,
+    },
+    temporaryProvince: {
+      type: String,
+      trim: true,
+    },
+    temporaryWardNo: {
+      type: String,
+      trim: true,
+    },
+    // New Structured Addresses Array
+    addresses: [
+      {
+        type: {
+          type: String,
+          enum: ["permanent", "temporary", "office", "other"],
+          default: "permanent",
+        },
+        province: {
+          type: String,
+          trim: true,
+        },
+        district: {
+          type: String,
+          trim: true,
+        },
+        municipality: {
+          type: String,
+          trim: true,
+        },
+        wardNo: {
+          type: String,
+          trim: true,
+        },
+        tole: {
+          type: String,
+          trim: true,
+        },
+        city: {
+          type: String,
+          trim: true,
+        },
+        country: {
+          type: String,
+          trim: true,
+        },
+        zipCode: {
+          type: String,
+          trim: true,
+        },
+        isPrimary: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
+    // Legacy permanentAddresses (kept for backward compatibility)
     permanentAddresses: [
       {
         addressType: {
@@ -105,24 +232,29 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
-    bio: {
-      type: String,
-      maxLength: 500,
+    // Citizenship Information (Structured)
+    citizenship: {
+      number: {
+        type: String,
+        trim: true,
+      },
+      issuedDistrict: {
+        type: String,
+        trim: true,
+      },
+      issuedDate: {
+        type: String,
+        trim: true,
+      },
+      frontImage: {
+        type: String,
+      },
+      backImage: {
+        type: String,
+      },
     },
-    // Identity Information Fields
-    motherName: {
-      type: String,
-      trim: true,
-    },
-    fatherName: {
-      type: String,
-      trim: true,
-    },
+    // Legacy citizenship fields (kept for backward compatibility)
     citizenshipNumber: {
-      type: String,
-      trim: true,
-    },
-    district: {
       type: String,
       trim: true,
     },
@@ -132,7 +264,24 @@ const UserSchema = new mongoose.Schema(
     citizenshipBack: {
       type: String,
     },
-    // Join Form Fields
+    // Family Information
+    motherName: {
+      type: String,
+      trim: true,
+    },
+    fatherName: {
+      type: String,
+      trim: true,
+    },
+    grandfatherName: {
+      type: String,
+      trim: true,
+    },
+    spouseName: {
+      type: String,
+      trim: true,
+    },
+    // Personal Information
     nameEnglish: {
       type: String,
       trim: true,
@@ -147,20 +296,9 @@ const UserSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['male', 'female', 'other'],
+      enum: ["male", "female", "other"],
     },
-    province: {
-      type: String,
-      trim: true,
-    },
-    municipality: {
-      type: String,
-      trim: true,
-    },
-    wardNo: {
-      type: String,
-      trim: true,
-    },
+    // Professional Information
     occupation: {
       type: String,
       trim: true,
@@ -173,6 +311,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    // Organization/Union Information
     unionName: {
       type: String,
       trim: true,
@@ -188,14 +327,45 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    interests: {
-      type: String,
-      trim: true,
-    },
-    skills: {
-      type: String,
-      trim: true,
-    },
+    // Skills and Interests
+    interests: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    skills: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    // Emergency Contacts (Structured)
+    emergencyContacts: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        },
+        relationship: {
+          type: String,
+          trim: true,
+        },
+        phone: {
+          type: String,
+          trim: true,
+        },
+        email: {
+          type: String,
+          trim: true,
+        },
+        isPrimary: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
+    // Legacy emergency contact fields (kept for backward compatibility)
     emergencyContact: {
       type: String,
       trim: true,
@@ -204,18 +374,8 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-      required: true,
-    },
     subscription: {
       type: String,
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
     },
   },
   {

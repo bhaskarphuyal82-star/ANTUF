@@ -59,7 +59,8 @@ const ResponsiveComponent = ({ content }) => {
     },
   });
 
-  const date = content?.date ? new Date(content.date) : null;
+  const date = content?.date || content?.publishedAt || content?.updatedAt ? 
+    new Date(content.date || content.publishedAt || content.updatedAt) : null;
   const formattedData =
     date && !isNaN(date) ? format(date, "dd MMM, yyyy") : "Invalid date";
 

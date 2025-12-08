@@ -90,7 +90,8 @@ const menuItems = [
     title: "Users & Messages",
     icon: <ManageAccountsIcon />,
     items: [
-      { label: "All Users", path: "member" },
+      { label: "User Management", path: "alluser" },
+      { label: "All Members", path: "member" },
       { label: "Chat", path: "create/chat" },
     ],
   },

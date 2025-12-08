@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Articles from "@/models/Articles";
-import slugify from "slugify";
+
+// Simple slug generator that works with any language
+const generateSlug = (text) => {
+  if (!text) return 'article-' + Date.now();
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'article-' + Date.now();
+};
 
 export async function POST(req) {
   try {
@@ -26,14 +37,57 @@ export async function POST(req) {
       );
     }
 
-    // Create article data
+    // Validate slug
+    if (!body.slug || body.slug.trim() === '') {
+      return NextResponse.json(
+        { error: "Slug is required. Please ensure the title generates a valid slug." },
+        { status: 400 }
+      );
+    }
+
+    // Create article data with new model fields
     const articleData = {
+      // Basic Information
       title: body.title.trim(),
-      slug: slugify(body.title, { lower: true, strict: true }),
-      featureImage: body.featureImage,
-      category: body.category, // Store the category ID
-      imageAlt: `${body.title.trim()} feature image`,
+      slug: body.slug.trim(),
+      subtitle: body.subtitle?.trim() || "",
+      excerpt: body.excerpt?.trim() || "",
+      content: body.content || "",
+      
+      // Media
+      featureImage: body.featureImage || "",
+      imageAlt: body.imageAlt?.trim() || `${body.title.trim()} feature image`,
+      thumbnail: body.thumbnail || "",
+      
+      // Categorization
+      category: body.category,
+      tags: body.tags || [],
+      
+      // Author Information
+      author: body.author || null,
+      authorName: body.authorName?.trim() || "ANTUF Admin",
+      
+      // Content
       sections: [],
+      
+      // Publication Status
+      status: body.status || "draft",
+      publishedAt: body.status === "published" ? new Date() : null,
+      scheduledFor: body.scheduledFor || null,
+      
+      // SEO
+      metaTitle: body.metaTitle?.trim() || body.title.trim(),
+      metaDescription: body.metaDescription?.trim() || body.excerpt?.trim() || "",
+      metaKeywords: body.metaKeywords || [],
+      
+      // Features
+      isFeatured: body.isFeatured || false,
+      isPinned: body.isPinned || false,
+      allowComments: body.allowComments !== false,
+      
+      // Reading Information
+      difficulty: body.difficulty || "beginner",
+      contentLanguage: body.language || "ne", // Map language to contentLanguage
     };
 
     // Create and save the article
@@ -42,6 +96,23 @@ export async function POST(req) {
     return NextResponse.json(article, { status: 201 });
   } catch (error) {
     console.error("Error creating article:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    
+    // Safely log article data without circular references
+    try {
+      const safeData = {
+        title: articleData.title,
+        slug: articleData.slug,
+        category: articleData.category?.toString() || articleData.category,
+        status: articleData.status,
+        language: articleData.language
+      };
+      console.error("Article data that failed:", safeData);
+    } catch (logError) {
+      console.error("Could not log article data:", logError.message);
+    }
+    
     return NextResponse.json(
       { error: error.message || "Failed to create article" },
       { status: 500 }
@@ -58,9 +129,15 @@ export async function GET() {
         select: "name _id",
         model: "SubCategory",
       })
-      .sort({ createdAt: -1 });
+      .populate({
+        path: "author",
+        select: "name email image",
+        model: "User",
+      })
+      .select("-sections.lectures.content") // Exclude large content for list view
+      .sort({ publishedAt: -1, createdAt: -1 });
 
-    console.log("Articles with populated categories:", articles);
+    console.log("Articles with populated fields:", articles);
 
     return NextResponse.json(articles);
   } catch (error) {

@@ -7,7 +7,7 @@ import { authOptions } from "@/utils/authOptions";
 /**
  * GET - Fetch specific user profile by ID (admin only)
  */
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   try {
     await dbConnect();
 
@@ -22,6 +22,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ err: "Access denied. Admin only." }, { status: 403 });
     }
 
+    const params = await context.params;
     const { userId } = params;
 
     if (!userId) {
@@ -63,7 +64,7 @@ export async function GET(req, { params }) {
 /**
  * PATCH - Update specific user profile by ID (admin only)
  */
-export async function PATCH(req, { params }) {
+export async function PATCH(req, context) {
   try {
     await dbConnect();
 
@@ -77,6 +78,8 @@ export async function PATCH(req, { params }) {
     if (!admin || (admin.role !== "admin" && !admin.isAdmin)) {
       return NextResponse.json({ err: "Access denied. Admin only." }, { status: 403 });
     }
+
+    const params = await context.params;
 
     const { userId } = params;
 
@@ -155,7 +158,7 @@ export async function PATCH(req, { params }) {
 /**
  * DELETE - Delete specific user by ID (admin only)
  */
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
     await dbConnect();
 
@@ -170,6 +173,7 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ err: "Access denied. Admin only." }, { status: 403 });
     }
 
+    const params = await context.params;
     const { userId } = params;
 
     if (!userId) {
