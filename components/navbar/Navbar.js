@@ -216,26 +216,24 @@ const Navbar = () => {
             >
 
               {status === "authenticated" ? (
-                session?.user?.image && (
-                  <img
-                    src={session?.user?.image || "https://res.cloudinary.com/dfu758f7t/image/upload/v1761664833/logo_mklloi.jpg"} // Fallback for default avatar
-                    alt="User Avatar"
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      borderRadius: "50%",
-                      cursor: "pointer",
+                <img
+                  src={session?.user?.image || "https://res.cloudinary.com/dfu758f7t/image/upload/v1761664833/logo_mklloi.jpg"} // Fallback for default avatar
+                  alt="User Avatar"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
 
-                    }}
-                    onClick={() =>
-                      router.push(
-                        session?.user?.role === "admin"
-                          ? "/dashboard/admin"
-                          : "/dashboard/user"
-                      )
-                    }
-                  />
-                )
+                  }}
+                  onClick={() =>
+                    router.push(
+                      session?.user?.role === "admin"
+                        ? "/dashboard/admin"
+                        : "/dashboard/user"
+                    )
+                  }
+                />
               ) : (
                 <Page />
               )}
