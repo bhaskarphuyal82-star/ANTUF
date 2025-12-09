@@ -214,7 +214,21 @@ const LoginModal = ({ open, handleClose }) => {
       } else {
         toast.success("Login successfully"); // Show a success message if login is successful
         setRecaptchaToken(null); // Reset the reCAPTCHA token after successful login
-        handleClose(); // Close the login modal or form
+        
+        // Check if there's a callbackUrl to redirect to
+        const urlParams = new URLSearchParams(window.location.search);
+        const callbackUrl = urlParams.get('callbackUrl');
+        
+        // Small delay to allow session to update, then redirect
+        setTimeout(() => {
+          handleClose();
+          if (callbackUrl) {
+            router.push(decodeURIComponent(callbackUrl));
+          } else {
+            // Let the useEffect handle default redirects based on role
+            router.refresh();
+          }
+        }, 500);
       }
     } catch (error) {
       toast.error("Error connecting to the server!"); // If there was an error with the login request, show an error message
