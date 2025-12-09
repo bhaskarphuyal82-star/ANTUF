@@ -1,7 +1,6 @@
 "use client";
 
-import { act, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { act, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -60,9 +59,6 @@ const CaptchaProtectionPopup = () => {
 };
 
 const LoginModal = ({ open, handleClose }) => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  
   const [activeTab, setActiveTab] = useState(0);
   const [form, setForm] = useState({
     name: "",
@@ -74,30 +70,6 @@ const LoginModal = ({ open, handleClose }) => {
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
-  // Redirect after successful authentication
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      const userRole = session.user.role;
-      const isAdmin = session.user.isAdmin || userRole === 'admin';
-
-      // Get callbackUrl from browser URL if present
-      const urlParams = new URLSearchParams(window.location.search);
-      const callbackUrl = urlParams.get('callbackUrl');
-
-      // Close modal and redirect
-      if (isAdmin && callbackUrl?.includes('/admin')) {
-        handleClose();
-        router.push(decodeURIComponent(callbackUrl));
-      } else if (isAdmin) {
-        handleClose();
-        router.push('/dashboard/admin');
-      } else if (callbackUrl) {
-        handleClose();
-        router.push(decodeURIComponent(callbackUrl));
-      }
-    }
-  }, [status, session, router, handleClose]);
 
   const handleChange = (e) => {
     setForm({
@@ -214,7 +186,7 @@ const LoginModal = ({ open, handleClose }) => {
       } else {
         toast.success("Login successfully"); // Show a success message if login is successful
         setRecaptchaToken(null); // Reset the reCAPTCHA token after successful login
-        handleClose(); // Close the modal immediately
+        handleClose(); // Close the login modal or form
         
         // Check if there's a callbackUrl to redirect to
         const urlParams = new URLSearchParams(window.location.search);
@@ -222,10 +194,9 @@ const LoginModal = ({ open, handleClose }) => {
         
         // Use window.location for full page reload to ensure session is loaded
         if (callbackUrl) {
-          window.location.href = decodeURIComponent(callbackUrl);
-        } else {
-          // Reload the page to get the updated session
-          window.location.reload();
+          setTimeout(() => {
+            window.location.href = decodeURIComponent(callbackUrl);
+          }, 100);
         }
       }
     } catch (error) {
@@ -366,7 +337,28 @@ const LoginModal = ({ open, handleClose }) => {
             Log In with Facebook
           </Button>
         </Box>
-        
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+          <Button
+            variant="outlined"
+            startIcon={<LinkedInIcon />}
+            sx={{ textTransform: "none", color: "#fff" }}
+            fullWidth
+            style={{ marginRight: "8px", backgroundColor: "blue" }}
+            onClick={() => signIn("linkedin")}
+          >
+            Log In with LinkedIn
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<GitHubIcon />}
+            sx={{ textTransform: "none", color: "#fff" }}
+            fullWidth
+            style={{ marginRight: "8px", backgroundColor: "black" }}
+            onClick={() => signIn("github")}
+          >
+            Log In with Github
+          </Button>
+        </Box>
 
         <Typography
           variant="body2"
