@@ -6,13 +6,12 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
 import { v4 as uuidv4 } from "uuid";
 
-const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 import CurriculumCourse from "@/models/CurriculumCourse";
 import CourseOrder from "@/models/courseorder";
 import UserCourse from "@/models/usercourse";
 
 export async function GET(req, context) {
+  const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
   await dbConnect();
 
   const session = await getServerSession(authOptions);

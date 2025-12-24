@@ -5,15 +5,14 @@ import User from "@/models/user"; // User model to interact with the MongoDB use
 import { getServerSession } from "next-auth/next"; // NextAuth function to get the session of the current user
 import { authOptions } from "@/utils/authOptions"; // Authentication options for NextAuth
 
-// Initialize the Stripe instance with the secret API key
-const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 // Import additional models (Subscription and Order) for handling subscriptions and orders
 import Subscription from "@/models/subscription"; // Subscription model for tracking subscription data
 import Order from "@/models/order"; // Order model for tracking orders placed by users
 
 // The GET function handles verifying the payment and processing the subscription
 export async function GET(req, context) {
+  // Initialize the Stripe instance with the secret API key at runtime
+  const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
   await dbConnect(); // Establish a connection to the database
 
   // Get the current session (to get the user who made the request)

@@ -6,9 +6,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
 import CurriculumCourse from "@/models/CurriculumCourse";
 
-const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export async function POST(req, context) {
+  const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
   await dbConnect();
   const session = await getServerSession(authOptions);
 
