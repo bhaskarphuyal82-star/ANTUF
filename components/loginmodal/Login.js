@@ -173,33 +173,46 @@ const LoginModal = ({ open, handleClose }) => {
       const email = form.email;
       const password = form.password;
 
+      // Check if there's a callbackUrl in the URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const callbackUrl = urlParams.get('callbackUrl');
+
+      console.log('[Login] Attempting login with callbackUrl:', callbackUrl);
+
       // Use the 'signIn' function (likely from NextAuth) to attempt logging in
       const result = await signIn("credentials", {
         redirect: false, // Prevent automatic redirect after login
         email,
         password, // Pass the email and password for authentication
+        callbackUrl: callbackUrl || '/dashboard', // Pass callbackUrl to NextAuth
       });
 
       // If the login is unsuccessful, display the error message from the result
       if (!result.ok) {
+        console.error('[Login] Login failed:', result?.error);
         toast.error(result?.error);
       } else {
+        console.log('[Login] Login successful, redirecting to:', result.url || callbackUrl || '/dashboard');
         toast.success("Login successfully"); // Show a success message if login is successful
         setRecaptchaToken(null); // Reset the reCAPTCHA token after successful login
         handleClose(); // Close the login modal or form
-        
-        // Check if there's a callbackUrl to redirect to
-        const urlParams = new URLSearchParams(window.location.search);
-        const callbackUrl = urlParams.get('callbackUrl');
-        
-        // Use window.location for full page reload to ensure session is loaded
-        if (callbackUrl) {
+
+        // Redirect using NextAuth's returned URL or the callbackUrl
+        const redirectUrl = result.url || callbackUrl;
+        if (redirectUrl) {
+          // Use full page reload to ensure session is properly loaded
           setTimeout(() => {
-            window.location.href = decodeURIComponent(callbackUrl);
+            // If it's a relative URL, make it absolute
+            const finalUrl = redirectUrl.startsWith('/')
+              ? `${window.location.origin}${redirectUrl}`
+              : redirectUrl;
+            console.log('[Login] Redirecting to:', finalUrl);
+            window.location.href = finalUrl;
           }, 100);
         }
       }
     } catch (error) {
+      console.error('[Login] Error during login:', error);
       toast.error("Error connecting to the server!"); // If there was an error with the login request, show an error message
     } finally {
       setLoading(false); // Set loading state to false when the login process is complete
@@ -309,8 +322,8 @@ const LoginModal = ({ open, handleClose }) => {
                 ? "Signing In..."
                 : "Signing Up..."
               : activeTab === 0
-              ? "Sign In"
-              : "Sign Up"}
+                ? "Sign In"
+                : "Sign Up"}
           </Button>
         </form>
         <Divider sx={{ my: 2 }}>or</Divider>
