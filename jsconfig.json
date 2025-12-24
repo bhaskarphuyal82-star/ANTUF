@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "jsx": "react-jsx"
   },
-  "include": ["next.config.mjs", "**/*.js", "**/*.jsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next.config.mjs",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
