@@ -43,7 +43,7 @@ const nextConfig = {
     RAZORPAY_CLIENT_SECRET: process.env.RAZORPAY_CLIENT_SECRET,
     PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
     PAYPAL_CLIENT_SECRET: process.env.PAYPAL_CLIENT_SECRET,
-    SITE_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
+    SITE_URL: process.env.NEXTAUTH_URL,
   },
 };
 

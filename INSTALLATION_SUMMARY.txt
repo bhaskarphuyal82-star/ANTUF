@@ -121,7 +121,7 @@ Required in .env.local:
   GOOGLE_CLIENT_ID=349121129295-44pcbd13jl3qfcf1lqakn5jjckmtri9r.apps.googleusercontent.com
   GOOGLE_CLIENT_SECRET=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
   NEXTAUTH_SECRET=ff39b85c4ec7d2a97c240ba4e9a1db27630e9f3ce02731e5e4622d6bcf9c74e7
-  NEXTAUTH_URL=http://localhost:3000
+  NEXTAUTH_URL=h
   DB_URL=mongodb+srv://...
 
 Verify with:
@@ -141,7 +141,7 @@ During Testing:
   ☐ All checks pass (✓)
   ☐ Start dev server: npm run dev
   ☐ Open private browser window
-  ☐ Go to http://localhost:3000
+  ☐ Go to h
   ☐ Click "Log In with Google"
 
 Verification:
