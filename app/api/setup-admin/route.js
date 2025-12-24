@@ -25,7 +25,7 @@ export async function POST(req) {
 
     // Check if user exists first
     const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
-    
+
     if (!existingUser) {
       return NextResponse.json(
         { error: "User not found" },
@@ -36,22 +36,26 @@ export async function POST(req) {
     // Use direct MongoDB update to bypass Mongoose validation
     await User.collection.updateOne(
       { email: email.toLowerCase() },
-      { 
-        $set: { 
+      {
+        $set: {
           role: 'admin',
-          isAdmin: true 
+          isAdmin: true,
+          isActive: true  // Ensure account is active
         }
       }
     );
 
+    console.log(`✅ User ${email} successfully updated to admin role`);
+
     return NextResponse.json({
       success: true,
-      message: "User updated to admin",
+      message: "User updated to admin successfully",
       user: {
         email: existingUser.email,
         name: existingUser.name,
         role: 'admin',
         isAdmin: true,
+        isActive: true,
       }
     });
 

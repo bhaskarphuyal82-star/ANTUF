@@ -13,6 +13,20 @@ export const authOptions = {
     strategy: "jwt",
   },
 
+  // Cookie configuration for production HTTPS
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? '.antuf.org' : undefined,
+      },
+    },
+  },
+
   providers: [
     CredentialsProvider({
       async authorize(credentials, req) {
@@ -31,6 +45,12 @@ export const authOptions = {
           if (!user.password) {
             throw new Error("Please login via the method used to sign up (OAuth provider)");
           }
+
+          // Check if account is active
+          if (user.isActive === false) {
+            throw new Error("ACCOUNT_DEACTIVATED");
+          }
+
           const isPasswordValid = await bcrypt.compare(password, user.password);
           if (!isPasswordValid) {
             throw new Error("Invalid email or password!");
@@ -62,10 +82,10 @@ export const authOptions = {
     async signIn({ user, account, profile }) {
       try {
         console.log("[NextAuth SignIn] Starting signin for:", user?.email, "Provider:", account?.provider);
-        
+
         await dbConnect();
         const { email } = user;
-        
+
         if (!email) {
           console.error("[NextAuth SignIn] No email provided by provider");
           return false;
@@ -186,10 +206,36 @@ export const authOptions = {
     },
 
     async redirect({ url, baseUrl }) {
+      console.log('[NextAuth Redirect] url:', url, 'baseUrl:', baseUrl);
+
       // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (url.startsWith("/")) {
+        const redirectUrl = `${baseUrl}${url}`;
+        console.log('[NextAuth Redirect] Relative URL, redirecting to:', redirectUrl);
+        return redirectUrl;
+      }
+
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
+      try {
+        const urlObj = new URL(url);
+        const baseUrlObj = new URL(baseUrl);
+
+        // Allow same origin
+        if (urlObj.origin === baseUrlObj.origin) {
+          console.log('[NextAuth Redirect] Same origin, allowing:', url);
+          return url;
+        }
+
+        // Allow antuf.org domain (for production)
+        if (urlObj.hostname.endsWith('antuf.org')) {
+          console.log('[NextAuth Redirect] antuf.org domain, allowing:', url);
+          return url;
+        }
+      } catch (error) {
+        console.error('[NextAuth Redirect] Invalid URL:', error);
+      }
+
+      console.log('[NextAuth Redirect] Defaulting to baseUrl:', baseUrl);
       return baseUrl;
     },
   },
