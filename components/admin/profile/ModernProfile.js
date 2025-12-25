@@ -118,6 +118,12 @@ export default function ModernProfile() {
     const [profileImage, setProfileImage] = useState(null);
     const [profileImagePreview, setProfileImagePreview] = useState("");
 
+    // Citizenship Images
+    const [citizenshipFrontImage, setCitizenshipFrontImage] = useState(null);
+    const [citizenshipFrontPreview, setCitizenshipFrontPreview] = useState("");
+    const [citizenshipBackImage, setCitizenshipBackImage] = useState(null);
+    const [citizenshipBackPreview, setCitizenshipBackPreview] = useState("");
+
     useEffect(() => {
         fetchUserData();
     }, []);
@@ -158,24 +164,46 @@ export default function ModernProfile() {
                 // Emergency Contact
                 emergencyContact: data?.emergencyContact || "",
                 emergencyPhone: data?.emergencyPhone || "",
-                // Permanent Address
-                permanentProvince: data?.permanentProvince || "",
-                permanentDistrict: data?.permanentDistrict || "",
-                permanentMunicipality: data?.permanentMunicipality || "",
-                permanentWardNo: data?.permanentWardNo || "",
-                permanentAddress: data?.permanentAddress || "",
-                // Temporary Address
-                temporaryProvince: data?.temporaryProvince || "",
-                temporaryDistrict: data?.temporaryDistrict || "",
-                temporaryMunicipality: data?.temporaryMunicipality || "",
-                temporaryWardNo: data?.temporaryWardNo || "",
-                temporaryAddress: data?.temporaryAddress || "",
+                // Permanent Address - Try addresses array first, then legacy fields
+                permanentProvince:
+                    data?.addresses?.find(addr => addr.type === 'permanent')?.province ||
+                    data?.permanentProvince || "",
+                permanentDistrict:
+                    data?.addresses?.find(addr => addr.type === 'permanent')?.district ||
+                    data?.permanentDistrict || "",
+                permanentMunicipality:
+                    data?.addresses?.find(addr => addr.type === 'permanent')?.municipality ||
+                    data?.permanentMunicipality || "",
+                permanentWardNo:
+                    data?.addresses?.find(addr => addr.type === 'permanent')?.wardNo ||
+                    data?.permanentWardNo || "",
+                permanentAddress:
+                    data?.addresses?.find(addr => addr.type === 'permanent')?.tole ||
+                    data?.permanentAddress || "",
+                // Temporary Address - Try addresses array first, then legacy fields
+                temporaryProvince:
+                    data?.addresses?.find(addr => addr.type === 'temporary')?.province ||
+                    data?.temporaryProvince || "",
+                temporaryDistrict:
+                    data?.addresses?.find(addr => addr.type === 'temporary')?.district ||
+                    data?.temporaryDistrict || "",
+                temporaryMunicipality:
+                    data?.addresses?.find(addr => addr.type === 'temporary')?.municipality ||
+                    data?.temporaryMunicipality || "",
+                temporaryWardNo:
+                    data?.addresses?.find(addr => addr.type === 'temporary')?.wardNo ||
+                    data?.temporaryWardNo || "",
+                temporaryAddress:
+                    data?.addresses?.find(addr => addr.type === 'temporary')?.tole ||
+                    data?.temporaryAddress || "",
                 bio: data?.bio || "",
                 password: "",
                 confirmPassword: "",
             });
 
             setProfileImagePreview(data?.image || "");
+            setCitizenshipFrontPreview(data?.citizenship?.frontImage || data?.citizenshipFront || "");
+            setCitizenshipBackPreview(data?.citizenship?.backImage || data?.citizenshipBack || "");
 
             setUserStatus({
                 role: data?.role || "",
@@ -214,22 +242,66 @@ export default function ModernProfile() {
         }
     };
 
-    const uploadImageToCloudinary = async (image) => {
-        const formDataUpload = new FormData();
-        formDataUpload.append("file", image);
-        formDataUpload.append("upload_preset", "ml_default");
-
-        const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-            {
-                method: "POST",
-                body: formDataUpload,
-            }
-        );
-
-        const data = await response.json();
-        return data.secure_url;
+    const handleCitizenshipFrontChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setCitizenshipFrontImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCitizenshipFrontPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
+
+    const handleCitizenshipBackChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setCitizenshipBackImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCitizenshipBackPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+
+    const uploadImageToCloudinary = async (image) => {
+        // Convert image file to base64
+        const reader = new FileReader();
+
+        return new Promise((resolve, reject) => {
+            reader.onloadend = async () => {
+                try {
+                    const base64Image = reader.result;
+
+                    // Upload via server-side API route
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ image: base64Image }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to upload image');
+                    }
+
+                    const data = await response.json();
+                    resolve(data.url);
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    reject(error);
+                }
+            };
+
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(image);
+        });
+    };
+
 
     const validateForm = () => {
         const newErrors = {};
@@ -265,11 +337,27 @@ export default function ModernProfile() {
         try {
             setLoading(true);
             let imageUrl = userStatus.image;
+            let citizenshipFrontUrl = citizenshipFrontPreview;
+            let citizenshipBackUrl = citizenshipBackPreview;
 
-            // Upload new image if selected
+            // Upload new profile image if selected
             if (profileImage) {
                 setUploadingImage(true);
                 imageUrl = await uploadImageToCloudinary(profileImage);
+                setUploadingImage(false);
+            }
+
+            // Upload citizenship front image if selected
+            if (citizenshipFrontImage) {
+                setUploadingImage(true);
+                citizenshipFrontUrl = await uploadImageToCloudinary(citizenshipFrontImage);
+                setUploadingImage(false);
+            }
+
+            // Upload citizenship back image if selected
+            if (citizenshipBackImage) {
+                setUploadingImage(true);
+                citizenshipBackUrl = await uploadImageToCloudinary(citizenshipBackImage);
                 setUploadingImage(false);
             }
 
@@ -291,9 +379,14 @@ export default function ModernProfile() {
                 spouseName: formData.spouseName,
                 // Citizenship Information
                 citizenshipNumber: formData.citizenshipNumber,
+                citizenshipFront: citizenshipFrontUrl,
+                citizenshipBack: citizenshipBackUrl,
                 citizenship: {
+                    number: formData.citizenshipNumber,
                     issuedDistrict: formData.citizenshipIssuedDistrict,
                     issuedDate: formData.citizenshipIssuedDate,
+                    frontImage: citizenshipFrontUrl,
+                    backImage: citizenshipBackUrl,
                 },
                 // Union Information
                 unionName: formData.unionName,
@@ -341,6 +434,8 @@ export default function ModernProfile() {
                 setServerMessage(data?.msg || "Profile updated successfully!");
                 setFormData({ ...formData, password: "", confirmPassword: "" });
                 setProfileImage(null);
+                setCitizenshipFrontImage(null);
+                setCitizenshipBackImage(null);
                 setIsEditing(false);
                 // Refresh user data
                 fetchUserData();
@@ -959,6 +1054,126 @@ export default function ModernProfile() {
                                                 disabled={!isEditing}
                                                 placeholder="YYYY-MM-DD"
                                             />
+                                        </Grid>
+
+                                        {/* Citizenship Images Section */}
+                                        <Grid item xs={12}>
+                                            <Divider sx={{ my: 2 }} />
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: "#374151", mb: 2 }}>
+                                                Citizenship Document Images
+                                            </Typography>
+                                        </Grid>
+
+                                        {/* Front Image */}
+                                        <Grid item xs={12} md={6}>
+                                            <Paper
+                                                elevation={0}
+                                                sx={{
+                                                    p: 2,
+                                                    border: "2px dashed #d1d5db",
+                                                    borderRadius: 2,
+                                                    textAlign: "center",
+                                                    bgcolor: "#f9fafb"
+                                                }}
+                                            >
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: "#667eea" }}>
+                                                    Front Side
+                                                </Typography>
+                                                {citizenshipFrontPreview ? (
+                                                    <Box sx={{ position: "relative", mb: 2 }}>
+                                                        <img
+                                                            src={citizenshipFrontPreview}
+                                                            alt="Citizenship Front"
+                                                            style={{
+                                                                width: "100%",
+                                                                maxHeight: "200px",
+                                                                objectFit: "contain",
+                                                                borderRadius: "8px"
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                ) : (
+                                                    <Box sx={{ py: 4, color: "#9ca3af" }}>
+                                                        <BadgeIcon sx={{ fontSize: 48, opacity: 0.3, mb: 1 }} />
+                                                        <Typography variant="caption" display="block">
+                                                            No image uploaded
+                                                        </Typography>
+                                                    </Box>
+                                                )}
+                                                {isEditing && (
+                                                    <Button
+                                                        component="label"
+                                                        variant="outlined"
+                                                        startIcon={<CloudUploadIcon />}
+                                                        size="small"
+                                                        sx={{ mt: 1 }}
+                                                    >
+                                                        Upload Front
+                                                        <input
+                                                            type="file"
+                                                            hidden
+                                                            accept="image/*"
+                                                            onChange={handleCitizenshipFrontChange}
+                                                        />
+                                                    </Button>
+                                                )}
+                                            </Paper>
+                                        </Grid>
+
+                                        {/* Back Image */}
+                                        <Grid item xs={12} md={6}>
+                                            <Paper
+                                                elevation={0}
+                                                sx={{
+                                                    p: 2,
+                                                    border: "2px dashed #d1d5db",
+                                                    borderRadius: 2,
+                                                    textAlign: "center",
+                                                    bgcolor: "#f9fafb"
+                                                }}
+                                            >
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: "#667eea" }}>
+                                                    Back Side
+                                                </Typography>
+                                                {citizenshipBackPreview ? (
+                                                    <Box sx={{ position: "relative", mb: 2 }}>
+                                                        <img
+                                                            src={citizenshipBackPreview}
+                                                            alt="Citizenship Back"
+                                                            style={{
+                                                                width: "100%",
+                                                                maxHeight: "200px",
+                                                                objectFit: "contain",
+                                                                borderRadius: "8px"
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                ) : (
+                                                    <Box sx={{ py: 4, color: "#9ca3af" }}>
+                                                        <BadgeIcon sx={{ fontSize: 48, opacity: 0.3, mb: 1 }} />
+                                                        <Typography variant="caption" display="block">
+                                                            No image uploaded
+                                                        </Typography>
+                                                    </Box>
+                                                )}
+                                                {isEditing && (
+                                                    <Button
+                                                        component="label"
+                                                        variant="outlined"
+                                                        startIcon={<CloudUploadIcon />}
+                                                        size="small"
+                                                        sx={{ mt: 1 }}
+                                                    >
+                                                        Upload Back
+                                                        <input
+                                                            type="file"
+                                                            hidden
+                                                            accept="image/*"
+                                                            onChange={handleCitizenshipBackChange}
+                                                        />
+                                                    </Button>
+                                                )}
+                                            </Paper>
                                         </Grid>
                                     </Grid>
                                 </CardContent>

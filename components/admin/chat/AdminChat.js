@@ -97,12 +97,10 @@ const AdminChat = () => {
   const [selectedMessageIndex, setSelectedMessageIndex] = useState(null);
 
   useEffect(() => {
-    if (session?.user?.id) {
-      fetchChats();
-      const interval = setInterval(fetchChats, 3000); // Poll every 3 seconds
-      return () => clearInterval(interval);
-    }
-  }, [session?.user?.id]);
+    fetchChats();
+    const interval = setInterval(fetchChats, 3000); // Poll every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Create audio element for Facebook Messenger notification sound
@@ -134,13 +132,13 @@ const AdminChat = () => {
       const response = await fetch("/api/chat");
       if (response.ok) {
         const data = await response.json();
-        
+
         // Check for new messages from users and play sound
         data.forEach(chat => {
           const chatId = chat._id;
           const currentMessageCount = chat.messages.length;
           const previousCount = previousMessageCount[chatId];
-          
+
           // Only notify if we have a previous count (not first load) and there are new messages
           if (previousCount !== undefined && currentMessageCount > previousCount) {
             // Check if the new message is from a user (not admin)
@@ -153,16 +151,16 @@ const AdminChat = () => {
               });
             }
           }
-          
+
           // Update the message count
           setPreviousMessageCount(prev => ({
             ...prev,
             [chatId]: currentMessageCount
           }));
         });
-        
+
         setChatRooms(data);
-        
+
         // Calculate unread messages
         const unread = data.reduce((acc, chat) => {
           const unreadMessages = chat.messages.filter(
@@ -171,7 +169,7 @@ const AdminChat = () => {
           return acc + unreadMessages.length;
         }, 0);
         setUnreadCount(unread);
-        
+
         // Update selected chat if it exists
         if (selectedChat) {
           const updated = data.find((c) => c._id === selectedChat._id);
@@ -274,7 +272,7 @@ const AdminChat = () => {
   const filteredChats = chatRooms.filter((chat) => {
     let matchesStatus = filterStatus === "all" || chat.status === filterStatus;
     let matchesPriority = filterPriority === "all" || chat.priority === filterPriority;
-    let matchesSearch = searchQuery === "" || 
+    let matchesSearch = searchQuery === "" ||
       chat.userName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       chat.subject?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesPriority && matchesSearch;
@@ -349,12 +347,12 @@ const AdminChat = () => {
 
   const playFacebookMessengerSound = () => {
     if (!audioRef.current) return;
-    
+
     // Facebook Messenger "pop" sound (base64 encoded WAV)
     try {
       // This is a simple notification sound encoded as base64 WAV
       const messengerSound = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
-      
+
       audioRef.current.src = messengerSound;
       audioRef.current.volume = 0.5; // 50% volume
       audioRef.current.play().catch(err => console.log('Sound play failed:', err));
@@ -514,7 +512,7 @@ const AdminChat = () => {
                   />
                 )}
               </Box>
-              
+
               {/* Search Bar */}
               <TextField
                 fullWidth
@@ -527,7 +525,7 @@ const AdminChat = () => {
                 }}
                 sx={{ mb: 2 }}
               />
-              
+
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
                 <FormControl size="small" sx={{ flex: 1 }}>
                   <InputLabel>Status</InputLabel>
@@ -574,7 +572,7 @@ const AdminChat = () => {
                   const unreadMessages = chat.messages.filter(
                     (msg) => !msg.isRead && msg.senderRole !== "admin"
                   ).length;
-                  
+
                   return (
                     <Card
                       key={chat._id}
@@ -592,10 +590,10 @@ const AdminChat = () => {
                       <CardContent sx={{ p: 1.5 }}>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                           <Badge badgeContent={unreadMessages} color="error">
-                            <Avatar 
-                              src={chat.userImage} 
-                              sx={{ 
-                                width: 40, 
+                            <Avatar
+                              src={chat.userImage}
+                              sx={{
+                                width: 40,
                                 height: 40,
                                 bgcolor: chat.userId ? "#2196F3" : "#ff9800"
                               }}
@@ -618,22 +616,22 @@ const AdminChat = () => {
                                 {chat.userId ? chat.userName : `Guest: ${chat.userName}`}
                               </Typography>
                               {!chat.userId && (
-                                <Chip 
-                                  label="GUEST" 
-                                  size="small" 
-                                  sx={{ 
-                                    height: 16, 
+                                <Chip
+                                  label="GUEST"
+                                  size="small"
+                                  sx={{
+                                    height: 16,
                                     fontSize: "0.6rem",
                                     bgcolor: "#ff9800",
                                     color: "white",
                                     fontWeight: 600
-                                  }} 
+                                  }}
                                 />
                               )}
                             </Box>
                             <Typography
                               variant="caption"
-                              sx={{ 
+                              sx={{
                                 color: "#666",
                                 display: "block",
                                 overflow: "hidden",
@@ -683,10 +681,10 @@ const AdminChat = () => {
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1, minWidth: 0 }}>
-                  <Avatar 
-                    src={selectedChat.userImage} 
-                    sx={{ 
-                      width: 45, 
+                  <Avatar
+                    src={selectedChat.userImage}
+                    sx={{
+                      width: 45,
                       height: 45,
                       bgcolor: selectedChat.userId ? "#2196F3" : "#ff9800"
                     }}
@@ -699,22 +697,22 @@ const AdminChat = () => {
                         {selectedChat.userId ? selectedChat.userName : `Guest: ${selectedChat.userName}`}
                       </Typography>
                       {!selectedChat.userId && (
-                        <Chip 
-                          label="GUEST" 
-                          size="small" 
-                          sx={{ 
-                            height: 18, 
+                        <Chip
+                          label="GUEST"
+                          size="small"
+                          sx={{
+                            height: 18,
                             fontSize: "0.65rem",
                             bgcolor: "#ff9800",
                             color: "white",
                             fontWeight: 600
-                          }} 
+                          }}
                         />
                       )}
                     </Box>
                     <Typography variant="caption" sx={{ color: "#666", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {selectedChat.userId ? 
-                        `${selectedChat.subject}` : 
+                      {selectedChat.userId ?
+                        `${selectedChat.subject}` :
                         `${selectedChat.userEmail}`
                       }
                     </Typography>
@@ -725,7 +723,7 @@ const AdminChat = () => {
                     <IconButton
                       size="small"
                       onClick={handleStartVideoCall}
-                      sx={{ 
+                      sx={{
                         color: "#4caf50",
                         bgcolor: "#e8f5e9",
                         "&:hover": { bgcolor: "#c8e6c9" }
@@ -808,9 +806,9 @@ const AdminChat = () => {
                           </Typography>
                           <Typography
                             variant="caption"
-                            sx={{ 
-                              color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#999", 
-                              display: "block", 
+                            sx={{
+                              color: msg.senderRole === "admin" ? "rgba(255,255,255,0.7)" : "#999",
+                              display: "block",
                               mt: 0.5,
                               textAlign: "right",
                               fontSize: "0.7rem"
@@ -853,7 +851,7 @@ const AdminChat = () => {
                       label={response.substring(0, 20) + "..."}
                       size="small"
                       onClick={() => setMessageInput(response)}
-                      sx={{ 
+                      sx={{
                         cursor: "pointer",
                         fontSize: "0.7rem",
                         "&:hover": { bgcolor: "#e3f2fd" },
@@ -861,7 +859,7 @@ const AdminChat = () => {
                     />
                   ))}
                 </Box>
-                
+
                 <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
                   <TextField
                     fullWidth
@@ -888,7 +886,7 @@ const AdminChat = () => {
                     size="small"
                     onClick={handleSendMessage}
                     disabled={!messageInput.trim()}
-                    sx={{ 
+                    sx={{
                       background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
                       minWidth: 60,
                       height: 40,

@@ -25,6 +25,8 @@ import {
   ExpandMore as ExpandMoreIcon,
   Menu as MenuIcon,
   ExitToApp as ExitToAppIcon,
+  Home as HomeIcon,
+  Person as PersonIcon,
 } from "@mui/icons-material";
 
 import { useTheme } from "@mui/material/styles";
@@ -39,6 +41,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import CategoryIcon from '@mui/icons-material/Category';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import EventIcon from '@mui/icons-material/Event';
+import PeopleIcon from '@mui/icons-material/People';
 
 import {
   Drawer,
@@ -54,16 +57,19 @@ import {
 
 const menuItems = [
   {
-    title: "Main",
+    title: "Quick Access",
     icon: <DashboardIcon />,
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     items: [
-      { label: "Dashboard", path: "/" },
-      { label: "Profile", path: "profile" },
+      { label: "Home", path: "home", icon: <HomeIcon />, external: true },
+      { label: "Dashboard", path: "/", icon: <DashboardIcon /> },
+      { label: "Profile", path: "profile", icon: <PersonIcon /> },
     ],
   },
   {
     title: "Content Management",
     icon: <PostAddSharpIcon />,
+    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
     items: [
       { label: "Articles", path: "create/post" },
       { label: "Slider", path: "slider/list" },
@@ -73,6 +79,7 @@ const menuItems = [
   {
     title: "Categories",
     icon: <CategoryIcon />,
+    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
     items: [
       { label: "Categories", path: "create/category" },
       { label: "Subcategories", path: "create/subcategory" },
@@ -80,34 +87,22 @@ const menuItems = [
     ],
   },
   {
-    title: "Orders & Sales",
-    icon: <ShoppingCartIcon />,
-    items: [
-      { label: "Card Orders", path: "orders" },
-    ],
-  },
-  {
-    title: "Users & Messages",
-    icon: <ManageAccountsIcon />,
+    title: "Members & Events",
+    icon: <PeopleIcon />,
+    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
     items: [
       { label: "User Management", path: "alluser" },
       { label: "All Members", path: "member" },
-      { label: "Chat", path: "create/chat" },
-    ],
-  },
-  {
-    title: "Events",
-    icon: <EventIcon />,
-    items: [
       { label: "Events", path: "events" },
+      { label: "Chat", path: "create/chat" },
     ],
   },
   {
-    title: "Report",
-    icon: <ManageAccountsIcon />,
+    title: "Orders",
+    icon: <ShoppingCartIcon />,
+    gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
     items: [
-      { label: "All Users", path: "member" },
-      { label: "Chat", path: "create/chat" },
+      { label: "Card Orders", path: "orders" },
     ],
   },
 ];
@@ -121,9 +116,13 @@ export default function Sidebar() {
   const [activeItem, setActiveItem] = React.useState(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path, external = false) => {
     setActiveItem(path);
-    router.push(`/dashboard/admin/${path}`);
+    if (external) {
+      window.open("/", "_blank");
+    } else {
+      router.push(`/dashboard/admin/${path}`);
+    }
     if (isMobile) {
       setMobileOpen(false);
     }
@@ -250,7 +249,7 @@ function DrawerContent({
         {(!isMobile || open) && (
           <IconButton
             onClick={handleDrawerClose}
-            sx={{ 
+            sx={{
               color: "#667eea",
               transition: "all 0.3s ease",
               "&:hover": {
@@ -268,7 +267,11 @@ function DrawerContent({
           </IconButton>
         )}
       </DrawerHeader>
-      <Divider sx={dividerStyles} />
+      <Divider sx={{
+        ...dividerStyles,
+        background: "linear-gradient(90deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%)",
+        height: "2px",
+      }} />
 
       <Box
         sx={{
@@ -298,8 +301,8 @@ function DrawerContent({
                       sx={{
                         ...styles.root,
                         color: "#667eea",
-                        backgroundColor: expandedMenus[menuItem.title] 
-                          ? "rgba(102, 126, 234, 0.08)" 
+                        backgroundColor: expandedMenus[menuItem.title]
+                          ? "rgba(102, 126, 234, 0.08)"
                           : "#ffffff",
                         borderLeft: expandedMenus[menuItem.title]
                           ? "4px solid #667eea"
@@ -342,14 +345,14 @@ function DrawerContent({
                       {menuItem.items.map((item) => (
                         <ListItem key={item.path} disablePadding>
                           <ListItemButton
-                            onClick={() => handleNavigation(item.path)}
+                            onClick={() => handleNavigation(item.path, item.external)}
                             sx={{
                               ...styles.root,
                               ...styles.nested,
                               backgroundColor: activeItem === item.path
                                 ? "rgba(102, 126, 234, 0.1)"
                                 : "#ffffff",
-                              color: activeItem === item.path 
+                              color: activeItem === item.path
                                 ? "#667eea"
                                 : "#6b7280",
                               ...(activeItem === item.path && {
@@ -363,7 +366,7 @@ function DrawerContent({
                               sx={{
                                 ...styles.text,
                                 opacity: open ? 1 : 0,
-                                color: activeItem === item.path 
+                                color: activeItem === item.path
                                   ? "#667eea"
                                   : "#6b7280",
                               }}
@@ -378,13 +381,13 @@ function DrawerContent({
                 menuItem.items.map((item) => (
                   <ListItem key={item.path} disablePadding>
                     <ListItemButton
-                      onClick={() => handleNavigation(item.path)}
+                      onClick={() => handleNavigation(item.path, item.external)}
                       sx={{
                         ...styles.root,
                         backgroundColor: activeItem === item.path
                           ? "rgba(102, 126, 234, 0.1)"
                           : "#ffffff",
-                        color: activeItem === item.path 
+                        color: activeItem === item.path
                           ? "#667eea"
                           : "#6b7280",
                         ...(activeItem === item.path && {
@@ -393,15 +396,15 @@ function DrawerContent({
                         }),
                       }}
                     >
-                      <ListItemIcon sx={{ 
-                        ...styles.icon, 
-                        color: activeItem === item.path 
+                      <ListItemIcon sx={{
+                        ...styles.icon,
+                        color: activeItem === item.path
                           ? "#667eea"
                           : "#6b7280",
                       }}>
                         {React.cloneElement(menuItem.icon, {
-                          sx: { 
-                            color: activeItem === item.path 
+                          sx: {
+                            color: activeItem === item.path
                               ? "#667eea"
                               : "#6b7280",
                           },
@@ -412,7 +415,7 @@ function DrawerContent({
                         sx={{
                           ...styles.text,
                           opacity: open ? 1 : 0,
-                          color: activeItem === item.path 
+                          color: activeItem === item.path
                             ? "#667eea"
                             : "#6b7280",
                         }}
@@ -446,8 +449,8 @@ function DrawerContent({
             },
           }}
         >
-          <ListItemIcon sx={{ 
-            ...styles.icon, 
+          <ListItemIcon sx={{
+            ...styles.icon,
             color: "#ef4444",
             minWidth: open ? "40px" : "auto",
           }}>

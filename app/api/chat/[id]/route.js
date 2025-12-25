@@ -88,11 +88,10 @@ export async function PATCH(req, { params }) {
 
     // Add message if provided
     if (message) {
-      const user = await User.findById(session.user.id);
       chatRoom.messages.push({
         senderId: session.user.id,
-        senderName: user.name,
-        senderImage: user.image,
+        senderName: session.user.name,
+        senderImage: session.user.image,
         senderRole: session.user.role,
         content: message,
         timestamp: new Date(),
