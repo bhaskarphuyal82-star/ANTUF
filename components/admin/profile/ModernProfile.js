@@ -44,6 +44,11 @@ import {
     Map as MapIcon,
     Home as HomeIcon,
     Wc as GenderIcon,
+    FamilyRestroom as FamilyIcon,
+    Badge as BadgeIcon,
+    CardMembership as MembershipIcon,
+    ContactPhone as ContactPhoneIcon,
+    Cake as BirthdayIcon,
 } from "@mui/icons-material";
 
 export default function ModernProfile() {
@@ -59,14 +64,39 @@ export default function ModernProfile() {
         email: "",
         phone: "",
         gender: "",
+        dobNepali: "",
         organization: "",
         occupation: "",
         position: "",
         workplace: "",
-        province: "",
-        district: "",
-        municipality: "",
-        wardNo: "",
+        // Family Information
+        motherName: "",
+        fatherName: "",
+        grandfatherName: "",
+        spouseName: "",
+        // Citizenship Information
+        citizenshipNumber: "",
+        citizenshipIssuedDistrict: "",
+        citizenshipIssuedDate: "",
+        // Union Information
+        unionName: "",
+        membershipNumber: "",
+        joinDate: "",
+        // Emergency Contact
+        emergencyContact: "",
+        emergencyPhone: "",
+        // Permanent Address
+        permanentProvince: "",
+        permanentDistrict: "",
+        permanentMunicipality: "",
+        permanentWardNo: "",
+        permanentAddress: "",
+        // Temporary Address
+        temporaryProvince: "",
+        temporaryDistrict: "",
+        temporaryMunicipality: "",
+        temporaryWardNo: "",
+        temporaryAddress: "",
         bio: "",
         password: "",
         confirmPassword: "",
@@ -107,14 +137,39 @@ export default function ModernProfile() {
                 email: data?.email || "",
                 phone: data?.phone || "",
                 gender: data?.gender || "",
+                dobNepali: data?.dobNepali || "",
                 organization: data?.organization || "",
                 occupation: data?.occupation || "",
                 position: data?.position || "",
                 workplace: data?.workplace || "",
-                province: data?.province || "",
-                district: data?.district || "",
-                municipality: data?.municipality || "",
-                wardNo: data?.wardNo || "",
+                // Family Information
+                motherName: data?.motherName || "",
+                fatherName: data?.fatherName || "",
+                grandfatherName: data?.grandfatherName || "",
+                spouseName: data?.spouseName || "",
+                // Citizenship Information
+                citizenshipNumber: data?.citizenshipNumber || "",
+                citizenshipIssuedDistrict: data?.citizenship?.issuedDistrict || "",
+                citizenshipIssuedDate: data?.citizenship?.issuedDate || "",
+                // Union Information
+                unionName: data?.unionName || "",
+                membershipNumber: data?.membershipNumber || "",
+                joinDate: data?.joinDate ? new Date(data.joinDate).toISOString().split('T')[0] : "",
+                // Emergency Contact
+                emergencyContact: data?.emergencyContact || "",
+                emergencyPhone: data?.emergencyPhone || "",
+                // Permanent Address
+                permanentProvince: data?.permanentProvince || "",
+                permanentDistrict: data?.permanentDistrict || "",
+                permanentMunicipality: data?.permanentMunicipality || "",
+                permanentWardNo: data?.permanentWardNo || "",
+                permanentAddress: data?.permanentAddress || "",
+                // Temporary Address
+                temporaryProvince: data?.temporaryProvince || "",
+                temporaryDistrict: data?.temporaryDistrict || "",
+                temporaryMunicipality: data?.temporaryMunicipality || "",
+                temporaryWardNo: data?.temporaryWardNo || "",
+                temporaryAddress: data?.temporaryAddress || "",
                 bio: data?.bio || "",
                 password: "",
                 confirmPassword: "",
@@ -224,14 +279,41 @@ export default function ModernProfile() {
                 email: formData.email,
                 phone: formData.phone,
                 gender: formData.gender,
+                dobNepali: formData.dobNepali,
                 organization: formData.organization,
                 occupation: formData.occupation,
                 position: formData.position,
                 workplace: formData.workplace,
-                province: formData.province,
-                district: formData.district,
-                municipality: formData.municipality,
-                wardNo: formData.wardNo,
+                // Family Information
+                motherName: formData.motherName,
+                fatherName: formData.fatherName,
+                grandfatherName: formData.grandfatherName,
+                spouseName: formData.spouseName,
+                // Citizenship Information
+                citizenshipNumber: formData.citizenshipNumber,
+                citizenship: {
+                    issuedDistrict: formData.citizenshipIssuedDistrict,
+                    issuedDate: formData.citizenshipIssuedDate,
+                },
+                // Union Information
+                unionName: formData.unionName,
+                membershipNumber: formData.membershipNumber,
+                joinDate: formData.joinDate,
+                // Emergency Contact
+                emergencyContact: formData.emergencyContact,
+                emergencyPhone: formData.emergencyPhone,
+                // Permanent Address
+                permanentProvince: formData.permanentProvince,
+                permanentDistrict: formData.permanentDistrict,
+                permanentMunicipality: formData.permanentMunicipality,
+                permanentWardNo: formData.permanentWardNo,
+                permanentAddress: formData.permanentAddress,
+                // Temporary Address
+                temporaryProvince: formData.temporaryProvince,
+                temporaryDistrict: formData.temporaryDistrict,
+                temporaryMunicipality: formData.temporaryMunicipality,
+                temporaryWardNo: formData.temporaryWardNo,
+                temporaryAddress: formData.temporaryAddress,
                 bio: formData.bio,
                 profileImage: imageUrl,
             };
@@ -538,6 +620,17 @@ export default function ModernProfile() {
                                                 disabled={!isEditing}
                                             />
                                         </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Date of Birth (BS)"
+                                                value={formData.dobNepali}
+                                                onChange={handleInputChange("dobNepali")}
+                                                disabled={!isEditing}
+                                                placeholder="YYYY-MM-DD"
+                                            />
+                                        </Grid>
                                         <Grid item xs={12}>
                                             <TextField
                                                 fullWidth
@@ -612,7 +705,168 @@ export default function ModernProfile() {
                                             Address Information
                                         </Typography>
                                         <Typography variant="caption" sx={{ color: "#6b7280" }}>
-                                            Location and address details
+                                            Permanent and temporary address details
+                                        </Typography>
+                                    </Box>
+
+                                    <Grid container spacing={2}>
+                                        {/* Permanent Address Section */}
+                                        <Grid item xs={12}>
+                                            <Box sx={{
+                                                bgcolor: "#f3f4f6",
+                                                p: 2,
+                                                borderRadius: 2,
+                                                border: "1px solid #e5e7eb"
+                                            }}>
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#667eea", mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
+                                                    <HomeIcon sx={{ fontSize: 18 }} />
+                                                    Permanent Address
+                                                </Typography>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Province"
+                                                            value={formData.permanentProvince}
+                                                            onChange={handleInputChange("permanentProvince")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="District"
+                                                            value={formData.permanentDistrict}
+                                                            onChange={handleInputChange("permanentDistrict")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Municipality"
+                                                            value={formData.permanentMunicipality}
+                                                            onChange={handleInputChange("permanentMunicipality")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Ward No"
+                                                            value={formData.permanentWardNo}
+                                                            onChange={handleInputChange("permanentWardNo")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Address Line (Tole/Street)"
+                                                            value={formData.permanentAddress}
+                                                            onChange={handleInputChange("permanentAddress")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Grid>
+
+                                        {/* Temporary Address Section */}
+                                        <Grid item xs={12}>
+                                            <Box sx={{
+                                                bgcolor: "#fef3c7",
+                                                p: 2,
+                                                borderRadius: 2,
+                                                border: "1px solid #fde68a"
+                                            }}>
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#f59e0b", mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
+                                                    <MapIcon sx={{ fontSize: 18 }} />
+                                                    Temporary Address
+                                                </Typography>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Province"
+                                                            value={formData.temporaryProvince}
+                                                            onChange={handleInputChange("temporaryProvince")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="District"
+                                                            value={formData.temporaryDistrict}
+                                                            onChange={handleInputChange("temporaryDistrict")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Municipality"
+                                                            value={formData.temporaryMunicipality}
+                                                            onChange={handleInputChange("temporaryMunicipality")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Ward No"
+                                                            value={formData.temporaryWardNo}
+                                                            onChange={handleInputChange("temporaryWardNo")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            label="Address Line (Tole/Street)"
+                                                            value={formData.temporaryAddress}
+                                                            onChange={handleInputChange("temporaryAddress")}
+                                                            disabled={!isEditing}
+                                                            sx={{ bgcolor: "white" }}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+
+                            {/* Family Information Card */}
+                            <Card elevation={2}>
+                                <CardContent sx={{ p: 3 }}>
+                                    <Box sx={{ mb: 3 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 700, color: "#1f2937", display: "flex", alignItems: "center", gap: 1 }}>
+                                            <FamilyIcon sx={{ color: "#667eea" }} />
+                                            Family Information
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: "#6b7280" }}>
+                                            Family member details
                                         </Typography>
                                     </Box>
 
@@ -621,9 +875,9 @@ export default function ModernProfile() {
                                             <TextField
                                                 fullWidth
                                                 size="small"
-                                                label="Province"
-                                                value={formData.province}
-                                                onChange={handleInputChange("province")}
+                                                label="Mother's Name"
+                                                value={formData.motherName}
+                                                onChange={handleInputChange("motherName")}
                                                 disabled={!isEditing}
                                             />
                                         </Grid>
@@ -631,9 +885,9 @@ export default function ModernProfile() {
                                             <TextField
                                                 fullWidth
                                                 size="small"
-                                                label="District"
-                                                value={formData.district}
-                                                onChange={handleInputChange("district")}
+                                                label="Father's Name"
+                                                value={formData.fatherName}
+                                                onChange={handleInputChange("fatherName")}
                                                 disabled={!isEditing}
                                             />
                                         </Grid>
@@ -641,9 +895,9 @@ export default function ModernProfile() {
                                             <TextField
                                                 fullWidth
                                                 size="small"
-                                                label="Municipality"
-                                                value={formData.municipality}
-                                                onChange={handleInputChange("municipality")}
+                                                label="Grandfather's Name"
+                                                value={formData.grandfatherName}
+                                                onChange={handleInputChange("grandfatherName")}
                                                 disabled={!isEditing}
                                             />
                                         </Grid>
@@ -651,9 +905,146 @@ export default function ModernProfile() {
                                             <TextField
                                                 fullWidth
                                                 size="small"
-                                                label="Ward No"
-                                                value={formData.wardNo}
-                                                onChange={handleInputChange("wardNo")}
+                                                label="Spouse's Name"
+                                                value={formData.spouseName}
+                                                onChange={handleInputChange("spouseName")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+
+                            {/* Citizenship Information Card */}
+                            <Card elevation={2}>
+                                <CardContent sx={{ p: 3 }}>
+                                    <Box sx={{ mb: 3 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 700, color: "#1f2937", display: "flex", alignItems: "center", gap: 1 }}>
+                                            <BadgeIcon sx={{ color: "#667eea" }} />
+                                            Citizenship Information
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: "#6b7280" }}>
+                                            Citizenship and identification details
+                                        </Typography>
+                                    </Box>
+
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Citizenship Number"
+                                                value={formData.citizenshipNumber}
+                                                onChange={handleInputChange("citizenshipNumber")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Issued District"
+                                                value={formData.citizenshipIssuedDistrict}
+                                                onChange={handleInputChange("citizenshipIssuedDistrict")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Issued Date (BS)"
+                                                value={formData.citizenshipIssuedDate}
+                                                onChange={handleInputChange("citizenshipIssuedDate")}
+                                                disabled={!isEditing}
+                                                placeholder="YYYY-MM-DD"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+
+                            {/* Union/Organization Information Card */}
+                            <Card elevation={2}>
+                                <CardContent sx={{ p: 3 }}>
+                                    <Box sx={{ mb: 3 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 700, color: "#1f2937", display: "flex", alignItems: "center", gap: 1 }}>
+                                            <MembershipIcon sx={{ color: "#667eea" }} />
+                                            Union / Membership Information
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: "#6b7280" }}>
+                                            Union and membership details
+                                        </Typography>
+                                    </Box>
+
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Union Name"
+                                                value={formData.unionName}
+                                                onChange={handleInputChange("unionName")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Membership Number"
+                                                value={formData.membershipNumber}
+                                                onChange={handleInputChange("membershipNumber")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Join Date"
+                                                type="date"
+                                                value={formData.joinDate}
+                                                onChange={handleInputChange("joinDate")}
+                                                disabled={!isEditing}
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+
+                            {/* Emergency Contact Card */}
+                            <Card elevation={2}>
+                                <CardContent sx={{ p: 3 }}>
+                                    <Box sx={{ mb: 3 }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 700, color: "#1f2937", display: "flex", alignItems: "center", gap: 1 }}>
+                                            <ContactPhoneIcon sx={{ color: "#667eea" }} />
+                                            Emergency Contact
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: "#6b7280" }}>
+                                            Emergency contact person details
+                                        </Typography>
+                                    </Box>
+
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Contact Name"
+                                                value={formData.emergencyContact}
+                                                onChange={handleInputChange("emergencyContact")}
+                                                disabled={!isEditing}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                label="Contact Phone"
+                                                value={formData.emergencyPhone}
+                                                onChange={handleInputChange("emergencyPhone")}
                                                 disabled={!isEditing}
                                             />
                                         </Grid>
