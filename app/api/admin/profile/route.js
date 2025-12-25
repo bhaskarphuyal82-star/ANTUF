@@ -10,19 +10,35 @@ export async function POST(req) {
   await dbConnect();
 
   const session = await getServerSession(authOptions);
-  const { name, email, password, profileImage } = await req.json();
-  console.log({ name, email, password, profileImage });
+  const { name, email, password, phone, organization, bio, profileImage } = await req.json();
+  console.log({ name, email, password, phone, organization, bio, profileImage });
   try {
     if (!session?.user?._id) {
       return NextResponse.json({ err: "Not Authenticated!" }, { status: 401 });
     }
+
+    // Build update object
+    const updateData = {
+      name,
+      phone,
+      organization,
+      bio,
+      updatedBy: session.user._id,
+    };
+
+    // Only update password if provided
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    // Only update image if provided
+    if (profileImage) {
+      updateData.image = profileImage;
+    }
+
     let updateUser = await User.findByIdAndUpdate(
       session?.user?._id,
-      {
-        name,
-        password: await bcrypt.hash(password, 10),
-        image: profileImage,
-      },
+      updateData,
       { new: true }
     );
     if (!updateUser) {

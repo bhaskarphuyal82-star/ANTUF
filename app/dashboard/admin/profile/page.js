@@ -1,16 +1,16 @@
 "use client";
 
 import Sidebar from "@/components/sidebar/SideBar";
-import Profile from "@/components/admin/profile/Profile";
+import ModernProfile from "@/components/admin/profile/ModernProfile";
+import { Box } from "@mui/material";
 
-const ProfileCreate = () => {
+export default function ProfilePage() {
   return (
-    <>
-      <Profile />
-
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar />
-    </>
+      <Box sx={{ flex: 1, overflow: "auto" }}>
+        <ModernProfile />
+      </Box>
+    </Box>
   );
-};
-
-export default ProfileCreate;
+}

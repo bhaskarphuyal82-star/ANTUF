@@ -192,24 +192,39 @@ const LoginModal = ({ open, handleClose }) => {
         console.error('[Login] Login failed:', result?.error);
         toast.error(result?.error);
       } else {
-        console.log('[Login] Login successful, redirecting to:', result.url || callbackUrl || '/dashboard');
+        console.log('[Login] Login successful');
         toast.success("Login successfully"); // Show a success message if login is successful
         setRecaptchaToken(null); // Reset the reCAPTCHA token after successful login
         handleClose(); // Close the login modal or form
 
-        // Redirect using NextAuth's returned URL or the callbackUrl
-        const redirectUrl = result.url || callbackUrl;
-        if (redirectUrl) {
-          // Use full page reload to ensure session is properly loaded
-          setTimeout(() => {
-            // If it's a relative URL, make it absolute
-            const finalUrl = redirectUrl.startsWith('/')
-              ? `${window.location.origin}${redirectUrl}`
-              : redirectUrl;
-            console.log('[Login] Redirecting to:', finalUrl);
+        // Redirect based on user role
+        // Fetch the session to get user role
+        setTimeout(async () => {
+          try {
+            const sessionRes = await fetch('/api/auth/session');
+            const sessionData = await sessionRes.json();
+
+            let finalUrl;
+            if (callbackUrl) {
+              // If there's a callbackUrl, use it
+              finalUrl = callbackUrl.startsWith('/')
+                ? `${window.location.origin}${callbackUrl}`
+                : callbackUrl;
+            } else {
+              // Otherwise, redirect based on role
+              const isAdmin = sessionData?.user?.role === 'admin' || sessionData?.user?.isAdmin;
+              const defaultDashboard = isAdmin ? '/dashboard/admin' : '/dashboard/user';
+              finalUrl = `${window.location.origin}${defaultDashboard}`;
+            }
+
+            console.log('[Login] Redirecting to:', finalUrl, 'Role:', sessionData?.user?.role);
             window.location.href = finalUrl;
-          }, 100);
-        }
+          } catch (error) {
+            console.error('[Login] Error fetching session:', error);
+            // Fallback to generic dashboard
+            window.location.href = `${window.location.origin}/dashboard/user`;
+          }
+        }, 100);
       }
     } catch (error) {
       console.error('[Login] Error during login:', error);

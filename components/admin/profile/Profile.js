@@ -1,19 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import { TextField, Button, Box, Typography, Alert, Chip, Grid } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profileImagePreview, setProfileImagePreview] = useState("");
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // User status information
+  const [userStatus, setUserStatus] = useState({
+    role: "",
+    emailVerified: false,
+    isVerified: false,
+    lastLogin: null,
+    createdAt: null,
+  });
 
   const validateForm = () => {
     const errors = {};
@@ -44,7 +58,19 @@ const Profile = () => {
       const data = await response.json();
       setEmail(data?.email);
       setName(data?.name);
+      setPhone(data?.phone || "");
+      setOrganization(data?.organization || "");
+      setBio(data?.bio || "");
       setProfileImagePreview(data?.image);
+
+      // Set user status information
+      setUserStatus({
+        role: data?.role || "",
+        emailVerified: data?.emailVerified || false,
+        isVerified: data?.isVerified || false,
+        lastLogin: data?.lastLogin || null,
+        createdAt: data?.createdAt || null,
+      });
     } catch (error) {
       console.log("Error fetching data", error);
     }
@@ -102,6 +128,9 @@ const Profile = () => {
       name,
       email,
       password,
+      phone,
+      organization,
+      bio,
       profileImage: imageUrl,
     };
 
@@ -173,10 +202,10 @@ const Profile = () => {
                   
                     sx={{ borderRadius: "50%", width: 150, height: 150 }}
                   /> */}
-                  <Avatar alt="admin" 
-                   src={profileImagePreview} 
-                   sx={{ width: 250, height: 250 }}
-                   />
+                  <Avatar alt="admin"
+                    src={profileImagePreview}
+                    sx={{ width: 250, height: 250 }}
+                  />
                 </div>
               </Box>
             )}
@@ -196,6 +225,51 @@ const Profile = () => {
             <Typography variant="h4" component="h1" gutterBottom>
               Update Profile
             </Typography>
+
+            {/* Account Status Section */}
+            <Box sx={{ mb: 3, p: 2, backgroundColor: 'rgba(138, 18, 252, 0.1)', borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#8A12FC' }}>
+                Account Status
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={6}>
+                  <Chip
+                    icon={<CheckCircleIcon />}
+                    label={`Role: ${userStatus.role || 'User'}`}
+                    color="primary"
+                    sx={{ backgroundColor: '#8A12FC' }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Chip
+                    icon={userStatus.emailVerified ? <CheckCircleIcon /> : <CancelIcon />}
+                    label={userStatus.emailVerified ? "Email Verified" : "Email Not Verified"}
+                    color={userStatus.emailVerified ? "success" : "warning"}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Chip
+                    icon={userStatus.isVerified ? <CheckCircleIcon /> : <CancelIcon />}
+                    label={userStatus.isVerified ? "Account Verified" : "Pending Verification"}
+                    color={userStatus.isVerified ? "success" : "warning"}
+                  />
+                </Grid>
+                {userStatus.lastLogin && (
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" sx={{ color: '#fff' }}>
+                      Last Login: {new Date(userStatus.lastLogin).toLocaleString()}
+                    </Typography>
+                  </Grid>
+                )}
+                {userStatus.createdAt && (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" sx={{ color: '#fff' }}>
+                      Member Since: {new Date(userStatus.createdAt).toLocaleDateString()}
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
 
             {serverMessage && (
               <Alert severity={isSuccess ? "success" : "error"}>
@@ -245,6 +319,86 @@ const Profile = () => {
                 mb: 3,
                 input: { color: "white" },
                 "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              label="Phone Number"
+              variant="outlined"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              fullWidth
+              InputLabelProps={{
+                style: { color: "#8A12FC" },
+              }}
+              sx={{
+                mb: 3,
+                input: { color: "white" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              label="Organization"
+              variant="outlined"
+              value={organization}
+              onChange={(e) => setOrganization(e.target.value)}
+              fullWidth
+              InputLabelProps={{
+                style: { color: "#8A12FC" },
+              }}
+              sx={{
+                mb: 3,
+                input: { color: "white" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#8A12FC",
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              label="Bio / Description"
+              variant="outlined"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              multiline
+              rows={4}
+              fullWidth
+              InputLabelProps={{
+                style: { color: "#8A12FC" },
+              }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
                   "& fieldset": {
                     borderColor: "#8A12FC",
                   },
