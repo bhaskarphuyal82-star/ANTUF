@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/utils/dbConnect";
-import Curriculum from "@/models/Curriculum";
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,17 +8,42 @@ cloudinary.config({
 });
 
 export async function POST(req) {
-  const { image } = await req.json();
-  await dbConnect();
-
   try {
-    const result = await cloudinary.uploader.upload(image, {
-      upload_preset: "ml_default",
+    const formData = await req.formData();
+    const file = formData.get("file");
+    const folder = formData.get("folder") || "antuf/uploads";
+
+    if (!file) {
+      return NextResponse.json(
+        { success: false, error: "No file provided" },
+        { status: 400 }
+      );
+    }
+
+    // Convert file to base64
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const base64 = buffer.toString("base64");
+    const dataURI = `data:${file.type};base64,${base64}`;
+
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: folder,
+      resource_type: "auto",
     });
-    console.log("What upload image route is sending-----", result);
-    return NextResponse.json({ url: result.secure_url });
+
+    console.log("Image uploaded successfully:", result.secure_url);
+
+    return NextResponse.json({
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+    });
   } catch (error) {
-    console.log("Error from Upload Route for Cloudinary-----", error);
-    return NextResponse.json({ err: error.message }, { status: 500 });
+    console.error("Error uploading to Cloudinary:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Upload failed" },
+      { status: 500 }
+    );
   }
 }

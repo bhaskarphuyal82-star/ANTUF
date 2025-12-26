@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -20,6 +20,7 @@ import {
   Alert,
   InputAdornment,
   Chip,
+  CircularProgress,
 } from '@mui/material';
 import {
   Favorite as FavoriteIcon,
@@ -37,8 +38,34 @@ export default function DonationPage() {
   const [customAmount, setCustomAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('bank');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pageData, setPageData] = useState(null);
 
   const predefinedAmounts = [500, 1000, 2000, 5000, 10000];
+
+  useEffect(() => {
+    fetchDonationPage();
+  }, []);
+
+  const fetchDonationPage = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/donation');
+      const data = await response.json();
+
+      if (data.success) {
+        setPageData(data.data);
+      } else {
+        setError('Failed to load donation page');
+      }
+    } catch (err) {
+      console.error('Error fetching donation page:', err);
+      setError('Failed to load donation page');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAmountSelect = (value) => {
     setAmount(value);
@@ -54,6 +81,30 @@ export default function DonationPage() {
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 5000);
   };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+          <CircularProgress />
+        </Box>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || !pageData) {
+    return (
+      <>
+        <Navbar />
+        <Container maxWidth="lg" sx={{ py: 8 }}>
+          <Alert severity="error">{error || 'Failed to load donation page'}</Alert>
+        </Container>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -79,7 +130,7 @@ export default function DonationPage() {
                 mb: 2,
               }}
             >
-              दान गर्नुहोस्
+              {pageData.headerTitle}
             </Typography>
             <Typography
               variant="h5"
@@ -89,7 +140,7 @@ export default function DonationPage() {
                 mb: 2,
               }}
             >
-              Support Our Cause
+              {pageData.headerTitleEn}
             </Typography>
             <Typography
               variant="body1"
@@ -100,7 +151,7 @@ export default function DonationPage() {
                 mx: 'auto',
               }}
             >
-              तपाईंको सहयोगले नेपालका श्रमिकहरूको जीवनमा सकारात्मक परिवर्तन ल्याउन मद्दत गर्छ
+              {pageData.headerSubtitle}
             </Typography>
           </Container>
         </Box>
@@ -343,24 +394,14 @@ export default function DonationPage() {
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                   तपाईंको प्रभाव
                 </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="NPR 500" color="primary" size="small" sx={{ mr: 1 }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    एक श्रमिकलाई कानूनी परामर्श
-                  </Typography>
-                </Box>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="NPR 2000" color="primary" size="small" sx={{ mr: 1 }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    तालिम कार्यक्रम सञ्चालन
-                  </Typography>
-                </Box>
-                <Box sx={{ mb: 2 }}>
-                  <Chip label="NPR 10000" color="primary" size="small" sx={{ mr: 1 }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    २० श्रमिकहरूलाई अधिकार शिक्षा
-                  </Typography>
-                </Box>
+                {pageData.impactItems?.map((item, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Chip label={`NPR ${item.amount}`} color="primary" size="small" sx={{ mr: 1 }} />
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      {item.description}
+                    </Typography>
+                  </Box>
+                ))}
               </Card>
 
               {/* Bank Details */}
@@ -379,25 +420,25 @@ export default function DonationPage() {
                 <Box sx={{ bgcolor: 'rgba(255,255,255,0.2)', p: 2, borderRadius: 2, mb: 1 }}>
                   <Typography variant="caption">बैंकको नाम</Typography>
                   <Typography variant="body1" fontWeight={600}>
-                    Nepal Bank Limited
+                    {pageData.bankDetails?.bankName}
                   </Typography>
                 </Box>
                 <Box sx={{ bgcolor: 'rgba(255,255,255,0.2)', p: 2, borderRadius: 2, mb: 1 }}>
                   <Typography variant="caption">खाता नाम</Typography>
                   <Typography variant="body1" fontWeight={600}>
-                    ANTUF Nepal
+                    {pageData.bankDetails?.accountName}
                   </Typography>
                 </Box>
                 <Box sx={{ bgcolor: 'rgba(255,255,255,0.2)', p: 2, borderRadius: 2, mb: 1 }}>
                   <Typography variant="caption">खाता नम्बर</Typography>
                   <Typography variant="body1" fontWeight={600}>
-                    01234567890
+                    {pageData.bankDetails?.accountNumber}
                   </Typography>
                 </Box>
                 <Box sx={{ bgcolor: 'rgba(255,255,255,0.2)', p: 2, borderRadius: 2 }}>
                   <Typography variant="caption">शाखा</Typography>
                   <Typography variant="body1" fontWeight={600}>
-                    Kathmandu, Nepal
+                    {pageData.bankDetails?.branch}
                   </Typography>
                 </Box>
               </Paper>
@@ -408,13 +449,13 @@ export default function DonationPage() {
                   सहयोग चाहियो?
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  दानसम्बन्धी कुनै प्रश्न भए हामीलाई सम्पर्क गर्नुहोस्:
+                  {pageData.helpText}
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1 }}>
-                  📧 donate@antuf.org.np
+                  📧 {pageData.contactEmail}
                 </Typography>
                 <Typography variant="body2">
-                  📞 +977-1-4567890
+                  📞 {pageData.contactPhone}
                 </Typography>
               </Paper>
             </Grid>

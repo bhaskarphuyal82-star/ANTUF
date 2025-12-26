@@ -267,40 +267,35 @@ export default function ModernProfile() {
     };
 
 
+
     const uploadImageToCloudinary = async (image) => {
-        // Convert image file to base64
-        const reader = new FileReader();
+        try {
+            const formData = new FormData();
+            formData.append("file", image);
+            formData.append("folder", "antuf/profiles");
 
-        return new Promise((resolve, reject) => {
-            reader.onloadend = async () => {
-                try {
-                    const base64Image = reader.result;
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
 
-                    // Upload via server-side API route
-                    const response = await fetch('/api/upload', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ image: base64Image }),
-                    });
+            if (!response.ok) {
+                throw new Error(`Upload failed: ${response.statusText}`);
+            }
 
-                    if (!response.ok) {
-                        throw new Error('Failed to upload image');
-                    }
+            const data = await response.json();
 
-                    const data = await response.json();
-                    resolve(data.url);
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    reject(error);
-                }
-            };
-
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(image);
-        });
+            if (data.success && data.url) {
+                return data.url;
+            } else {
+                throw new Error(data.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
     };
+
 
 
     const validateForm = () => {

@@ -57,7 +57,7 @@ import {
 
 const menuItems = [
   {
-    title: "Quick Access",
+    title: "Dashboard",
     icon: <DashboardIcon />,
     gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     items: [
@@ -67,13 +67,26 @@ const menuItems = [
     ],
   },
   {
-    title: "Content Management",
+    title: "Content & Pages",
     icon: <PostAddSharpIcon />,
     gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
     items: [
       { label: "Articles", path: "create/post" },
-      { label: "Slider", path: "slider/list" },
-      { label: "Video", path: "create/video" },
+      { label: "Video Content", path: "create/video" },
+      { label: "Slider Management", path: "slider/list" },
+      { label: "Donation Page", path: "donation" },
+    ],
+  },
+  {
+    title: "Organization",
+    icon: <PeopleIcon />,
+    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    items: [
+      { label: "जनप्रतिनिधि / Representatives", path: "representatives" },
+      { label: "सम्बद्ध संगठन / Affiliates", path: "affiliates" },
+      { label: "User Management", path: "alluser" },
+      { label: "All Members", path: "member" },
+      { label: "Events Calendar", path: "events" },
     ],
   },
   {
@@ -87,13 +100,10 @@ const menuItems = [
     ],
   },
   {
-    title: "Members & Events",
-    icon: <PeopleIcon />,
-    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    title: "Communication",
+    icon: <ChatIcon />,
+    gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
     items: [
-      { label: "User Management", path: "alluser" },
-      { label: "All Members", path: "member" },
-      { label: "Events", path: "events" },
       { label: "Chat", path: "create/chat" },
     ],
   },
