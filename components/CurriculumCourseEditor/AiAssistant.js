@@ -7,7 +7,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import { runAi } from "@/ai/ai";
+import { runAi } from "@/components/ai/ai";
 import SendIcon from "@mui/icons-material/Send"; // Add an icon to the button
 
 const AIAssistant = () => {

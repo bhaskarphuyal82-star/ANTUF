@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
-import { runAi } from "@/ai/ai";
+import { runAi } from "@/components/ai/ai";
 
 import MDEditor from "@uiw/react-md-editor";
 import hljs from "highlight.js";
@@ -59,7 +59,7 @@ const ResponsiveComponent = ({ content }) => {
     },
   });
 
-  const date = content?.date || content?.publishedAt || content?.updatedAt ? 
+  const date = content?.date || content?.publishedAt || content?.updatedAt ?
     new Date(content.date || content.publishedAt || content.updatedAt) : null;
   const formattedData =
     date && !isNaN(date) ? format(date, "dd MMM, yyyy") : "Invalid date";
