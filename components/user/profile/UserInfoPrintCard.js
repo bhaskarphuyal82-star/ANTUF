@@ -447,7 +447,7 @@ const UserInfoPrintCard = () => {
               {/* Footer */}
               <Box sx={{ mt: 1.5, pt: 1, borderTop: "1px solid #DDD", textAlign: "center" }}>
                 <Typography sx={{ fontSize: "7px", color: "#999" }}>
-                  ANTUF | Nepal | www.antuf.edu.np
+                  ANTUF | Nepal | www.antuf.org
                 </Typography>
               </Box>
             </Box>

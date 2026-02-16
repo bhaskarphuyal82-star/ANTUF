@@ -1,14 +1,32 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/dbConnect";
 import Articles from "@/models/Articles";
-export async function GET() {
+
+export async function GET(request) {
   await dbConnect();
 
+  // Parse query params
+  const { searchParams } = new URL(request.url);
+  const limitParam = searchParams.get("limit");
+
+  // Default limit 6, max limit if 'all' or high number
+  let limit = 6;
+  if (limitParam === 'all') {
+    limit = 0; // 0 means no limit in mongoose (or very high)
+  } else if (limitParam) {
+    limit = parseInt(limitParam) || 6;
+  }
+
   try {
-    const article = await Articles.find({ status: "published" })
-      .populate("category", "name") // Populate category with name field
-      .sort({ createdAt: -1 })
-      .limit(6);
+    let query = Articles.find({ status: "published" })
+      .populate("category", "name")
+      .sort({ createdAt: -1 });
+
+    if (limit > 0) {
+      query = query.limit(limit);
+    }
+
+    const article = await query;
     return NextResponse.json(article);
   } catch (error) {
     console.log("Error from GET of articles--", error);
